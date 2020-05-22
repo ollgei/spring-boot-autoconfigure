@@ -110,7 +110,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
             throw new IllegalStateException("Disruptor has been shut down. Cannot send data");
         }
         final RingBuffer<InternalEvent> ringBuffer = disruptor.getRingBuffer();
-        ringBuffer.publishEvent(new DisruptorEventTranslator(), subcription);
+        ringBuffer.publishEvent(new InternalEventTranslator(), subcription);
     }
 
     /**
