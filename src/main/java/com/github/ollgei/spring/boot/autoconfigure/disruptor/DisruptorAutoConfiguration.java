@@ -16,6 +16,7 @@
 
 package com.github.ollgei.spring.boot.autoconfigure.disruptor;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.DisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.DisruptorSubscriber;
+import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 /**
@@ -33,6 +35,7 @@ import com.lmax.disruptor.dsl.ProducerType;
  */
 @ConditionalOnProperty(prefix = "ollgei.disruptor", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(DisruptorProperties.class)
+@ConditionalOnClass(Disruptor.class)
 public class DisruptorAutoConfiguration {
 
     private final DisruptorProperties properties;
