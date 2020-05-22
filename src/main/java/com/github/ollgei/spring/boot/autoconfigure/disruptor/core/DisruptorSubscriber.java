@@ -8,5 +8,10 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
  */
 public interface DisruptorSubscriber<T extends AbstractSubscription> {
 
+    /**
+     * trigger next.
+     * @param subscription subscription
+     * @return
+     */
     void onNext(T subscription);
 }
