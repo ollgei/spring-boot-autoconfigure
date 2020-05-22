@@ -6,7 +6,7 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
  * @author jiawei
  * @since 1.0.0
  */
-class Event {
+class InternalEvent {
 
    private DisruptorSubcription subcription;
 

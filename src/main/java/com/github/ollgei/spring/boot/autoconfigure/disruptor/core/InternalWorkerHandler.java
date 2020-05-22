@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public class DisruptorWorkerHandler implements WorkHandler<Event> {
+class InternalWorkerHandler implements WorkHandler<InternalEvent> {
 
     private final Executor executor;
 
@@ -24,13 +24,13 @@ public class DisruptorWorkerHandler implements WorkHandler<Event> {
      *
      * @param executor        the executor
      */
-    public DisruptorWorkerHandler(final Executor executor, final DisruptorSubscriber subscriber) {
+    public InternalWorkerHandler(final Executor executor, final DisruptorSubscriber subscriber) {
         this.executor = executor;
         this.subscriber = subscriber;
     }
 
     @Override
-    public void onEvent(final Event event) {
+    public void onEvent(final InternalEvent event) {
         final DisruptorSubcription subcription = event.getSubcription();
         if (log.isInfoEnabled()) {
             final int size = event.size();

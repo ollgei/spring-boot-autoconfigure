@@ -11,11 +11,11 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-class DefaultExceptionHandler implements ExceptionHandler {
+class InternalExceptionHandler implements ExceptionHandler {
 
-    private Disruptor<Event> disruptor;
+    private Disruptor<InternalEvent> disruptor;
 
-    public DefaultExceptionHandler(Disruptor disruptor) {
+    public InternalExceptionHandler(Disruptor disruptor) {
         this.disruptor = disruptor;
     }
 
@@ -23,7 +23,7 @@ class DefaultExceptionHandler implements ExceptionHandler {
     public void handleEventException(Throwable ex, long sequence, Object event) {
         ex.printStackTrace();
         log.error("Exception occurred while processing a {}.",
-                ((Event) event).getSimpleName(), ex);
+                ((InternalEvent) event).getSimpleName(), ex);
     }
 
     @Override

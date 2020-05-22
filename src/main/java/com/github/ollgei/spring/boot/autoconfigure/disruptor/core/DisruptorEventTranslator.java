@@ -26,10 +26,10 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-class DisruptorEventTranslator implements EventTranslatorOneArg<Event, DisruptorSubcription> {
+class DisruptorEventTranslator implements EventTranslatorOneArg<InternalEvent, DisruptorSubcription> {
 
     @Override
-    public void translateTo(Event event, long sequence, DisruptorSubcription subcription) {
+    public void translateTo(InternalEvent event, long sequence, DisruptorSubcription subcription) {
         subcription.setSequence(sequence);
         event.setSubcription(subcription);
         if (log.isInfoEnabled()) {

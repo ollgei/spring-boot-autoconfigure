@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
  * @author jiawei
  * @since 1.0.0
  */
-class NamedThreadFactory implements ThreadFactory {
+class InternalNamedThreadFactory implements ThreadFactory {
 
     private final int priority;
     private final ThreadGroup threadGroup;
@@ -26,7 +26,7 @@ class NamedThreadFactory implements ThreadFactory {
      * @param groupName The name of the group to create each thread in
      * @see Thread#setPriority(int)
      */
-    public NamedThreadFactory(String groupName) {
+    public InternalNamedThreadFactory(String groupName) {
         this(new ThreadGroup(groupName), false);
     }
 
@@ -37,7 +37,7 @@ class NamedThreadFactory implements ThreadFactory {
      * @param groupName The name of the group to create each thread in
      * @see Thread#setPriority(int)
      */
-    public NamedThreadFactory(String groupName, boolean daemon) {
+    public InternalNamedThreadFactory(String groupName, boolean daemon) {
         this(new ThreadGroup(groupName), daemon);
     }
 
@@ -48,7 +48,7 @@ class NamedThreadFactory implements ThreadFactory {
      * @param group The ThreadGroup to create each thread in
      * @see Thread#setPriority(int)
      */
-    public NamedThreadFactory(ThreadGroup group, boolean daemon) {
+    public InternalNamedThreadFactory(ThreadGroup group, boolean daemon) {
         this(Thread.NORM_PRIORITY, group, daemon);
     }
 
@@ -60,7 +60,7 @@ class NamedThreadFactory implements ThreadFactory {
      * @param group    The ThreadGroup to create each thread in
      * @see Thread#setPriority(int)
      */
-    public NamedThreadFactory(int priority, ThreadGroup group, boolean daemon) {
+    public InternalNamedThreadFactory(int priority, ThreadGroup group, boolean daemon) {
         Assert.isTrue(priority <= Thread.MAX_PRIORITY && priority >= Thread.MIN_PRIORITY,
                 () -> "Given priority is invalid");
         this.priority = priority;

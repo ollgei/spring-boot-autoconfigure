@@ -25,7 +25,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
 
     private final ExecutorService executorService;
 
-    private final Disruptor<Event> disruptor;
+    private final Disruptor<InternalEvent> disruptor;
 
     private final long coolingDownPeriod;
     private volatile boolean started = true;
@@ -45,7 +45,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
             int threadSize = builder.subscriberCount * 2;
             executorService = new ThreadPoolExecutor(threadSize, threadSize, 0, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue<>(),
-                    new NamedThreadFactory(builder.subscriberName),
+                    new InternalNamedThreadFactory(builder.subscriberName),
                     new ThreadPoolExecutor.AbortPolicy());
             executor = executorService;
         } else {
@@ -54,19 +54,19 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
 
         coolingDownPeriod = builder.coolingDownPeriod;
 
-        disruptor = new Disruptor<>(() -> new Event(),
+        disruptor = new Disruptor<>(() -> new InternalEvent(),
                 builder.bufferSize,
-                new NamedThreadFactory(builder.subscriberName),
+                new InternalNamedThreadFactory(builder.subscriberName),
                 builder.producerType,
                 builder.waitStrategy);
 
         // Configure invoker Threads
-        final DisruptorWorkerHandler[] handlers = new DisruptorWorkerHandler[builder.subscriberCount];
+        final InternalWorkerHandler[] handlers = new InternalWorkerHandler[builder.subscriberCount];
         for (int i = 0; i < handlers.length; i++) {
-            handlers[i] = new DisruptorWorkerHandler(executor, builder.subscriber);
+            handlers[i] = new InternalWorkerHandler(executor, builder.subscriber);
         }
 
-        disruptor.setDefaultExceptionHandler(new DefaultExceptionHandler(disruptor));
+        disruptor.setDefaultExceptionHandler(new InternalExceptionHandler(disruptor));
         disruptor.handleEventsWithWorkerPool(handlers);
     }
 
@@ -109,7 +109,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
         if (disruptorShutDown) {
             throw new IllegalStateException("Disruptor has been shut down. Cannot send data");
         }
-        final RingBuffer<Event> ringBuffer = disruptor.getRingBuffer();
+        final RingBuffer<InternalEvent> ringBuffer = disruptor.getRingBuffer();
         ringBuffer.publishEvent(new DisruptorEventTranslator(), subcription);
     }
 
