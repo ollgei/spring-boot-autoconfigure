@@ -64,7 +64,7 @@ public class DisruptorAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DisruptorSubscriber disruptorSubscriber() {
-        return data -> {
+        return subscription -> {
             throw new RuntimeException("Not Config Disruptor Subscriber!!");
         };
     }

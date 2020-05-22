@@ -95,6 +95,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
     @Override
     public void destroy() throws Exception {
         stop();
+        log.info("destroyed disruptor.....");
     }
 
     @Override
@@ -106,23 +107,23 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
     /**
      * send disruptor data.
      *
-     * @param subcription subcription.
+     * @param subscription subscription.
      */
-    public <T extends AbstractSubcription> void write(final T subcription) {
+    public <T extends AbstractSubscription> void write(final T subscription) {
         if (disruptorShutDown) {
             throw new IllegalStateException("Disruptor has been shut down. Cannot send data");
         }
         final RingBuffer<InternalEvent> ringBuffer = disruptor.getRingBuffer();
-        ringBuffer.publishEvent(new InternalEventTranslator(), subcription);
+        ringBuffer.publishEvent(new InternalEventTranslator(), subscription);
     }
 
     /**
      * send disruptor data.
      *
-     * @param subcription subcription.
+     * @param subscription subscription.
      */
-    public synchronized <T extends AbstractSubcription> void singleWrite(final T subcription) {
-        write(subcription);
+    public synchronized <T extends AbstractSubscription> void singleWrite(final T subscription) {
+        write(subscription);
     }
 
     public static class Builder {
@@ -136,7 +137,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
         private ProducerType producerType = ProducerType.MULTI;
         private WaitStrategy waitStrategy = new BlockingWaitStrategy();
         private int subscriberCount = 16;
-        private DisruptorSubscriber subscriber = subcription -> {
+        private DisruptorSubscriber subscriber = subscription -> {
             throw new RuntimeException("Not Config Asynchronous Conusmer!!");
         };
         private boolean autoDestroy = true;

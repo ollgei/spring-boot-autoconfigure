@@ -8,14 +8,14 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
  */
 class InternalEvent {
 
-   private AbstractSubcription subcription;
+   private AbstractSubscription subscription;
 
-    public AbstractSubcription getSubcription() {
-        return subcription;
+    public AbstractSubscription getSubscription() {
+        return subscription;
     }
 
-    public void setSubcription(AbstractSubcription subcription) {
-        this.subcription = subcription;
+    public void setSubscription(AbstractSubscription subscription) {
+        this.subscription = subscription;
     }
 
     public int size() {
@@ -23,7 +23,7 @@ class InternalEvent {
     }
 
     public void clear() {
-        this.subcription = null;
+        this.subscription = null;
     }
 
     public String getSimpleName() {

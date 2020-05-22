@@ -26,18 +26,18 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-class InternalEventTranslator implements EventTranslatorOneArg<InternalEvent, AbstractSubcription> {
+class InternalEventTranslator implements EventTranslatorOneArg<InternalEvent, AbstractSubscription> {
 
     @Override
-    public void translateTo(InternalEvent event, long sequence, AbstractSubcription subcription) {
-        subcription.setSequence(sequence);
-        event.setSubcription(subcription);
+    public void translateTo(InternalEvent event, long sequence, AbstractSubscription subscription) {
+        subscription.setSequence(sequence);
+        event.setSubscription(subscription);
         if (log.isInfoEnabled()) {
             log.info("producer->Thread:{}, sequence:{}, size: {}, data:{}",
                     Thread.currentThread().getName(),
                     sequence,
                     event.size(),
-                    subcription);
+                    subscription);
         }
     }
 }
