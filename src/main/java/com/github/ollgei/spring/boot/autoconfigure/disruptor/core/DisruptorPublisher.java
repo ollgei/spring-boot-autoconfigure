@@ -14,6 +14,7 @@ import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * publisher
@@ -21,6 +22,7 @@ import com.lmax.disruptor.dsl.ProducerType;
  * @author jiawei
  * @since 1.0.0
  */
+@Slf4j
 public class DisruptorPublisher implements InitializingBean, DisposableBean {
 
     private final ExecutorService executorService;
@@ -98,6 +100,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         disruptor.start();
+        log.info("started disruptor.....");
     }
 
     /**
