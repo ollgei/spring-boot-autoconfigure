@@ -31,7 +31,7 @@ class InternalWorkerHandler implements WorkHandler<InternalEvent> {
 
     @Override
     public void onEvent(final InternalEvent event) {
-        final DisruptorSubcription subcription = event.getSubcription();
+        final AbstractDisruptorSubcription subcription = event.getSubcription();
         if (log.isInfoEnabled()) {
             final int size = event.size();
             log.info("subscriber->Thread:{}, sequence:{}, size: {}",

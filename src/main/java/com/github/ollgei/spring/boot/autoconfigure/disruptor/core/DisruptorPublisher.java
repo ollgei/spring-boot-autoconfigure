@@ -108,7 +108,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
      *
      * @param subcription subcription.
      */
-    public void write(final DisruptorSubcription subcription) {
+    public void write(final AbstractDisruptorSubcription subcription) {
         if (disruptorShutDown) {
             throw new IllegalStateException("Disruptor has been shut down. Cannot send data");
         }
@@ -121,7 +121,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
      *
      * @param subcription subcription.
      */
-    public synchronized void singleWrite(final DisruptorSubcription subcription) {
+    public synchronized void singleWrite(final AbstractDisruptorSubcription subcription) {
         write(subcription);
     }
 

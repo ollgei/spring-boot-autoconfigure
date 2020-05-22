@@ -8,13 +8,13 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
  */
 class InternalEvent {
 
-   private DisruptorSubcription subcription;
+   private AbstractDisruptorSubcription subcription;
 
-    public DisruptorSubcription getSubcription() {
+    public AbstractDisruptorSubcription getSubcription() {
         return subcription;
     }
 
-    public void setSubcription(DisruptorSubcription subcription) {
+    public void setSubcription(AbstractDisruptorSubcription subcription) {
         this.subcription = subcription;
     }
 

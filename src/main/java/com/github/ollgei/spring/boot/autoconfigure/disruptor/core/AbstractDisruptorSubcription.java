@@ -3,19 +3,14 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
 import java.io.Serializable;
 
 /**
- * <p>
- * </p>
+ * subcription.
  *
  * @author jiawei
  * @since 1.0.0
  */
-public class DisruptorSubcription implements Serializable {
-    private static final long serialVersionUID = -2449741731766907208L;
+public abstract class AbstractDisruptorSubcription implements Serializable {
+    private static final long serialVersionUID = 447297790729413407L;
     private long sequence;
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
 
     public long getSequence() {
         return sequence;

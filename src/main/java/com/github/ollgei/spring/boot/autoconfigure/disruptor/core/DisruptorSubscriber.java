@@ -6,7 +6,7 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
  * @author jiawei
  * @since 1.0.0
  */
-public interface DisruptorSubscriber {
+public interface DisruptorSubscriber<T extends AbstractDisruptorSubcription> {
 
-    void onNext(DisruptorSubcription subcription);
+    void onNext(T subcription);
 }
