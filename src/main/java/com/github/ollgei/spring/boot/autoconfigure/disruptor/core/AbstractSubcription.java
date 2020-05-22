@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author jiawei
  * @since 1.0.0
  */
-public abstract class AbstractDisruptorSubcription implements Serializable {
+public abstract class AbstractSubcription implements Serializable {
     private static final long serialVersionUID = 447297790729413407L;
     private long sequence;
 
