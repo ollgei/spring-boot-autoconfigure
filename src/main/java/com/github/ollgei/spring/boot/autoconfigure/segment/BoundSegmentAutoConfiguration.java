@@ -20,7 +20,7 @@ import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfi
  * @author zhangjiawei
  * @since 1.0.0
  */
-@ConditionalOnProperty(prefix = "ollgei.segment", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "ollgei.segment", name = "enabled", havingValue = "true", matchIfMissing = false)
 @EnableConfigurationProperties(BoundSegmentProperties.class)
 public class BoundSegmentAutoConfiguration {
 

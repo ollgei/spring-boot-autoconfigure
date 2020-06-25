@@ -58,7 +58,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
                     segment.switchPosition();
                     runtime.setNextReady(false);
                 } else {
-                    log.error("Both two segments are not ready!");
+                    log.error("All segments are not ready!");
                     return INVALID_VALUE;
                 }
             } finally {
