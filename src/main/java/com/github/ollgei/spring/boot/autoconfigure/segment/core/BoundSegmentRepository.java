@@ -9,8 +9,16 @@ import java.util.List;
  */
 public interface BoundSegmentRepository {
 
+    /**
+     * list.
+     */
     List<SectionDefination> list();
 
+    /**
+     * updateMaxAndStep.
+     * @param entity defination
+     * @return
+     */
     SectionDefination updateMaxAndStep(SectionDefination entity);
 
 }
