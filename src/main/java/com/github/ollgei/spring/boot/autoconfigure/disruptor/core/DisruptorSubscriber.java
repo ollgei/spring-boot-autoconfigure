@@ -11,7 +11,7 @@ public interface DisruptorSubscriber<T extends AbstractSubscription> {
     /**
      * trigger next.
      * @param subscription subscription
-     * @return
+     * @return next
      */
     void onNext(T subscription);
 }
