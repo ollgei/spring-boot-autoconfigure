@@ -11,13 +11,14 @@ public interface BoundSegmentRepository {
 
     /**
      * list.
+     * @return list
      */
     List<SectionDefination> list();
 
     /**
      * updateMaxAndStep.
      * @param entity defination
-     * @return
+     * @return update and get
      */
     SectionDefination updateMaxAndStep(SectionDefination entity);
 
