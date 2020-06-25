@@ -13,7 +13,6 @@
     <groupId>com.github.ollgei.spring</groupId>
     <artifactId>spring-boot-autoconfigure</artifactId>
     <version>1.0.0.RC4</version>
-
     <inceptionYear>2020</inceptionYear>
 
     <licenses>
