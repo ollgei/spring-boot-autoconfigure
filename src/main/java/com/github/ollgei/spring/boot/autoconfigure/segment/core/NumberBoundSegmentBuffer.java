@@ -45,6 +45,9 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
             }
 
             final BoundSegment<NumberElementSection> segment = get(name);
+            if (segment == null) {
+                return INVALID_VALUE;
+            }
             final RuntimeSegment runtime = segment.getRuntime();
             runtime.waitAndSleep();
 
