@@ -13,7 +13,7 @@ public class BoundSegmentProperties {
 
     public static final String SEGMENT_PREFIX = "ollgei.segment";
 
-    private String tableName = "tb_bound_segment";
+    private String tableName = "t_bound_segment";
 
     private int maxStep = 1000000;
 

@@ -1,5 +1,6 @@
 package com.github.ollgei.spring.boot.autoconfigure.segment.core;
 
+import java.util.StringJoiner;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -98,5 +99,10 @@ public class NumberBoundSegmentWatch implements ApplicationEventPublisherAware, 
 
     public static class NumberElementReloadEventData {
 
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", NumberElementReloadEventData.class.getSimpleName() + "[", "]")
+                    .toString();
+        }
     }
 }

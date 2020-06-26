@@ -18,10 +18,10 @@ SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
---  Table structure for `tb_bound_segment`
+--  Table structure for `t_bound_segment`
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_bound_segment`;
-CREATE TABLE `tb_bound_segment` (
+DROP TABLE IF EXISTS `t_bound_segment`;
+CREATE TABLE `t_bound_segment` (
   `name` varchar(32) NOT NULL,
   `max_id` bigint(20) NOT NULL DEFAULT '1',
   `step` int(11) NOT NULL,
