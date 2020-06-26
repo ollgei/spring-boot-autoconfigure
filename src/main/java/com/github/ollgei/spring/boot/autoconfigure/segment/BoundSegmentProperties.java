@@ -13,6 +13,8 @@ public class BoundSegmentProperties {
 
     public static final String SEGMENT_PREFIX = "ollgei.segment";
 
+    private String tableName = "tb_bound_segment";
+
     private int maxStep = 1000000;
 
     private long duration = 15 * 60 * 1000L;
@@ -51,6 +53,14 @@ public class BoundSegmentProperties {
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     public static class Watch {

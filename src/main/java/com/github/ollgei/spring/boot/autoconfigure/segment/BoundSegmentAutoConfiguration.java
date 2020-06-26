@@ -26,7 +26,7 @@ public class BoundSegmentAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BoundSegmentRepository InmemoryBoundSegmentRepository() {
+    public BoundSegmentRepository nullBoundSegmentRepository() {
         return new NullBoundSegmentRepository();
     }
 
