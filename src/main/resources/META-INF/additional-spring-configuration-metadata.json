@@ -1,10 +1,10 @@
 {
   "properties": [
     {
-      "name": "ollgei.segment.enabled",
+      "name": "ollgei.segment.jdbctemplate.enabled",
       "type": "java.lang.Boolean",
       "description": "enable segment.",
-      "defaultValue": false
+      "defaultValue": true
     },
     {
       "name": "ollgei.disruptor.enabled",

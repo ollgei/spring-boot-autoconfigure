@@ -77,7 +77,7 @@ public class BoundSegmentProperties {
         private boolean enabled = true;
 
         /** The value of the fixed delay for the watch in millis. Defaults to 1000. */
-        private int delay = 1000;
+        private int delay = 60 * 1000;
 
         public Watch() {
         }

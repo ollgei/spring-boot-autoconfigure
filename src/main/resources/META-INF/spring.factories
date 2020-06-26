@@ -1,4 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.github.ollgei.spring.boot.autoconfigure.disruptor.DisruptorAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentAutoConfiguration
+com.github.ollgei.spring.boot.autoconfigure.segment.JdbcTemplateBoundSegmentAutoConfiguration

@@ -1,21 +1,14 @@
 package com.github.ollgei.spring.boot.autoconfigure.segment;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.BoundSegmentRepository;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.NumberBoundSegmentBuffer;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.NumberBoundSegmentWatch;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.NumberElementReloadEventListener;
-import com.github.ollgei.spring.boot.autoconfigure.segment.jdbc.JdbcTemplateBoundSegmentRepository;
 
 import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME;
 
@@ -24,17 +17,7 @@ import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfi
  * @author zhangjiawei
  * @since 1.0.0
  */
-@ConditionalOnProperty(prefix = "ollgei.segment", name = "enabled", havingValue = "true", matchIfMissing = false)
-@EnableConfigurationProperties(BoundSegmentProperties.class)
-@AutoConfigureAfter(JdbcTemplateAutoConfiguration.class)
-public class BoundSegmentAutoConfiguration {
-
-    @Bean
-    @ConditionalOnBean(JdbcTemplate.class)
-    @ConditionalOnMissingBean
-    public BoundSegmentRepository jdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, JdbcTemplate jdbcTemplate) {
-        return new JdbcTemplateBoundSegmentRepository(boundSegmentProperties, jdbcTemplate);
-    }
+public abstract class BoundSegmentConfiguration {
 
     @Bean
     @ConditionalOnMissingBean

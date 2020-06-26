@@ -2,6 +2,7 @@ package com.github.ollgei.spring.boot.autoconfigure.segment.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
@@ -69,6 +70,9 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
 
     public long tryGetValue(final String name) {
         final BoundSegment<NumberElementSection> segment = get(name);
+        if (Objects.isNull(segment)) {
+            return INVALID_VALUE;
+        }
         final NumberElementSection element = getObject(name);
         final RuntimeSegment runtime = segment.getRuntime();
         final AtomicLong value = element.getValue();
@@ -110,17 +114,24 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
         //查看所有的LIST
         for (SectionDefination defination : definations) {
             String name = defination.getName();
-            final BoundSegment<NumberElementSection> segment = BoundSegment.builder().
-                    key(name).capacity(2).step(defination.getStep()).build();
-
-            final NumberElementSection element = new NumberElementSection();
-            element.setSegment(segment);
-            element.getValue().set(defination.getMax() - defination.getStep());
-            element.setMax(defination.getMax());
-            element.setStep(defination.getStep());
-
-            putIfAbsent(name, segment, element);
             tags.add(name);
+
+            SectionDefination definationForUpdate = new SectionDefination();
+            definationForUpdate.setName(defination.getName());
+            definationForUpdate.setStep(defination.getStep());
+            //更新数据库
+            if (repository.updateMaxAndStep(definationForUpdate) != null) {
+                final BoundSegment<NumberElementSection> segment = BoundSegment.builder().
+                        key(name).capacity(2).step(defination.getStep()).build();
+
+                final NumberElementSection element = new NumberElementSection();
+                element.setSegment(segment);
+                element.getValue().set(defination.getMax() - defination.getStep());
+                element.setMax(defination.getMax());
+                element.setStep(defination.getStep());
+                putIfAbsent(name, segment, element);
+            }
+
         }
         if (!init) {
             removeAll(tags);
