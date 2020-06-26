@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.InitializingBean;
 
@@ -39,12 +40,9 @@ public abstract class BoundSegmentBuffer<E> implements InitializingBean {
         this.reload(init);
     }
 
-    protected void putIfAbsent(String key, BoundSegment<E> segment, E object) {
+    protected void putIfAbsent(String key, Function<String, BoundSegment<E>> mappingFunction) {
         //创建新的 旧的不用管 因为会定时经常拉去
-        this.segments.computeIfAbsent(key, k -> {
-            segment.putObject(0, object);
-            return segment;
-        });
+        this.segments.computeIfAbsent(key, k -> mappingFunction.apply(k));
     }
 
     protected void removeAll(List<String> keys) {

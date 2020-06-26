@@ -112,27 +112,36 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
         final List<SectionDefination> definations = repository.list();
         final List<String> tags = new ArrayList<>();
         //查看所有的LIST
-        for (SectionDefination defination : definations) {
-            String name = defination.getName();
+        for (final SectionDefination defination : definations) {
+            final String name = defination.getName();
             tags.add(name);
 
-            SectionDefination definationForUpdate = new SectionDefination();
-            definationForUpdate.setName(defination.getName());
-            definationForUpdate.setStep(defination.getStep());
-            //更新数据库
-            if (repository.updateMaxAndStep(definationForUpdate) != null) {
-                final BoundSegment<NumberElementSection> segment = BoundSegment.builder().
-                        key(name).capacity(2).step(defination.getStep()).build();
+            putIfAbsent(name, k -> {
+                if (!name.equals(k)) {
+                    return null;
+                }
+                final SectionDefination definationForUpdate = new SectionDefination();
+                definationForUpdate.setName(k);
+                definationForUpdate.setStep(defination.getStep());
+                final SectionDefination definationNew = repository.updateMaxAndStep(definationForUpdate);
+                if (definationNew == null) {
+                    return null;
+                }
 
+                final BoundSegment<NumberElementSection> segment = BoundSegment.builder().
+                        key(k).capacity(2).step(definationNew.getStep()).build();
                 final NumberElementSection element = new NumberElementSection();
                 element.setSegment(segment);
-                element.getValue().set(defination.getMax() - defination.getStep());
-                element.setMax(defination.getMax());
-                element.setStep(defination.getStep());
-                putIfAbsent(name, segment, element);
-            }
+                element.getValue().set(definationNew.getMax() - definationNew.getStep());
+                element.setMax(definationNew.getMax());
+                element.setStep(definationNew.getStep());
 
+                segment.putObject(0, element);
+
+                return segment;
+            });
         }
+
         if (!init) {
             removeAll(tags);
         }
@@ -140,6 +149,9 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
 
     private void loadNextObject(String name) {
         final BoundSegment<NumberElementSection> segment = get(name);
+        if (segment == null) {
+            return;
+        }
         final RuntimeSegment runtime = segment.getRuntime();
 
         //动态伸缩step
