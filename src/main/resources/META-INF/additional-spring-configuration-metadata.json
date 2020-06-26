@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "ollgei.segment.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable segment.",
+      "defaultValue": false
+    },
+    {
+      "name": "ollgei.disruptor.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable disruptor.",
+      "defaultValue": true
+    }
+  ],
+  "hints": []
+
+}
