@@ -172,6 +172,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
         element.setStep(step);
         putNextObject(name, element);
 
+        log.info("step:{}, minStep:{}", step, defination.getStep());
         runtime.setUpdateTimestamp(System.currentTimeMillis());
         runtime.setStep(step);
         runtime.setMinStep(defination.getStep());

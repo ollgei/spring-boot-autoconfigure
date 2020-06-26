@@ -4,12 +4,15 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.springframework.util.Assert;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 有边界的段.
  *
  * @author zhangjiawei
  * @since 1.0.0
  */
+@Slf4j
 public class BoundSegment<E> {
 
     private final String key;
@@ -49,7 +52,9 @@ public class BoundSegment<E> {
     }
 
     public int switchPosition() {
+        log.info("before switch index:{}", runtime.getIndex());
         runtime.incrIndex();
+        log.info("after switch index:{}", runtime.getIndex());
         return calcPosition();
     }
 
