@@ -33,7 +33,7 @@ public abstract class BoundSegmentConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public NumberElementReloadEventListener reloadTagEventListener(NumberBoundSegmentBuffer numberBoundSegmentBuffer) {
+    public NumberElementReloadEventListener numberElementReloadEventListener(NumberBoundSegmentBuffer numberBoundSegmentBuffer) {
         return new NumberElementReloadEventListener(numberBoundSegmentBuffer);
     }
 

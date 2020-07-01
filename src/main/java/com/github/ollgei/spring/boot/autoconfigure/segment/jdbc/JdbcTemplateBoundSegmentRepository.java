@@ -18,8 +18,6 @@ import com.github.ollgei.spring.boot.autoconfigure.segment.core.SectionDefinatio
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * desc.
  * @author zhangjiawei
@@ -47,16 +45,20 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
     }
 
     private JdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, @NonNull JdbcTemplateBoundSegmentConfiguration configuration) {
-        this.configuration = requireNonNull(configuration, "configuration can not be null");
+        this.configuration = configuration;
         this.boundSegmentProperties = boundSegmentProperties;
         this.jdbcTemplate = new NamedParameterJdbcTemplate(configuration.getJdbcTemplate());
         this.sqlStatementsSource = SqlStatementsSource.create(configuration);
+        this.transactionTemplate = createTransactionTemplate();
+    }
+
+    private TransactionTemplate createTransactionTemplate() {
         PlatformTransactionManager transactionManager = configuration.getTransactionManager() != null ?
                 configuration.getTransactionManager() :
                 new DataSourceTransactionManager(configuration.getJdbcTemplate().getDataSource());
-
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        return transactionTemplate;
     }
 
     @Override
