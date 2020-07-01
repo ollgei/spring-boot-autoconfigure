@@ -78,6 +78,10 @@ public class BoundSegment<E> {
         return runtime;
     }
 
+    public void waitAndSleep() {
+        runtime.waitAndSleep();
+    }
+
 
     public static class BoundSegmentBuilder {
         private String key;

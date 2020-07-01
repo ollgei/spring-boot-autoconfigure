@@ -48,8 +48,9 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
             if (segment == null) {
                 return INVALID_VALUE;
             }
-            final RuntimeSegment runtime = segment.getRuntime();
-            runtime.waitAndSleep();
+            log.info("waitAndSleep start");
+            segment.waitAndSleep();
+            log.info("waitAndSleep end");
 
             lockForWrite();
             try {
@@ -58,6 +59,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
                 if (value < element.getMax()) {
                     return value;
                 }
+                final RuntimeSegment runtime = segment.getRuntime();
                 if (runtime.isNextReady()) {
                     segment.switchPosition();
                     runtime.setNextReady(false);
