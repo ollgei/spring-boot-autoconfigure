@@ -53,7 +53,7 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
     }
 
     private TransactionTemplate createTransactionTemplate() {
-        PlatformTransactionManager transactionManager = configuration.getTransactionManager() != null ?
+        final PlatformTransactionManager transactionManager = configuration.getTransactionManager() != null ?
                 configuration.getTransactionManager() :
                 new DataSourceTransactionManager(configuration.getJdbcTemplate().getDataSource());
         final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
