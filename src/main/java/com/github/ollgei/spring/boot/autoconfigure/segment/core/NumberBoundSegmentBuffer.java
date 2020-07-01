@@ -34,14 +34,14 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
     @Override
     public long getNumberValue(String name) {
         while (true) {
-            getLock().readLock().lock();
+            lockForRead();
             try {
                 final long value = tryGetValue(name);
                 if (value != INVALID_VALUE) {
                     return value;
                 }
             } finally {
-                getLock().readLock().unlock();
+                unlockForRead();
             }
 
             final BoundSegment<NumberElementSection> segment = get(name);
@@ -51,7 +51,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
             final RuntimeSegment runtime = segment.getRuntime();
             runtime.waitAndSleep();
 
-            getLock().writeLock().lock();
+            lockForWrite();
             try {
                 final NumberElementSection element = getObject(name);
                 long value = element.getValue().getAndIncrement();
@@ -66,7 +66,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
                     return INVALID_VALUE;
                 }
             } finally {
-                getLock().writeLock().unlock();
+                unlockForWrite();
             }
         }
     }
@@ -93,10 +93,13 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
                     log.warn("{} loadNextObject exception: {}", name, ex.getMessage());
                 } finally {
                     if (inited) {
-                        getLock().writeLock().lock();
-                        runtime.setNextReady(true);
-                        runtime.getInitializingNext().set(false);
-                        getLock().writeLock().unlock();
+                        lockForWrite();
+                        try {
+                            runtime.setNextReady(true);
+                            runtime.getInitializingNext().set(false);
+                        } finally {
+                            unlockForWrite();
+                        }
                     } else {
                         runtime.getInitializingNext().set(false);
                     }

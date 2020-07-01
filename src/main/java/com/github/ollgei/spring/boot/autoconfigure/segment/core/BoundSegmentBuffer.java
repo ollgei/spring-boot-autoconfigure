@@ -65,8 +65,20 @@ public abstract class BoundSegmentBuffer<E> implements InitializingBean {
         return segments;
     }
 
-    protected ReadWriteLock getLock() {
-        return lock;
+    protected void lockForWrite() {
+        lock.writeLock().lock();
+    }
+
+    protected void unlockForWrite() {
+        lock.writeLock().unlock();
+    }
+
+    protected void lockForRead() {
+        lock.readLock().lock();
+    }
+
+    protected void unlockForRead() {
+        lock.readLock().unlock();
     }
 
     protected void putNextObject(String name, E value) {
