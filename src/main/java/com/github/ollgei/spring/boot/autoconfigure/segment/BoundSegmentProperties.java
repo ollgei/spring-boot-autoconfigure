@@ -8,10 +8,10 @@ import org.springframework.core.style.ToStringCreator;
  * @author zhangjiawei
  * @since 1.0.0
  */
-@ConfigurationProperties(prefix = BoundSegmentProperties.SEGMENT_PREFIX)
+@ConfigurationProperties(prefix = BoundSegmentProperties.PREFIX)
 public class BoundSegmentProperties {
 
-    public static final String SEGMENT_PREFIX = "ollgei.segment";
+    public static final String PREFIX = "ollgei.segment";
 
     private String tableName = "t_bound_segment";
 

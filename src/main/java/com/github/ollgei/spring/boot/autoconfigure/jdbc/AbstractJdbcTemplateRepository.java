@@ -32,13 +32,13 @@ public abstract class AbstractJdbcTemplateRepository {
         );
     }
 
-    protected AbstractJdbcTemplateRepository(String tableName, @NonNull JdbcTemplateConfiguration configuration) {
+    private AbstractJdbcTemplateRepository(String tableName, @NonNull JdbcTemplateConfiguration configuration) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(configuration.getJdbcTemplate());
         this.sqlStatementsSource = SqlStatementsSource.create(configuration);
         this.transactionTemplate = createTransactionTemplate(configuration);
     }
 
-    protected TransactionTemplate createTransactionTemplate(JdbcTemplateConfiguration configuration) {
+    private TransactionTemplate createTransactionTemplate(JdbcTemplateConfiguration configuration) {
         final PlatformTransactionManager transactionManager = configuration.getTransactionManager() != null ?
                 configuration.getTransactionManager() :
                 new DataSourceTransactionManager(configuration.getJdbcTemplate().getDataSource());

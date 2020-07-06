@@ -1,6 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.retry.jdbc;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.retry.RetryContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.ollgei.spring.boot.autoconfigure.jdbc.AbstractJdbcTemplateRepository;
@@ -25,5 +26,8 @@ public class JdbcTemplateRetryRepository extends AbstractJdbcTemplateRepository 
         this.retryProperties = properties;
     }
 
+    @Override
+    public void registerThrowable(RetryContext context) {
 
+    }
 }

@@ -15,14 +15,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.BoundSegmentRepository;
 import com.github.ollgei.spring.boot.autoconfigure.segment.jdbc.JdbcTemplateBoundSegmentRepository;
 
-import static com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentProperties.SEGMENT_PREFIX;
+import static com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentProperties.PREFIX;
 
 /**
  * desc.
  * @author zhangjiawei
  * @since 1.0.0
  */
-@ConditionalOnProperty(prefix = SEGMENT_PREFIX + ".jdbctemplate", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = PREFIX + ".jdbctemplate", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(BoundSegmentProperties.class)
 @ConditionalOnClass({ DataSource.class, JdbcTemplate.class })
 @AutoConfigureAfter(JdbcTemplateAutoConfiguration.class)

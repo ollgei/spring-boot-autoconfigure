@@ -4,6 +4,8 @@ import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.context.RetryContextSupport;
 
+import com.github.ollgei.spring.boot.autoconfigure.retry.RetryRepository;
+
 /**
  * policy.
  * @author ollgei
@@ -18,12 +20,15 @@ public class JdbcTemplateRetryPolicy implements RetryPolicy {
 
     private volatile int maxAttempts;
 
-    public JdbcTemplateRetryPolicy() {
-        this(DEFAULT_MAX_ATTEMPTS);
+    private RetryRepository retryRepository;
+
+    public JdbcTemplateRetryPolicy(RetryRepository retryRepository) {
+        this(DEFAULT_MAX_ATTEMPTS, retryRepository);
     }
 
-    public JdbcTemplateRetryPolicy(int maxAttempts) {
+    public JdbcTemplateRetryPolicy(int maxAttempts, RetryRepository retryRepository) {
         this.maxAttempts = maxAttempts;
+        this.retryRepository = retryRepository;
     }
 
     @Override
@@ -33,7 +38,7 @@ public class JdbcTemplateRetryPolicy implements RetryPolicy {
 
     @Override
     public RetryContext open(RetryContext parent) {
-        return new JdbcTemplateRetryContext(parent);
+        return new SimpleJdbcTemplateRetryContext(parent);
     }
 
     @Override
@@ -42,12 +47,21 @@ public class JdbcTemplateRetryPolicy implements RetryPolicy {
 
     @Override
     public void registerThrowable(RetryContext context, Throwable throwable) {
-        //保存数据库
+        retryRepository.registerThrowable(context);
     }
 
-    private static class JdbcTemplateRetryContext extends RetryContextSupport {
-        public JdbcTemplateRetryContext(RetryContext parent) {
+    private static class SimpleJdbcTemplateRetryContext extends RetryContextSupport {
+        public SimpleJdbcTemplateRetryContext(RetryContext parent) {
             super(parent);
+        }
+
+        @Override
+        public int getRetryCount() {
+            final RetryContext parent = getParent();
+            if (parent instanceof JdbcTemplateRetryContext) {
+                return parent.getRetryCount();
+            }
+            return super.getRetryCount();
         }
     }
 }
