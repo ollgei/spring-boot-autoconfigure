@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.segment.jdbc;
+package com.github.ollgei.spring.boot.autoconfigure.jdbc;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -10,12 +10,12 @@ import lombok.NonNull;
 /**
  * jdbcTemplate.
  *
- * @author jiawei
+ * @author ollgei
  * @since 1.0.0
  */
 @Data
 @Builder
-class JdbcTemplateBoundSegmentConfiguration {
+public class JdbcTemplateConfiguration {
     @NonNull
     private final JdbcTemplate jdbcTemplate;
 

@@ -12,6 +12,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.github.ollgei.spring.boot.autoconfigure.jdbc.JdbcTemplateConfiguration;
+import com.github.ollgei.spring.boot.autoconfigure.jdbc.SqlStatementsSource;
 import com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentProperties;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.BoundSegmentRepository;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.SectionDefination;
@@ -27,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final TransactionTemplate transactionTemplate;
-    private final JdbcTemplateBoundSegmentConfiguration configuration;
     private final SqlStatementsSource sqlStatementsSource;
     private final BoundSegmentProperties boundSegmentProperties;
 
@@ -36,7 +37,7 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
     }
 
     public JdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, @NonNull JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager) {
-        this(boundSegmentProperties, JdbcTemplateBoundSegmentConfiguration.builder()
+        this(boundSegmentProperties, JdbcTemplateConfiguration.builder()
                 .jdbcTemplate(jdbcTemplate)
                 .transactionManager(transactionManager)
                 .tableName(boundSegmentProperties.getTableName())
@@ -44,15 +45,14 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
         );
     }
 
-    private JdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, @NonNull JdbcTemplateBoundSegmentConfiguration configuration) {
-        this.configuration = configuration;
+    private JdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, @NonNull JdbcTemplateConfiguration configuration) {
         this.boundSegmentProperties = boundSegmentProperties;
         this.jdbcTemplate = new NamedParameterJdbcTemplate(configuration.getJdbcTemplate());
         this.sqlStatementsSource = SqlStatementsSource.create(configuration);
-        this.transactionTemplate = createTransactionTemplate();
+        this.transactionTemplate = createTransactionTemplate(configuration);
     }
 
-    private TransactionTemplate createTransactionTemplate() {
+    private TransactionTemplate createTransactionTemplate(JdbcTemplateConfiguration configuration) {
         final PlatformTransactionManager transactionManager = configuration.getTransactionManager() != null ?
                 configuration.getTransactionManager() :
                 new DataSourceTransactionManager(configuration.getJdbcTemplate().getDataSource());
@@ -63,7 +63,7 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
 
     @Override
     public List<SectionDefination> list() {
-        final String sql = sqlStatementsSource.listAllocators();
+        final String sql = listAllocatorsSql();
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             final SectionDefination alloc = new SectionDefination();
             alloc.setName(rs.getString(1));
@@ -79,7 +79,7 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
         params.put("name", entity.getName());
         params.put("step", new Integer(entity.getStep()));
 
-        final String sql = sqlStatementsSource.getUpdateMaxIdByCustomStep();
+        final String sql = getUpdateMaxIdByCustomStepSql();
 
         return updateAndGetAllocator(sql, params);
     }
@@ -92,7 +92,7 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
                 return null;
             }
 
-            return jdbcTemplate.queryForObject(sqlStatementsSource.getAllocator(),
+            return jdbcTemplate.queryForObject(getAllocatorSql(),
                     params, (rs, rowNum) -> {
                         final SectionDefination alloc = new SectionDefination();
                         alloc.setName(rs.getString(1));
@@ -109,5 +109,17 @@ public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepositor
         log.warn("updateMaxIdByCustomStep failed");
 
         return null;
+    }
+
+    private String listAllocatorsSql() {
+         return "SELECT name, max_id, step, update_time FROM " + sqlStatementsSource.tableName();
+    }
+
+    private String getUpdateMaxIdByCustomStepSql() {
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET max_id = max_id + :step WHERE name = :name";
+    }
+
+    private String getAllocatorSql() {
+        return "SELECT name, max_id, step, update_time FROM " + sqlStatementsSource.tableName() + " WHERE name = :name";
     }
 }
