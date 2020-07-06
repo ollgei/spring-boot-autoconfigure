@@ -6,14 +6,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import com.github.ollgei.spring.boot.autoconfigure.jdbc.JdbcTemplateConfiguration;
-import com.github.ollgei.spring.boot.autoconfigure.jdbc.SqlStatementsSource;
+import com.github.ollgei.spring.boot.autoconfigure.jdbc.AbstractJdbcTemplateRepository;
 import com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentProperties;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.BoundSegmentRepository;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.SectionDefination;
@@ -26,39 +21,16 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public class JdbcTemplateBoundSegmentRepository implements BoundSegmentRepository {
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final TransactionTemplate transactionTemplate;
-    private final SqlStatementsSource sqlStatementsSource;
+public class JdbcTemplateBoundSegmentRepository extends AbstractJdbcTemplateRepository implements BoundSegmentRepository {
     private final BoundSegmentProperties boundSegmentProperties;
 
-    public JdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, @NonNull JdbcTemplate jdbcTemplate) {
-        this(boundSegmentProperties, jdbcTemplate, null);
+    public JdbcTemplateBoundSegmentRepository(BoundSegmentProperties properties, @NonNull JdbcTemplate jdbcTemplate) {
+        this(properties, jdbcTemplate, null);
     }
 
-    public JdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, @NonNull JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager) {
-        this(boundSegmentProperties, JdbcTemplateConfiguration.builder()
-                .jdbcTemplate(jdbcTemplate)
-                .transactionManager(transactionManager)
-                .tableName(boundSegmentProperties.getTableName())
-                .build()
-        );
-    }
-
-    private JdbcTemplateBoundSegmentRepository(BoundSegmentProperties boundSegmentProperties, @NonNull JdbcTemplateConfiguration configuration) {
-        this.boundSegmentProperties = boundSegmentProperties;
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(configuration.getJdbcTemplate());
-        this.sqlStatementsSource = SqlStatementsSource.create(configuration);
-        this.transactionTemplate = createTransactionTemplate(configuration);
-    }
-
-    private TransactionTemplate createTransactionTemplate(JdbcTemplateConfiguration configuration) {
-        final PlatformTransactionManager transactionManager = configuration.getTransactionManager() != null ?
-                configuration.getTransactionManager() :
-                new DataSourceTransactionManager(configuration.getJdbcTemplate().getDataSource());
-        final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        return transactionTemplate;
+    public JdbcTemplateBoundSegmentRepository(BoundSegmentProperties properties, @NonNull JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager) {
+        super(properties.getTableName(), jdbcTemplate, transactionManager);
+        this.boundSegmentProperties = properties;
     }
 
     @Override
