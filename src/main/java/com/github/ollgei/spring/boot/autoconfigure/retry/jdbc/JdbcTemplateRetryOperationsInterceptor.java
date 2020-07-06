@@ -21,6 +21,7 @@ public class JdbcTemplateRetryOperationsInterceptor extends StatefulRetryOperati
         this.jdbcTemplateRetryRepository = retryRepository;
         RetryTemplate retryTemplate = new RetryTemplate();
         retryTemplate.setRetryPolicy(new JdbcTemplateRetryPolicy(retryRepository));
+//        retryTemplate.setBackOffPolicy(new JdbcTemplateBackOffPolicy(retryRepository));
         setRetryOperations(retryTemplate);
     }
 

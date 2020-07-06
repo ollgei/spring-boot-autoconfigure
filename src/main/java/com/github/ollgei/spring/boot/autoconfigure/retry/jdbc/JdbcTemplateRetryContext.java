@@ -10,13 +10,19 @@ import org.springframework.retry.context.RetryContextSupport;
  */
 public class JdbcTemplateRetryContext extends RetryContextSupport {
     private int cnt;
+    private String key;
 
-    public JdbcTemplateRetryContext(RetryContext parent) {
+    public JdbcTemplateRetryContext(String key, RetryContext parent) {
         super(parent);
+        this.key = key;
     }
 
     public void setCnt(int cnt) {
         this.cnt = cnt;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     @Override

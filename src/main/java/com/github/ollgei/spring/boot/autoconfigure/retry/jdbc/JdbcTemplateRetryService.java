@@ -12,7 +12,7 @@ import com.github.ollgei.spring.boot.autoconfigure.retry.RetryService;
 public class JdbcTemplateRetryService implements RetryService {
 
     public void execute() {
-        JdbcTemplateRetryContext context = new JdbcTemplateRetryContext(RetrySynchronizationManager.getContext());
+        JdbcTemplateRetryContext context = new JdbcTemplateRetryContext("", RetrySynchronizationManager.getContext());
         context.setCnt(1);
         RetrySynchronizationManager.register(context);
         try {

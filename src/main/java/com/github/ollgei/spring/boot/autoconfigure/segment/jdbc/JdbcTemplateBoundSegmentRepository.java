@@ -51,14 +51,13 @@ public class JdbcTemplateBoundSegmentRepository extends AbstractJdbcTemplateRepo
         params.put("name", entity.getName());
         params.put("step", new Integer(entity.getStep()));
 
-        final String sql = getUpdateMaxIdByCustomStepSql();
-
-        return updateAndGetAllocator(sql, params);
+        return updateAndGetAllocator(getUpdateMaxIdByCustomStepSql(), params);
     }
 
     private SectionDefination updateAndGetAllocator(String sql, Map<String, Object> params) {
 
         final SectionDefination newAllocator = transactionTemplate.execute(status -> {
+
             final boolean result = jdbcTemplate.update(sql, params) > 0;
             if (!result) {
                 return null;
