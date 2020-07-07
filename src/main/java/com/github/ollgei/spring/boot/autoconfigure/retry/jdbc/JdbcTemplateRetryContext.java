@@ -13,6 +13,7 @@ import org.springframework.retry.context.RetryContextSupport;
 public class JdbcTemplateRetryContext extends RetryContextSupport {
     private int cnt;
     private List<String> keys;
+    private List<RetryRecord> records;
 
     public JdbcTemplateRetryContext(RetryContext parent, List<String> keys) {
         super(parent);
@@ -25,6 +26,18 @@ public class JdbcTemplateRetryContext extends RetryContextSupport {
 
     public List<String> getKeys() {
         return keys;
+    }
+
+    public void setKeys(List<String> keys) {
+        this.keys = keys;
+    }
+
+    public List<RetryRecord> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<RetryRecord> records) {
+        this.records = records;
     }
 
     @Override

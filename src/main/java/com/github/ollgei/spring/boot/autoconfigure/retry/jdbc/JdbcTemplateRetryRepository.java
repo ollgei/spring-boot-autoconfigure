@@ -1,6 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.retry.jdbc;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -48,16 +49,29 @@ public class JdbcTemplateRetryRepository extends AbstractJdbcTemplateRepository 
         }
     }
 
+    @Override
+    public List<RetryRecord> listRecord(JdbcTemplateRetryContext context) {
+        return jdbcTemplate.query(listRecordSql(), Collections.singletonMap("names", context.getKeys()), (rs, rowNum) -> {
+            final RetryRecord record = new RetryRecord();
+            record.setName(rs.getString(1));
+            record.setCount(rs.getInt(2));
+            return record;
+        });
+    }
+
     private String registerThrowableSql() {
-        return "UPDATE " + sqlStatementsSource.tableName() + " SET retry_count = retry_count + 1 WHERE IN (:names) and status = 1";
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET retry_count = retry_count + 1, status = 0 WHERE name IN (:names) and status = 1";
     }
 
     private String startSql() {
-        return "UPDATE " + sqlStatementsSource.tableName() + " SET status = 1 WHERE name IN (:names) and status != 1";
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET status = 1 WHERE name IN (:names) and status = 0";
     }
 
     private String closeSql() {
-        return "UPDATE " + sqlStatementsSource.tableName() + " SET status = 2 WHERE name IN (:names)";
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET status = 2 WHERE name IN (:names) and status = 1";
     }
 
+    private String listRecordSql() {
+        return "SELECT name, retry_count from " + sqlStatementsSource.tableName() + " WHERE name IN (:names) and status = 0 limit 0, 100 order by create_at ASC";
+    }
 }
