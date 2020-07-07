@@ -1,5 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.retry.jdbc;
 
+import java.util.List;
+
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.context.RetryContextSupport;
 
@@ -10,19 +12,19 @@ import org.springframework.retry.context.RetryContextSupport;
  */
 public class JdbcTemplateRetryContext extends RetryContextSupport {
     private int cnt;
-    private String key;
+    private List<String> keys;
 
-    public JdbcTemplateRetryContext(String key, RetryContext parent) {
+    public JdbcTemplateRetryContext(RetryContext parent, List<String> keys) {
         super(parent);
-        this.key = key;
+        this.keys = keys;
     }
 
     public void setCnt(int cnt) {
         this.cnt = cnt;
     }
 
-    public String getKey() {
-        return key;
+    public List<String> getKeys() {
+        return keys;
     }
 
     @Override

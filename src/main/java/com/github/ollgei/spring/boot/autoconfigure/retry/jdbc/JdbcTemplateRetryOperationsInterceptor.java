@@ -1,5 +1,6 @@
 package com.github.ollgei.spring.boot.autoconfigure.retry.jdbc;
 
+import org.springframework.retry.interceptor.NewMethodArgumentsIdentifier;
 import org.springframework.retry.interceptor.StatefulRetryOperationsInterceptor;
 import org.springframework.retry.support.RetrySynchronizationManager;
 import org.springframework.retry.support.RetryTemplate;
@@ -23,6 +24,7 @@ public class JdbcTemplateRetryOperationsInterceptor extends StatefulRetryOperati
         retryTemplate.setRetryPolicy(new JdbcTemplateRetryPolicy(retryRepository));
 //        retryTemplate.setBackOffPolicy(new JdbcTemplateBackOffPolicy(retryRepository));
         setRetryOperations(retryTemplate);
+//        setNewItemIdentifier(new JdbcTemplateNewMethodArgumentsIdentifier());
     }
 
     @Override
@@ -38,6 +40,14 @@ public class JdbcTemplateRetryOperationsInterceptor extends StatefulRetryOperati
             }
         } else {
             return super.invoke(invocation);
+        }
+    }
+
+    private static class JdbcTemplateNewMethodArgumentsIdentifier implements NewMethodArgumentsIdentifier {
+
+        @Override
+        public boolean isNew(Object[] args) {
+            return true;
         }
     }
 }

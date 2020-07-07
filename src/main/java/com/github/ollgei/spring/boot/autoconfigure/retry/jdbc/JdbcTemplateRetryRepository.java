@@ -1,9 +1,8 @@
 package com.github.ollgei.spring.boot.autoconfigure.retry.jdbc;
 
-import java.util.HashMap;
+import java.util.Collections;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.retry.RetryContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.github.ollgei.spring.boot.autoconfigure.jdbc.AbstractJdbcTemplateRepository;
@@ -31,8 +30,34 @@ public class JdbcTemplateRetryRepository extends AbstractJdbcTemplateRepository 
     }
 
     @Override
-    public void registerThrowable(RetryContext context) {
-        jdbcTemplate.update("", new HashMap<>());
+    public void registerThrowable(JdbcTemplateRetryContext context) {
+        if (jdbcTemplate.update(registerThrowableSql(), Collections.singletonMap("names", context.getKeys())) <= 0) {
+            log.warn("registerThrowable fail!!");
+        }
+    }
+
+    @Override
+    public boolean start(JdbcTemplateRetryContext context) {
+        return jdbcTemplate.update(startSql(), Collections.singletonMap("names", context.getKeys())) == context.getKeys().size();
+    }
+
+    @Override
+    public void close(JdbcTemplateRetryContext context) {
+        if (jdbcTemplate.update(closeSql(), Collections.singletonMap("names", context.getKeys())) <= 0) {
+            log.warn("close fail!!");
+        }
+    }
+
+    private String registerThrowableSql() {
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET retry_count = retry_count + 1 WHERE IN (:names) and status = 1";
+    }
+
+    private String startSql() {
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET status = 1 WHERE name IN (:names) and status != 1";
+    }
+
+    private String closeSql() {
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET status = 2 WHERE name IN (:names)";
     }
 
 }

@@ -1,6 +1,6 @@
 package com.github.ollgei.spring.boot.autoconfigure.retry;
 
-import org.springframework.retry.RetryContext;
+import com.github.ollgei.spring.boot.autoconfigure.retry.jdbc.JdbcTemplateRetryContext;
 
 /**
  * repository.
@@ -14,6 +14,20 @@ public interface RetryRepository {
      * @param context context
      * @return
      */
-    void registerThrowable(RetryContext context);
+    void registerThrowable(JdbcTemplateRetryContext context);
+
+    /**
+     * start.
+     * @param context context
+     * @return true success false fail
+     */
+    boolean start(JdbcTemplateRetryContext context);
+
+    /**
+     * start.
+     * @param context context
+     * @return true success false fail
+     */
+    void close(JdbcTemplateRetryContext context);
 
 }

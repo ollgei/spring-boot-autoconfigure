@@ -1,67 +1,79 @@
 package com.github.ollgei.spring.boot.autoconfigure.retry.jdbc;
 
 import org.springframework.retry.RetryContext;
-import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.context.RetryContextSupport;
+import org.springframework.retry.policy.SimpleRetryPolicy;
 
 import com.github.ollgei.spring.boot.autoconfigure.retry.RetryRepository;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * policy.
  * @author ollgei
  * @since 1.0.0
  */
-public class JdbcTemplateRetryPolicy implements RetryPolicy {
-
-    /**
-     * The default limit to the number of attempts for a new policy.
-     */
-    public final static int DEFAULT_MAX_ATTEMPTS = 3;
-
-    private volatile int maxAttempts;
+@Slf4j
+public class JdbcTemplateRetryPolicy extends SimpleRetryPolicy {
 
     private RetryRepository retryRepository;
 
     public JdbcTemplateRetryPolicy(RetryRepository retryRepository) {
-        this(DEFAULT_MAX_ATTEMPTS, retryRepository);
+        super();
+        this.retryRepository = retryRepository;
     }
 
     public JdbcTemplateRetryPolicy(int maxAttempts, RetryRepository retryRepository) {
-        this.maxAttempts = maxAttempts;
+        super(maxAttempts);
         this.retryRepository = retryRepository;
     }
 
     @Override
     public boolean canRetry(RetryContext context) {
-        return context.getRetryCount() < maxAttempts;
+        if (context instanceof SimpleJdbcTemplateRetryContext) {
+            //执行过了
+            if (context.getLastThrowable() != null) {
+                return false;
+            }
+            return context.getRetryCount() < getMaxAttempts();
+        }
+        return super.canRetry(context);
     }
 
     @Override
     public RetryContext open(RetryContext parent) {
-        return new SimpleJdbcTemplateRetryContext(parent);
+        if (parent instanceof JdbcTemplateRetryContext) {
+            boolean result = retryRepository.start((JdbcTemplateRetryContext) parent);
+            if (result) {
+                return new SimpleJdbcTemplateRetryContext((JdbcTemplateRetryContext) parent);
+            }
+            log.warn("database start error!!!");
+        }
+        return super.open(parent);
     }
 
     @Override
     public void close(RetryContext context) {
+        if (context instanceof SimpleJdbcTemplateRetryContext) {
+            retryRepository.close((JdbcTemplateRetryContext) context.getParent());
+        }
+        super.close(context);
     }
 
     @Override
     public void registerThrowable(RetryContext context, Throwable throwable) {
-        retryRepository.registerThrowable(context);
+        if (context instanceof SimpleJdbcTemplateRetryContext) {
+            retryRepository.registerThrowable((JdbcTemplateRetryContext) context.getParent());
+        }
+        super.registerThrowable(context, throwable);
     }
 
     private static class SimpleJdbcTemplateRetryContext extends RetryContextSupport {
-        public SimpleJdbcTemplateRetryContext(RetryContext parent) {
+        public SimpleJdbcTemplateRetryContext(JdbcTemplateRetryContext parent) {
             super(parent);
-        }
-
-        @Override
-        public int getRetryCount() {
-            final RetryContext parent = getParent();
-            if (parent instanceof JdbcTemplateRetryContext) {
-                return parent.getRetryCount();
+            final RuntimeException exception = new RuntimeException();
+            for (int i = 0; i < parent.getRetryCount(); i++) {
+                super.registerThrowable(exception);
             }
-            return super.getRetryCount();
         }
     }
 }
