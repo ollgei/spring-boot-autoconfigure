@@ -21,14 +21,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import lombok.Data;
 
 /**
- * DisruptorProperties.
+ * OllgeiDisruptorProperties.
  *
  * @author jiawei
  * @since 1.0.0
  */
-@ConfigurationProperties(prefix = DisruptorProperties.DISRUPTOR_PREFIX)
+@ConfigurationProperties(prefix = OllgeiDisruptorProperties.DISRUPTOR_PREFIX)
 @Data
-public class DisruptorProperties {
+public class OllgeiDisruptorProperties {
 
     public static final String DISRUPTOR_PREFIX = "ollgei.disruptor";
 

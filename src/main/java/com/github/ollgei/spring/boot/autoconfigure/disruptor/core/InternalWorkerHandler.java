@@ -17,14 +17,14 @@ class InternalWorkerHandler implements WorkHandler<InternalEvent> {
 
     private final Executor executor;
 
-    private final DisruptorSubscriber subscriber;
+    private final OllgeiDisruptorSubscriber subscriber;
 
     /**
      * Instantiates a new Route data handler.
      *
      * @param executor        the executor
      */
-    public InternalWorkerHandler(final Executor executor, final DisruptorSubscriber subscriber) {
+    public InternalWorkerHandler(final Executor executor, final OllgeiDisruptorSubscriber subscriber) {
         this.executor = executor;
         this.subscriber = subscriber;
     }

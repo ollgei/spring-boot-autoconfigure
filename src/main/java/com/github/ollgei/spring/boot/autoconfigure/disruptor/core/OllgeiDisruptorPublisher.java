@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public class DisruptorPublisher implements InitializingBean, DisposableBean {
+public class OllgeiDisruptorPublisher implements InitializingBean, DisposableBean {
 
     private final ExecutorService executorService;
 
@@ -37,7 +37,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
         return new Builder();
     }
 
-    protected DisruptorPublisher(Builder builder) {
+    protected OllgeiDisruptorPublisher(Builder builder) {
 
         builder.validate();
 
@@ -137,7 +137,7 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
         private ProducerType producerType = ProducerType.MULTI;
         private WaitStrategy waitStrategy = new BlockingWaitStrategy();
         private int subscriberCount = 16;
-        private DisruptorSubscriber subscriber = subscription -> {
+        private OllgeiDisruptorSubscriber subscriber = subscription -> {
             throw new RuntimeException("Not Config Asynchronous Conusmer!!");
         };
         private boolean autoDestroy = true;
@@ -188,18 +188,18 @@ public class DisruptorPublisher implements InitializingBean, DisposableBean {
             return this;
         }
 
-        public Builder setSubscriber(DisruptorSubscriber subscriber) {
+        public Builder setSubscriber(OllgeiDisruptorSubscriber subscriber) {
             this.subscriber = subscriber;
             return this;
         }
 
         /**
-         * Initializes a {@link DisruptorPublisher} as specified through this Builder.
+         * Initializes a {@link OllgeiDisruptorPublisher} as specified through this Builder.
          *
-         * @return a {@link DisruptorPublisher} as specified through this Builder
+         * @return a {@link OllgeiDisruptorPublisher} as specified through this Builder
          */
-        public DisruptorPublisher build() {
-            return new DisruptorPublisher(this);
+        public OllgeiDisruptorPublisher build() {
+            return new OllgeiDisruptorPublisher(this);
         }
 
         /**

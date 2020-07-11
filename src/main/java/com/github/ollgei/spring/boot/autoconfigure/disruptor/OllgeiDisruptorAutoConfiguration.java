@@ -23,8 +23,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.DisruptorPublisher;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.DisruptorSubscriber;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -35,22 +35,22 @@ import com.lmax.disruptor.dsl.ProducerType;
  * @since 1.0.0
  */
 @ConditionalOnProperty(prefix = "ollgei.disruptor", name = "enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties(DisruptorProperties.class)
+@EnableConfigurationProperties(OllgeiDisruptorProperties.class)
 @ConditionalOnClass(Disruptor.class)
-public class DisruptorAutoConfiguration {
+public class OllgeiDisruptorAutoConfiguration {
 
-    private final DisruptorProperties properties;
+    private final OllgeiDisruptorProperties properties;
 
     @Autowired
-    public DisruptorAutoConfiguration(DisruptorProperties properties) {
+    public OllgeiDisruptorAutoConfiguration(OllgeiDisruptorProperties properties) {
         this.properties = properties;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public DisruptorPublisher disruptorPublisher(DisruptorSubscriber subscriber) {
-        DisruptorPublisher.builder().build();
-        return DisruptorPublisher.builder()
+    public OllgeiDisruptorPublisher ollgeiDisruptorPublisher(OllgeiDisruptorSubscriber subscriber) {
+        OllgeiDisruptorPublisher.builder().build();
+        return OllgeiDisruptorPublisher.builder()
                         .setBufferSize(properties.getBufferSize())
                         .setSubscriberCount(properties.getSubscriberSize())
                         .setSubscriberName(properties.getSubscriberName())
@@ -63,7 +63,7 @@ public class DisruptorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DisruptorSubscriber disruptorSubscriber() {
+    public OllgeiDisruptorSubscriber ollgeiDisruptorSubscriber() {
         return subscription -> {
             throw new RuntimeException("Not Config Disruptor Subscriber!!");
         };
