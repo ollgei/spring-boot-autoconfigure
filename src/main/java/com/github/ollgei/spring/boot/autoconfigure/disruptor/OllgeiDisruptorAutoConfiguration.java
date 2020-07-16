@@ -34,7 +34,7 @@ import com.lmax.disruptor.dsl.ProducerType;
  * @author jiawei
  * @since 1.0.0
  */
-@ConditionalOnProperty(prefix = "ollgei.disruptor", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "ollgei.disruptor", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(OllgeiDisruptorProperties.class)
 @ConditionalOnClass(Disruptor.class)
 public class OllgeiDisruptorAutoConfiguration {

@@ -22,7 +22,7 @@ import static com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentPr
  * @author zhangjiawei
  * @since 1.0.0
  */
-@ConditionalOnProperty(prefix = PREFIX + ".jdbctemplate", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = PREFIX + ".jdbctemplate", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(BoundSegmentProperties.class)
 @ConditionalOnClass({ DataSource.class, JdbcTemplate.class })
 @AutoConfigureAfter(JdbcTemplateAutoConfiguration.class)
