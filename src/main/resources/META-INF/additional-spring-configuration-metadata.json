@@ -4,13 +4,19 @@
       "name": "ollgei.segment.jdbctemplate.enabled",
       "type": "java.lang.Boolean",
       "description": "enable segment.",
-      "defaultValue": true
+      "defaultValue": false
     },
     {
       "name": "ollgei.disruptor.enabled",
       "type": "java.lang.Boolean",
       "description": "enable disruptor.",
-      "defaultValue": true
+      "defaultValue": false
+    },
+    {
+      "name": "ollgei.fastree.jdbctemplate.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable segment.",
+      "defaultValue": false
     }
   ],
   "hints": []

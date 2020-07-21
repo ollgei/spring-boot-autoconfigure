@@ -14,9 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeRepository;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.jdbc.JdbcTemplateFastreeRepository;
-import com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentConfiguration;
 
-import static com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentProperties.PREFIX;
+import static com.github.ollgei.spring.boot.autoconfigure.fastree.FastreeProperties.PREFIX;
 
 /**
  * desc.
@@ -27,7 +26,7 @@ import static com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentPr
 @EnableConfigurationProperties(FastreeProperties.class)
 @ConditionalOnClass({ DataSource.class, JdbcTemplate.class })
 @AutoConfigureAfter(JdbcTemplateAutoConfiguration.class)
-public class JdbcTemplateFastreeAutoConfiguration extends BoundSegmentConfiguration {
+public class JdbcTemplateFastreeAutoConfiguration extends FastreeConfiguration {
 
     @Bean
     @ConditionalOnBean(JdbcTemplate.class)

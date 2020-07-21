@@ -14,12 +14,17 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public void addOne(Integer pid, FastreeEntity entity) {
-        repository.save(pid, entity);
+    public void addOne(Integer pid, String name) {
+        repository.save(pid, name);
     }
 
     @Override
-    public FastreeEntity init(String name) {
-        return repository.init(name);
+    public void addOne(String pname, String name) {
+        repository.save(pname, name);
+    }
+
+    @Override
+    public FastreeEntity init(String kind, String name) {
+        return repository.init(kind, name);
     }
 }

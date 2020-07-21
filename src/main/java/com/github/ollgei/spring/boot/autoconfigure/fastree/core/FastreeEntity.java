@@ -15,16 +15,20 @@ public class FastreeEntity {
      */
     private Integer id;
     /**
+     * kind.
+     */
+    private String kind;
+    /**
      * name.
      */
     private String name;
     /**
-     * left id.
+     * left no.
      */
-    private Integer lftId;
+    private Integer lftNo;
     /**
-     * right id.
+     * right no.
      */
-    private Integer rgtId;
+    private Integer rgtNo;
 
 }

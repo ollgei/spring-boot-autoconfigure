@@ -9,17 +9,36 @@ public interface FastreeManagerService {
 
     /**
      * 增加.
-     * @param pid parent id
-     * @param entity entity
+     * @param pname pname
+     * @param name name
      * @return
      */
-    void addOne(Integer pid, FastreeEntity entity);
+    void addOne(String pname,String name);
+
+    /**
+     * 增加.
+     * @param pid parent id
+     * @param name name
+     * @return
+     */
+    void addOne(Integer pid, String name);
+
+    /**
+     * init.
+     * @param name name
+     * @param kind kind
+     * @return
+     */
+    FastreeEntity init(String kind, String name);
+
 
     /**
      * init.
      * @param name name
      * @return
      */
-    FastreeEntity init(String name);
+    default FastreeEntity init(String name) {
+        return init(name, name);
+    }
 
 }
