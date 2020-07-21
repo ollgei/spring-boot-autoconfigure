@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * 元素段.
- * @author zhangjiawei
+ * @author ollgei
  * @since 1.0.0
  */
 @Data

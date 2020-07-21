@@ -14,7 +14,7 @@ import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfi
 
 /**
  * desc.
- * @author zhangjiawei
+ * @author ollgei
  * @since 1.0.0
  */
 public abstract class BoundSegmentConfiguration {

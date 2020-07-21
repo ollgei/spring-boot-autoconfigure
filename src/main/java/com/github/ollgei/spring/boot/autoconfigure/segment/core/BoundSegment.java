@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 有边界的段.
  *
- * @author zhangjiawei
+ * @author ollgei
  * @since 1.0.0
  */
 @Slf4j

@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * desc.
- * @author zhangjiawei
+ * @author ollgei
  * @since 1.0.0
  */
 public interface BoundSegmentRepository {

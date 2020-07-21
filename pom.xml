@@ -12,7 +12,7 @@
 
     <groupId>com.github.ollgei.spring</groupId>
     <artifactId>ollgei-boot-autoconfigure</artifactId>
-    <version>1.0.0.RC14</version>
+    <version>1.0.0.RC15</version>
     <inceptionYear>2020</inceptionYear>
 
     <licenses>

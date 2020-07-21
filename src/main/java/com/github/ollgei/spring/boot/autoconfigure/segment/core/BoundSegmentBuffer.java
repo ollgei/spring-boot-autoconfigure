@@ -16,7 +16,7 @@ import com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentPropertie
  * 有边界的段缓存.
  * 1 事件监听机制 定时更新
  * 2 动态伸缩 step （判断消费到10%的时候，所用的时间，来决定是否更新数据库的step）
- * @author zhangjiawei
+ * @author ollgei
  * @since 1.0.0
  */
 public abstract class BoundSegmentBuffer<E> implements InitializingBean {

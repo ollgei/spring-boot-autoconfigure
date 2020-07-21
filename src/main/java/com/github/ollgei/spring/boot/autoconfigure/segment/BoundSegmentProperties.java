@@ -5,7 +5,7 @@ import org.springframework.core.style.ToStringCreator;
 
 /**
  * desc.
- * @author zhangjiawei
+ * @author ollgei
  * @since 1.0.0
  */
 @ConfigurationProperties(prefix = BoundSegmentProperties.PREFIX)
