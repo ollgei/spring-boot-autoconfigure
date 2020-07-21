@@ -1,6 +1,8 @@
 package com.github.ollgei.spring.boot.autoconfigure.fastree.jdbc;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -9,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.StringUtils;
 
 import com.github.ollgei.spring.boot.autoconfigure.fastree.FastreeProperties;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeEntity;
@@ -37,6 +40,46 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
+    public List<FastreeEntity> queryWithChildren(Integer id) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        final FastreeEntity parentEntity =
+                jdbcTemplate.queryForObject(getQuerySqlNoneLock(), params, (rs, rowNum) -> {
+                    FastreeEntity entity = new FastreeEntity();
+                    entity.setKind(rs.getString(1));
+                    entity.setRgtNo(rs.getInt(2));
+                    entity.setLftNo(rs.getInt(3));
+                    return entity;
+                });
+        //创建失败
+        if (Objects.isNull(parentEntity)) {
+            return Collections.emptyList();
+        }
+
+        return queryWithChildren(parentEntity.getLftNo(), parentEntity.getRgtNo());
+    }
+
+    @Override
+    public List<FastreeEntity> queryWithChildren(String name) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        final FastreeEntity parentEntity =
+                jdbcTemplate.queryForObject(getQuerySqlUseNameNoneLock(), params, (rs, rowNum) -> {
+                    FastreeEntity entity = new FastreeEntity();
+                    entity.setKind(rs.getString(1));
+                    entity.setRgtNo(rs.getInt(2));
+                    entity.setLftNo(rs.getInt(3));
+                    return entity;
+                });
+        //创建失败
+        if (Objects.isNull(parentEntity)) {
+            return Collections.emptyList();
+        }
+
+        return queryWithChildren(parentEntity.getLftNo(), parentEntity.getRgtNo());
+    }
+
+    @Override
     public Boolean save(String pname, String name) {
         return transactionTemplate.execute(status -> {
             final Map<String, Object> params = new HashMap<>();
@@ -52,6 +95,12 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             if (Objects.isNull(parentEntity)) {
                 return false;
             }
+            jdbcTemplate.query(getQuerySqlUseName(), params, (rs, rowNum) -> {
+                FastreeEntity entity = new FastreeEntity();
+                entity.setKind(rs.getString(1));
+                entity.setRgtNo(rs.getInt(2));
+                return entity;
+            });
             return saveWithTransaction(parentEntity.getKind(), parentEntity.getRgtNo(), name);
         });
     }
@@ -74,6 +123,73 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             }
 
             return saveWithTransaction(parentEntity.getKind(), parentEntity.getRgtNo(), name);
+        });
+    }
+
+    @Override
+    public FastreeEntity init(String kind, String name) {
+        return transactionTemplate.execute(status -> {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            //insert
+            final Map<String, Object> params3 = new HashMap<>();
+            params3.put("kind", kind);
+            params3.put("name", name);
+            params3.put("lftno", 1);
+            params3.put("rgtno", 2);
+            int insertedRows = jdbcTemplate.update(getInsertSql(), new MapSqlParameterSource(params3), keyHolder);
+            if (insertedRows != 1) {
+                throw new RuntimeException("插入失败");
+            }
+            final FastreeEntity root = new FastreeEntity();
+            root.setId(keyHolder.getKey().intValue());
+            root.setName(name);
+            root.setLftNo(1);
+            root.setLftNo(2);
+            return root;
+        });
+    }
+
+    @Override
+    public Boolean remove(Integer id) {
+        return transactionTemplate.execute(status -> {
+            final Map<String, Object> params = new HashMap<>();
+            params.put("id", id);
+            final FastreeEntity parentEntity =
+                    jdbcTemplate.queryForObject(getQuerySql(), params, (rs, rowNum) -> {
+                        FastreeEntity entity = new FastreeEntity();
+                        entity.setKind(rs.getString(1));
+                        entity.setRgtNo(rs.getInt(2));
+                        entity.setLftNo(rs.getInt(3));
+                        return entity;
+                    });
+            //创建失败
+            if (Objects.isNull(parentEntity)) {
+                return false;
+            }
+
+            return removeWithTransaction(parentEntity.getKind(), parentEntity.getLftNo(), parentEntity.getRgtNo());
+        });
+    }
+
+    @Override
+    public Boolean remove(String name) {
+        return transactionTemplate.execute(status -> {
+            final Map<String, Object> params = new HashMap<>();
+            params.put("name", name);
+            final FastreeEntity parentEntity =
+                    jdbcTemplate.queryForObject(getQuerySqlUseName(), params, (rs, rowNum) -> {
+                        FastreeEntity entity = new FastreeEntity();
+                        entity.setKind(rs.getString(1));
+                        entity.setRgtNo(rs.getInt(2));
+                        entity.setLftNo(rs.getInt(3));
+                        return entity;
+                    });
+            //创建失败
+            if (Objects.isNull(parentEntity)) {
+                return false;
+            }
+
+            return removeWithTransaction(parentEntity.getKind(), parentEntity.getLftNo(), parentEntity.getRgtNo());
         });
     }
 
@@ -104,35 +220,76 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         return true;
     }
 
-    @Override
-    public FastreeEntity init(String kind, String name) {
-        return transactionTemplate.execute(status -> {
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            //insert
-            final Map<String, Object> params3 = new HashMap<>();
-            params3.put("kind", kind);
-            params3.put("name", name);
-            params3.put("lftno", 1);
-            params3.put("rgtno", 2);
-            int insertedRows = jdbcTemplate.update(getInsertSql(), new MapSqlParameterSource(params3), keyHolder);
-            if (insertedRows != 1) {
-                throw new RuntimeException("插入失败");
+    private Boolean removeWithTransaction(String kind, Integer lftNo, Integer rgtNo) {
+        final Map<String, Object> params1 = new HashMap<>();
+        params1.put("rgtno", rgtNo);
+        params1.put("lftno", lftNo);
+        params1.put("kind", kind);
+        //delete
+        boolean result = jdbcTemplate.update(getDeleteSql(), params1) > 0;
+        if (!result) {
+            throw new RuntimeException("删除失败");
+        }
+
+        result = jdbcTemplate.update(getRemoveLftNoSql(), params1) > 0;
+        if (!result) {
+            log.warn("no found for lftno > {}", lftNo);
+        }
+        result = jdbcTemplate.update(getRemoveRgtNoSql(), params1) > 0;
+        if (!result) {
+            log.warn("no found for rgtno > {}", rgtNo);
+        }
+
+        return true;
+    }
+
+    private List<FastreeEntity> queryWithChildren(Integer lftno, Integer rgtno) {
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("lftno", lftno);
+        params.put("rgtno", rgtno);
+
+        return jdbcTemplate.query(getQuerySqlWithChildren(), params, (rs, rowNum) -> {
+            final FastreeEntity entity = new FastreeEntity();
+            entity.setKind(rs.getString(1));
+            entity.setRgtNo(rs.getInt(2));
+            entity.setLftNo(rs.getInt(3));
+            entity.setName(rs.getString(4));
+            entity.setId(rs.getInt(5));
+            final String columns = fastreeProperties.getColumns();
+            final Map<String, Object> custom = new HashMap<>();
+            final String[] cs = columns.split(",");
+            for (int i = 0; i < cs.length; i++) {
+                custom.put(cs[i], rs.getObject(i + 6));
             }
-            final FastreeEntity root = new FastreeEntity();
-            root.setId(keyHolder.getKey().intValue());
-            root.setName(name);
-            root.setLftNo(1);
-            root.setLftNo(2);
-            return root;
+            entity.setCustom(custom);
+            return entity;
         });
     }
 
     private String getQuerySql() {
-        return "SELECT kind, rgtno FROM " + sqlStatementsSource.tableName() +" WHERE id = :id FOR UPDATE";
+        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE id = :id FOR UPDATE";
     }
 
     private String getQuerySqlUseName() {
-        return "SELECT kind, rgtno FROM " + sqlStatementsSource.tableName() +" WHERE name = :name FOR UPDATE";
+        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE name = :name FOR UPDATE";
+    }
+
+    private String getQuerySqlNoneLock() {
+        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE id = :id";
+    }
+
+    private String getQuerySqlUseNameNoneLock() {
+        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE name = :name";
+    }
+
+    private String getQuerySqlWithChildren() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT kind, rgtno, lftno, name, id");
+        if (StringUtils.hasText(fastreeProperties.getColumns())) {
+            sb.append("," + fastreeProperties.getColumns());
+        }
+        return sb.append(" FROM " + sqlStatementsSource.tableName() +" WHERE kind = :kind AND lftno < :lftno AND rgtno > :rgtno ORDER BY lftno ASC;").toString();
     }
 
     private String getUpdateRgtNoSql() {
@@ -141,6 +298,19 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
 
     private String getUpdateLftNoSql() {
         return "UPDATE " + sqlStatementsSource.tableName() + " SET lftno = lftno + 2 WHERE kind = :kind AND lftno >= :rgtno";
+    }
+
+    private String getRemoveLftNoSql() {
+        //UPDATE tree SET lft = lft -(rgtid - lftid  + 1) WHERE lft > lftid;
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET lftno = lftno - (:rgtno - :lftno + 1) WHERE kind = :kind AND lftno > :lftno";
+    }
+
+    private String getRemoveRgtNoSql() {
+        return "UPDATE " + sqlStatementsSource.tableName() + " SET rgtno = rgtno - (:rgtno - :lftno + 1) WHERE kind = :kind AND rgtno > :rgtno";
+    }
+
+    private String getDeleteSql() {
+        return "DELETE FROM " + sqlStatementsSource.tableName() + " WHERE kind = :kind AND lftno >= :lftno AND rgtno <= :rgtno";
     }
 
     private String getInsertSql() {

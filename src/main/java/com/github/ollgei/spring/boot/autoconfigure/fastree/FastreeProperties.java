@@ -15,4 +15,6 @@ public class FastreeProperties {
     public static final String PREFIX = "ollgei.fastree";
 
     private String tableName = "tb_fastree";
+
+    private String columns = "";
 }

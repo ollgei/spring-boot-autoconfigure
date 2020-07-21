@@ -1,5 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.fastree.core;
 
+import java.util.Map;
+
 import lombok.Data;
 
 /**
@@ -30,5 +32,10 @@ public class FastreeEntity {
      * right no.
      */
     private Integer rgtNo;
+
+    /**
+     * 自定义的字段.
+     */
+    private Map<String, Object> custom;
 
 }

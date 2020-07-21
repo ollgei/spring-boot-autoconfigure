@@ -1,5 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.fastree.core;
 
+import java.util.List;
+
 /**
  * desc.
  * @author 1.0.0
@@ -11,6 +13,16 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
 
     public DefaultFastreeManagerService(FastreeRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    public List<FastreeEntity> queryWithChildren(Integer id) {
+        return repository.queryWithChildren(id);
+    }
+
+    @Override
+    public List<FastreeEntity> queryWithChildren(String name) {
+        return repository.queryWithChildren(name);
     }
 
     @Override
@@ -26,5 +38,15 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     @Override
     public FastreeEntity init(String kind, String name) {
         return repository.init(kind, name);
+    }
+
+    @Override
+    public void removeIncludeChildren(String name) {
+        repository.remove(name);
+    }
+
+    @Override
+    public void removeIncludeChildren(Integer id) {
+        repository.remove(id);
     }
 }

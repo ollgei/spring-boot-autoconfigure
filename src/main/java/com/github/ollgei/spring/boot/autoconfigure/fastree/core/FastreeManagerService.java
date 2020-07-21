@@ -1,11 +1,25 @@
 package com.github.ollgei.spring.boot.autoconfigure.fastree.core;
 
+import java.util.List;
+
 /**
  * entity.
  * @author ollgei
  * @since 1.0.0
  */
 public interface FastreeManagerService {
+
+    /**
+     * query none lock.
+     * @param id id
+     */
+    List<FastreeEntity> queryWithChildren(Integer id);
+
+    /**
+     * query none lock.
+     * @param name name
+     */
+    List<FastreeEntity> queryWithChildren(String name);
 
     /**
      * 增加.
@@ -40,5 +54,19 @@ public interface FastreeManagerService {
     default FastreeEntity init(String name) {
         return init(name, name);
     }
+
+    /**
+     * remove.
+     * @param name name
+     * @return
+     */
+    void removeIncludeChildren(String name);
+
+    /**
+     * 增加.
+     * @param id id
+     * @return
+     */
+    void removeIncludeChildren(Integer id);
 
 }
