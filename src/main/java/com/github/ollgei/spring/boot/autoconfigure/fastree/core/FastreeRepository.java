@@ -22,6 +22,30 @@ public interface FastreeRepository {
     List<FastreeEntity> queryWithChildren(String name);
 
     /**
+     * query none lock.
+     * @param name name
+     */
+    List<FastreeEntity> queryWithParent(String name);
+
+    /**
+     * query none lock.
+     * @param id id
+     */
+    List<FastreeEntity> queryWithParent(Integer id);
+
+    /**
+     * query none lock.
+     * @param id id
+     */
+    Integer queryLevel(Integer id);
+
+    /**
+     * query none lock.
+     * @param name name
+     */
+    Integer queryLevel(String name);
+
+    /**
      * save.
      * @param pname parent name
      * @param name name

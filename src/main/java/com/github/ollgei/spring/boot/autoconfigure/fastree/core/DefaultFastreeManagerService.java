@@ -26,6 +26,26 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
+    public List<FastreeEntity> queryWithParent(String name) {
+        return repository.queryWithParent(name);
+    }
+
+    @Override
+    public List<FastreeEntity> queryWithParent(Integer id) {
+        return repository.queryWithParent(id);
+    }
+
+    @Override
+    public Integer queryLevel(Integer id) {
+        return repository.queryLevel(id);
+    }
+
+    @Override
+    public Integer queryLevel(String name) {
+        return repository.queryLevel(name);
+    }
+
+    @Override
     public void addOne(Integer pid, String name) {
         repository.save(pid, name);
     }

@@ -41,42 +41,32 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
 
     @Override
     public List<FastreeEntity> queryWithChildren(Integer id) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-        final FastreeEntity parentEntity =
-                jdbcTemplate.queryForObject(getQuerySqlNoneLock(), params, (rs, rowNum) -> {
-                    FastreeEntity entity = new FastreeEntity();
-                    entity.setKind(rs.getString(1));
-                    entity.setRgtNo(rs.getInt(2));
-                    entity.setLftNo(rs.getInt(3));
-                    return entity;
-                });
-        //创建失败
-        if (Objects.isNull(parentEntity)) {
-            return Collections.emptyList();
-        }
-
-        return queryWithChildren(parentEntity.getLftNo(), parentEntity.getRgtNo());
+        return queryWithId(id, false);
     }
 
     @Override
     public List<FastreeEntity> queryWithChildren(String name) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        final FastreeEntity parentEntity =
-                jdbcTemplate.queryForObject(getQuerySqlUseNameNoneLock(), params, (rs, rowNum) -> {
-                    FastreeEntity entity = new FastreeEntity();
-                    entity.setKind(rs.getString(1));
-                    entity.setRgtNo(rs.getInt(2));
-                    entity.setLftNo(rs.getInt(3));
-                    return entity;
-                });
-        //创建失败
-        if (Objects.isNull(parentEntity)) {
-            return Collections.emptyList();
-        }
+        return queryWithName(name, false);
+    }
 
-        return queryWithChildren(parentEntity.getLftNo(), parentEntity.getRgtNo());
+    @Override
+    public List<FastreeEntity> queryWithParent(String name) {
+        return queryWithName(name, true);
+    }
+
+    @Override
+    public List<FastreeEntity> queryWithParent(Integer id) {
+        return queryWithId(id, true);
+    }
+
+    @Override
+    public Integer queryLevel(Integer id) {
+        return queryLevel(id, null);
+    }
+
+    @Override
+    public Integer queryLevel(String name) {
+        return queryLevel(null, name);
     }
 
     @Override
@@ -243,13 +233,72 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         return true;
     }
 
-    private List<FastreeEntity> queryWithChildren(Integer lftno, Integer rgtno) {
+    private List<FastreeEntity> queryWithName(String name, boolean parent) {
+        return queryNodes(null, name, parent);
+    }
 
+    private List<FastreeEntity> queryWithId(Integer id, boolean parent) {
+        return queryNodes(id, null, parent);
+    }
+
+    private Integer queryLevel(Integer id, String name) {
+        final boolean useName = StringUtils.hasText(name);
         final Map<String, Object> params = new HashMap<>();
-        params.put("lftno", lftno);
-        params.put("rgtno", rgtno);
+        if (useName) {
+            params.put("name", name);
+        } else {
+            params.put("id", id);
+        }
+        final String sql = useName ? getQuerySqlUseNameNoneLock() : getQuerySqlNoneLock();
+        final FastreeEntity parentEntity =
+                jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
+                    FastreeEntity entity = new FastreeEntity();
+                    entity.setKind(rs.getString(1));
+                    entity.setRgtNo(rs.getInt(2));
+                    entity.setLftNo(rs.getInt(3));
+                    return entity;
+                });
+        //创建失败
+        if (Objects.isNull(parentEntity)) {
+            return -1;
+        }
+        final Map<String, Object> params2 = new HashMap<>();
+        params2.put("lftno", parentEntity.getLftNo());
+        params2.put("rgtno", parentEntity.getRgtNo());
+        params2.put("kind", parentEntity.getKind());
 
-        return jdbcTemplate.query(getQuerySqlWithChildren(), params, (rs, rowNum) -> {
+        return jdbcTemplate.queryForObject(getQuerySqlWithLevel(), params2, (rs, rowNum) -> rs.getInt(1));
+    }
+
+    private List<FastreeEntity> queryNodes(Integer id, String name, boolean parent) {
+        final boolean useName = StringUtils.hasText(name);
+        final Map<String, Object> params = new HashMap<>();
+        if (useName) {
+            params.put("name", name);
+        } else {
+            params.put("id", id);
+        }
+        final String sql = useName ? getQuerySqlUseNameNoneLock() : getQuerySqlNoneLock();
+        final FastreeEntity parentEntity =
+                jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
+                    FastreeEntity entity = new FastreeEntity();
+                    entity.setKind(rs.getString(1));
+                    entity.setRgtNo(rs.getInt(2));
+                    entity.setLftNo(rs.getInt(3));
+                    return entity;
+                });
+        //创建失败
+        if (Objects.isNull(parentEntity)) {
+            return Collections.emptyList();
+        }
+        final Map<String, Object> params2 = new HashMap<>();
+        params2.put("lftno", parentEntity.getLftNo());
+        params2.put("rgtno", parentEntity.getRgtNo());
+        params2.put("kind", parentEntity.getKind());
+
+        final String sql2 = parent ? getQuerySqlWithParent() : getQuerySqlWithChildren();
+
+        return jdbcTemplate.query(sql2, params2, (rs, rowNum) -> {
             final FastreeEntity entity = new FastreeEntity();
             entity.setKind(rs.getString(1));
             entity.setRgtNo(rs.getInt(2));
@@ -257,12 +306,16 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             entity.setName(rs.getString(4));
             entity.setId(rs.getInt(5));
             final String columns = fastreeProperties.getColumns();
-            final Map<String, Object> custom = new HashMap<>();
-            final String[] cs = columns.split(",");
-            for (int i = 0; i < cs.length; i++) {
-                custom.put(cs[i], rs.getObject(i + 6));
+            if (StringUtils.hasText(columns)) {
+                final Map<String, Object> custom = new HashMap<>();
+                final String[] cs = columns.split(",");
+                for (int i = 0; i < cs.length; i++) {
+                    if (StringUtils.hasText(cs[i])) {
+                        custom.put(cs[i], rs.getObject(i + 6));
+                    }
+                }
+                entity.setCustom(custom);
             }
-            entity.setCustom(custom);
             return entity;
         });
     }
@@ -289,7 +342,23 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         if (StringUtils.hasText(fastreeProperties.getColumns())) {
             sb.append("," + fastreeProperties.getColumns());
         }
-        return sb.append(" FROM " + sqlStatementsSource.tableName() +" WHERE kind = :kind AND lftno < :lftno AND rgtno > :rgtno ORDER BY lftno ASC;").toString();
+        //lft BETWEEN lftid AND rgtid
+        return sb.append(" FROM " + sqlStatementsSource.tableName() +" WHERE kind = :kind AND lftno >= :lftno AND lftno <= :rgtno ORDER BY lftno ASC").toString();
+    }
+
+    private String getQuerySqlWithParent() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT kind, rgtno, lftno, name, id");
+        if (StringUtils.hasText(fastreeProperties.getColumns())) {
+            sb.append("," + fastreeProperties.getColumns());
+        }
+        //lft < lftid AND rgt > rgtid ORDER BY lft ASC;
+        return sb.append(" FROM " + sqlStatementsSource.tableName() +" WHERE kind = :kind AND lftno < :lftno AND rgtno > :rgtno ORDER BY lftno ASC").toString();
+    }
+
+    private String getQuerySqlWithLevel() {
+        //SELECT COUNT(*) INTO result  FROM tree WHERE lft <= lftid AND rgt >= rgtid;
+        return "SELECT count(1) FROM " + sqlStatementsSource.tableName() +" WHERE kind = :kind AND lftno <= :lftno AND rgtno >= :rgtno";
     }
 
     private String getUpdateRgtNoSql() {
