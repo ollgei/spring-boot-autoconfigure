@@ -13,7 +13,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.StringUtils;
 
-import com.github.ollgei.spring.boot.autoconfigure.fastree.FastreeProperties;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeEntity;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeRepository;
 import com.github.ollgei.spring.boot.autoconfigure.jdbc.AbstractJdbcTemplateRepository;
@@ -28,15 +27,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepository implements FastreeRepository {
 
-    private FastreeProperties fastreeProperties;
+    private String columns = "";
 
-    public JdbcTemplateFastreeRepository(FastreeProperties properties, @NonNull JdbcTemplate jdbcTemplate) {
-        this(properties, jdbcTemplate, null);
+    public JdbcTemplateFastreeRepository(String tableName, @NonNull JdbcTemplate jdbcTemplate) {
+        this(tableName, jdbcTemplate, null);
     }
 
-    public JdbcTemplateFastreeRepository(FastreeProperties properties, @NonNull JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager) {
-        super(properties.getTableName(), jdbcTemplate, transactionManager);
-        this.fastreeProperties = properties;
+    public JdbcTemplateFastreeRepository(String tableName, @NonNull JdbcTemplate jdbcTemplate, PlatformTransactionManager transactionManager) {
+        super(tableName, jdbcTemplate, transactionManager);
     }
 
     @Override
@@ -45,13 +43,13 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public List<FastreeEntity> queryWithChildren(String name) {
-        return queryWithName(name, false);
+    public List<FastreeEntity> queryWithChildren(String code) {
+        return queryWithCode(code, false);
     }
 
     @Override
-    public List<FastreeEntity> queryWithParent(String name) {
-        return queryWithName(name, true);
+    public List<FastreeEntity> queryWithParent(String code) {
+        return queryWithCode(code, true);
     }
 
     @Override
@@ -65,17 +63,17 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public Integer queryLevel(String name) {
-        return queryLevel(null, name);
+    public Integer queryLevel(String code) {
+        return queryLevel(null, code);
     }
 
     @Override
-    public Boolean save(String pname, String name) {
+    public Boolean save(String pcode, String code) {
         return transactionTemplate.execute(status -> {
             final Map<String, Object> params = new HashMap<>();
-            params.put("name", pname);
+            params.put("code", pcode);
             final FastreeEntity parentEntity =
-                    jdbcTemplate.queryForObject(getQuerySqlUseName(), params, (rs, rowNum) -> {
+                    jdbcTemplate.queryForObject(getQuerySqlUseCode(), params, (rs, rowNum) -> {
                         FastreeEntity entity = new FastreeEntity();
                         entity.setKind(rs.getString(1));
                         entity.setRgtNo(rs.getInt(2));
@@ -85,13 +83,13 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             if (Objects.isNull(parentEntity)) {
                 return false;
             }
-            jdbcTemplate.query(getQuerySqlUseName(), params, (rs, rowNum) -> {
+            jdbcTemplate.query(getQuerySqlUseCode(), params, (rs, rowNum) -> {
                 FastreeEntity entity = new FastreeEntity();
                 entity.setKind(rs.getString(1));
                 entity.setRgtNo(rs.getInt(2));
                 return entity;
             });
-            return saveWithTransaction(parentEntity.getKind(), parentEntity.getRgtNo(), name);
+            return saveWithTransaction(parentEntity.getKind(), parentEntity.getRgtNo(), code);
         });
     }
 
@@ -117,13 +115,13 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public FastreeEntity init(String kind, String name) {
+    public FastreeEntity init(String kind, String code) {
         return transactionTemplate.execute(status -> {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             //insert
             final Map<String, Object> params3 = new HashMap<>();
             params3.put("kind", kind);
-            params3.put("name", name);
+            params3.put("code", code);
             params3.put("lftno", 1);
             params3.put("rgtno", 2);
             int insertedRows = jdbcTemplate.update(getInsertSql(), new MapSqlParameterSource(params3), keyHolder);
@@ -132,7 +130,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             }
             final FastreeEntity root = new FastreeEntity();
             root.setId(keyHolder.getKey().intValue());
-            root.setName(name);
+            root.setCode(code);
             root.setLftNo(1);
             root.setLftNo(2);
             return root;
@@ -162,12 +160,12 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public Boolean remove(String name) {
+    public Boolean remove(String code) {
         return transactionTemplate.execute(status -> {
             final Map<String, Object> params = new HashMap<>();
-            params.put("name", name);
+            params.put("code", code);
             final FastreeEntity parentEntity =
-                    jdbcTemplate.queryForObject(getQuerySqlUseName(), params, (rs, rowNum) -> {
+                    jdbcTemplate.queryForObject(getQuerySqlUseCode(), params, (rs, rowNum) -> {
                         FastreeEntity entity = new FastreeEntity();
                         entity.setKind(rs.getString(1));
                         entity.setRgtNo(rs.getInt(2));
@@ -183,7 +181,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         });
     }
 
-    private Boolean saveWithTransaction(String kind, Integer rgtNo, String name) {
+    private Boolean saveWithTransaction(String kind, Integer rgtNo, String code) {
         //update
         final Map<String, Object> params1 = new HashMap<>();
         params1.put("rgtno", rgtNo);
@@ -199,7 +197,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         //insert
         final Map<String, Object> params2 = new HashMap<>();
         params2.put("kind", kind);
-        params2.put("name", name);
+        params2.put("code", code);
         params2.put("lftno", rgtNo);
         params2.put("rgtno", rgtNo + 1);
         int insertedRows = jdbcTemplate.update(getInsertSql(), params2);
@@ -233,23 +231,23 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         return true;
     }
 
-    private List<FastreeEntity> queryWithName(String name, boolean parent) {
-        return queryNodes(null, name, parent);
+    private List<FastreeEntity> queryWithCode(String code, boolean parent) {
+        return queryNodes(null, code, parent);
     }
 
     private List<FastreeEntity> queryWithId(Integer id, boolean parent) {
         return queryNodes(id, null, parent);
     }
 
-    private Integer queryLevel(Integer id, String name) {
-        final boolean useName = StringUtils.hasText(name);
+    private Integer queryLevel(Integer id, String code) {
+        final boolean useCode = StringUtils.hasText(code);
         final Map<String, Object> params = new HashMap<>();
-        if (useName) {
-            params.put("name", name);
+        if (useCode) {
+            params.put("code", code);
         } else {
             params.put("id", id);
         }
-        final String sql = useName ? getQuerySqlUseNameNoneLock() : getQuerySqlNoneLock();
+        final String sql = useCode ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
         final FastreeEntity parentEntity =
                 jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
                     FastreeEntity entity = new FastreeEntity();
@@ -270,15 +268,15 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         return jdbcTemplate.queryForObject(getQuerySqlWithLevel(), params2, (rs, rowNum) -> rs.getInt(1));
     }
 
-    private List<FastreeEntity> queryNodes(Integer id, String name, boolean parent) {
-        final boolean useName = StringUtils.hasText(name);
+    private List<FastreeEntity> queryNodes(Integer id, String code, boolean parent) {
+        final boolean useCode = StringUtils.hasText(code);
         final Map<String, Object> params = new HashMap<>();
-        if (useName) {
-            params.put("name", name);
+        if (useCode) {
+            params.put("code", code);
         } else {
             params.put("id", id);
         }
-        final String sql = useName ? getQuerySqlUseNameNoneLock() : getQuerySqlNoneLock();
+        final String sql = useCode ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
         final FastreeEntity parentEntity =
                 jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
                     FastreeEntity entity = new FastreeEntity();
@@ -303,9 +301,9 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             entity.setKind(rs.getString(1));
             entity.setRgtNo(rs.getInt(2));
             entity.setLftNo(rs.getInt(3));
-            entity.setName(rs.getString(4));
+            entity.setCode(rs.getString(4));
             entity.setId(rs.getInt(5));
-            final String columns = fastreeProperties.getColumns();
+            final String columns = this.columns;
             if (StringUtils.hasText(columns)) {
                 final Map<String, Object> custom = new HashMap<>();
                 final String[] cs = columns.split(",");
@@ -321,26 +319,26 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     private String getQuerySql() {
-        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE id = :id FOR UPDATE";
+        return "SELECT kind, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE id = :id FOR UPDATE";
     }
 
-    private String getQuerySqlUseName() {
-        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE name = :name FOR UPDATE";
+    private String getQuerySqlUseCode() {
+        return "SELECT kind, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE code = :code FOR UPDATE";
     }
 
     private String getQuerySqlNoneLock() {
-        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE id = :id";
+        return "SELECT kind, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE id = :id";
     }
 
-    private String getQuerySqlUseNameNoneLock() {
-        return "SELECT kind, rgtno, lftno, name, id FROM " + sqlStatementsSource.tableName() +" WHERE name = :name";
+    private String getQuerySqlUseCodeNoneLock() {
+        return "SELECT kind, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE code = :code";
     }
 
     private String getQuerySqlWithChildren() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT kind, rgtno, lftno, name, id");
-        if (StringUtils.hasText(fastreeProperties.getColumns())) {
-            sb.append("," + fastreeProperties.getColumns());
+        sb.append("SELECT kind, rgtno, lftno, code, id");
+        if (StringUtils.hasText(this.columns)) {
+            sb.append("," + this.columns);
         }
         //lft BETWEEN lftid AND rgtid
         return sb.append(" FROM " + sqlStatementsSource.tableName() +" WHERE kind = :kind AND lftno >= :lftno AND lftno <= :rgtno ORDER BY lftno ASC").toString();
@@ -348,9 +346,9 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
 
     private String getQuerySqlWithParent() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT kind, rgtno, lftno, name, id");
-        if (StringUtils.hasText(fastreeProperties.getColumns())) {
-            sb.append("," + fastreeProperties.getColumns());
+        sb.append("SELECT kind, rgtno, lftno, code, id");
+        if (StringUtils.hasText(this.columns)) {
+            sb.append("," + this.columns);
         }
         //lft < lftid AND rgt > rgtid ORDER BY lft ASC;
         return sb.append(" FROM " + sqlStatementsSource.tableName() +" WHERE kind = :kind AND lftno < :lftno AND rgtno > :rgtno ORDER BY lftno ASC").toString();
@@ -383,6 +381,10 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     private String getInsertSql() {
-        return "INSERT INTO " + sqlStatementsSource.tableName() + "(kind, `name`, lftno, rgtno) VALUES (:kind, :name, :lftno, :rgtno)";
+        return "INSERT INTO " + sqlStatementsSource.tableName() + "(kind, `code`, lftno, rgtno) VALUES (:kind, :code, :lftno, :rgtno)";
+    }
+
+    public void setColumns(String columns) {
+        this.columns = columns;
     }
 }

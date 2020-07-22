@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.StringUtils;
 
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeRepository;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.jdbc.JdbcTemplateFastreeRepository;
@@ -32,7 +33,11 @@ public class JdbcTemplateFastreeAutoConfiguration extends FastreeConfiguration {
     @ConditionalOnBean(JdbcTemplate.class)
     @ConditionalOnMissingBean
     public FastreeRepository fastreeRepository(FastreeProperties fastreeProperties, JdbcTemplate jdbcTemplate) {
-        return new JdbcTemplateFastreeRepository(fastreeProperties, jdbcTemplate);
+        final JdbcTemplateFastreeRepository repository = new JdbcTemplateFastreeRepository(fastreeProperties.getTableName(), jdbcTemplate);
+        if (StringUtils.hasText(fastreeProperties.getColumns())) {
+            repository.setColumns(fastreeProperties.getColumns());
+        }
+        return repository;
     }
 
 }

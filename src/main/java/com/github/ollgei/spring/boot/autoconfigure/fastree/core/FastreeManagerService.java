@@ -17,15 +17,15 @@ public interface FastreeManagerService {
 
     /**
      * query none lock.
-     * @param name name
+     * @param code code
      */
-    List<FastreeEntity> queryWithChildren(String name);
+    List<FastreeEntity> queryWithChildren(String code);
 
     /**
      * query none lock.
-     * @param name name
+     * @param code code
      */
-    List<FastreeEntity> queryWithParent(String name);
+    List<FastreeEntity> queryWithParent(String code);
 
     /**
      * query none lock.
@@ -41,50 +41,50 @@ public interface FastreeManagerService {
 
     /**
      * query none lock.
-     * @param name name
+     * @param code code
      */
-    Integer queryLevel(String name);
+    Integer queryLevel(String code);
 
     /**
      * 增加.
-     * @param pname pname
-     * @param name name
+     * @param pcode pcode
+     * @param code code
      * @return
      */
-    void addOne(String pname,String name);
+    void addOne(String pcode,String code);
 
     /**
      * 增加.
      * @param pid parent id
-     * @param name name
+     * @param code code
      * @return
      */
-    void addOne(Integer pid, String name);
+    void addOne(Integer pid, String code);
 
     /**
      * init.
-     * @param name name
+     * @param code code
      * @param kind kind
      * @return
      */
-    FastreeEntity init(String kind, String name);
+    FastreeEntity init(String kind, String code);
 
 
     /**
      * init.
-     * @param name name
+     * @param code code
      * @return
      */
-    default FastreeEntity init(String name) {
-        return init(name, name);
+    default FastreeEntity init(String code) {
+        return init(code, code);
     }
 
     /**
      * remove.
-     * @param name name
+     * @param code code
      * @return
      */
-    void removeIncludeChildren(String name);
+    void removeIncludeChildren(String code);
 
     /**
      * 增加.

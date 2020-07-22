@@ -17,15 +17,15 @@ public interface FastreeRepository {
 
     /**
      * query none lock.
-     * @param name name
+     * @param code code
      */
-    List<FastreeEntity> queryWithChildren(String name);
+    List<FastreeEntity> queryWithChildren(String code);
 
     /**
      * query none lock.
-     * @param name name
+     * @param code code
      */
-    List<FastreeEntity> queryWithParent(String name);
+    List<FastreeEntity> queryWithParent(String code);
 
     /**
      * query none lock.
@@ -41,30 +41,30 @@ public interface FastreeRepository {
 
     /**
      * query none lock.
-     * @param name name
+     * @param code code
      */
-    Integer queryLevel(String name);
+    Integer queryLevel(String code);
 
     /**
      * save.
-     * @param pname parent name
-     * @param name name
+     * @param pcode parent code
+     * @param code code
      */
-    Boolean save(String pname, String name);
+    Boolean save(String pcode, String code);
 
     /**
      * save.
      * @param pid parent id
-     * @param name name
+     * @param code code
      */
-    Boolean save(Integer pid, String name);
+    Boolean save(Integer pid, String code);
 
     /**
      * init.
-     * @param name name
+     * @param code code
      * @param kind kind
      */
-    FastreeEntity init(String kind, String name);
+    FastreeEntity init(String kind, String code);
 
     /**
      * remove.
@@ -74,8 +74,8 @@ public interface FastreeRepository {
 
     /**
      * remove.
-     * @param name name
+     * @param code code
      */
-    Boolean remove(String name);
+    Boolean remove(String code);
 
 }

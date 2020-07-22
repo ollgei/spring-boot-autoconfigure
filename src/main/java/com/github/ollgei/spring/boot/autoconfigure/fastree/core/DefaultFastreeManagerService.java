@@ -21,13 +21,13 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public List<FastreeEntity> queryWithChildren(String name) {
-        return repository.queryWithChildren(name);
+    public List<FastreeEntity> queryWithChildren(String code) {
+        return repository.queryWithChildren(code);
     }
 
     @Override
-    public List<FastreeEntity> queryWithParent(String name) {
-        return repository.queryWithParent(name);
+    public List<FastreeEntity> queryWithParent(String code) {
+        return repository.queryWithParent(code);
     }
 
     @Override
@@ -41,28 +41,28 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public Integer queryLevel(String name) {
-        return repository.queryLevel(name);
+    public Integer queryLevel(String code) {
+        return repository.queryLevel(code);
     }
 
     @Override
-    public void addOne(Integer pid, String name) {
-        repository.save(pid, name);
+    public void addOne(Integer pid, String code) {
+        repository.save(pid, code);
     }
 
     @Override
-    public void addOne(String pname, String name) {
-        repository.save(pname, name);
+    public void addOne(String pcode, String code) {
+        repository.save(pcode, code);
     }
 
     @Override
-    public FastreeEntity init(String kind, String name) {
-        return repository.init(kind, name);
+    public FastreeEntity init(String kind, String code) {
+        return repository.init(kind, code);
     }
 
     @Override
-    public void removeIncludeChildren(String name) {
-        repository.remove(name);
+    public void removeIncludeChildren(String code) {
+        repository.remove(code);
     }
 
     @Override

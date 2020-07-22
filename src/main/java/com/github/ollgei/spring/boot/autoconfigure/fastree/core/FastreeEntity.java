@@ -21,9 +21,9 @@ public class FastreeEntity {
      */
     private String kind;
     /**
-     * name.
+     * code.
      */
-    private String name;
+    private String code;
     /**
      * left no.
      */
