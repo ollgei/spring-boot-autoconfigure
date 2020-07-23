@@ -35,6 +35,18 @@ public interface FastreeManagerService {
 
     /**
      * query none lock.
+     * @param code code
+     */
+    FastreeEntity queryParent(String code);
+
+    /**
+     * query none lock.
+     * @param id id
+     */
+    FastreeEntity queryParent(Integer id);
+
+    /**
+     * query none lock.
      * @param id id
      */
     Integer queryLevel(Integer id);
