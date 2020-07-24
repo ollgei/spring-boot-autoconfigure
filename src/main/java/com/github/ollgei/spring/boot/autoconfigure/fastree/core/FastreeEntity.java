@@ -5,12 +5,12 @@ import java.util.Map;
 import lombok.Data;
 
 /**
- * entity.
+ * entity 按照 left no 排序.
  * @author ollgei
  * @since 1.0.0
  */
 @Data
-public class FastreeEntity {
+public class FastreeEntity implements Comparable<FastreeEntity> {
 
     /**
      * ID.
@@ -38,4 +38,8 @@ public class FastreeEntity {
      */
     private Map<String, Object> custom;
 
+    @Override
+    public int compareTo(FastreeEntity entity) {
+        return this.getLftNo() - entity.getLftNo();
+    }
 }

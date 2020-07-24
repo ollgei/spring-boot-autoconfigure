@@ -1,6 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.fastree.core;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * desc.
@@ -56,18 +57,18 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public void addOne(Integer pid, String code) {
-        repository.save(pid, code);
+    public void addOne(Integer pid, String code, Map<String, Object> custom) {
+        repository.save(pid, code, custom);
     }
 
     @Override
-    public void addOne(String pcode, String code) {
-        repository.save(pcode, code);
+    public void addOne(String pcode, String code, Map<String, Object> custom) {
+        repository.save(pcode, code, custom);
     }
 
     @Override
-    public FastreeEntity init(String kind, String code) {
-        return repository.init(kind, code);
+    public FastreeEntity init(String kind, String code, Map<String, Object> custom) {
+        return repository.init(kind, code, custom);
     }
 
     @Override

@@ -96,7 +96,16 @@ public interface FastreeRepository {
      * @param code code
      * @param kind kind
      */
-    FastreeEntity init(String kind, String code);
+    default FastreeEntity init(String kind, String code) {
+        return init(kind, code, Collections.emptyMap());
+    }
+
+    /**
+     * init.
+     * @param code code
+     * @param kind kind
+     */
+    FastreeEntity init(String kind, String code, Map<String, Object> custom);
 
     /**
      * remove.

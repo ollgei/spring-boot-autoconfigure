@@ -125,7 +125,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public FastreeEntity init(String kind, String code) {
+    public FastreeEntity init(String kind, String code, Map<String, Object> custom) {
         return transactionTemplate.execute(status -> {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             //insert
@@ -134,7 +134,8 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             params3.put("code", code);
             params3.put("lftno", 1);
             params3.put("rgtno", 2);
-            int insertedRows = jdbcTemplate.update(getInsertSql(), new MapSqlParameterSource(params3), keyHolder);
+            params3.putAll(custom);
+            int insertedRows = jdbcTemplate.update(getInsertSql(custom), new MapSqlParameterSource(params3), keyHolder);
             if (insertedRows != 1) {
                 throw new RuntimeException("插入失败");
             }
@@ -211,7 +212,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         params2.put("lftno", rgtNo);
         params2.put("rgtno", rgtNo + 1);
         params2.putAll(custom);
-        int insertedRows = jdbcTemplate.update(getInsertSql(), params2);
+        int insertedRows = jdbcTemplate.update(getInsertSql(custom), params2);
         if (insertedRows != 1) {
             throw new RuntimeException("插入失败");
         }
@@ -288,8 +289,8 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             params.put("id", id);
         }
         final String sql = useCode ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
-        final FastreeEntity parentEntity =
-                jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
+        final List<FastreeEntity> parentEntities =
+                jdbcTemplate.query(sql, params, (rs, rowNum) -> {
                     FastreeEntity entity = new FastreeEntity();
                     entity.setKind(rs.getString(1));
                     entity.setRgtNo(rs.getInt(2));
@@ -297,15 +298,22 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
                     return entity;
                 });
         //创建失败
-        if (Objects.isNull(parentEntity)) {
+        if (Objects.isNull(parentEntities)) {
             return null;
         }
+        if (parentEntities.size() != 1) {
+            log.warn("found parentEntities size {}", parentEntities.size());
+            return null;
+        }
+
+        FastreeEntity parentEntity = parentEntities.get(0);
         final Map<String, Object> params2 = new HashMap<>();
         params2.put("lftno", parentEntity.getLftNo());
         params2.put("rgtno", parentEntity.getRgtNo());
         params2.put("kind", parentEntity.getKind());
 
-        return jdbcTemplate.queryForObject(getQueryParentSql(), params2, (rs, rowNum) -> {
+        //EmptyResultDataAccessException IncorrectResultSizeDataAccessException
+        final List<FastreeEntity> list = jdbcTemplate.query(getQueryParentSql(), params2, (rs, rowNum) -> {
             final FastreeEntity entity = new FastreeEntity();
             entity.setKind(rs.getString(1));
             entity.setRgtNo(rs.getInt(2));
@@ -325,6 +333,14 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             }
             return entity;
         });
+        if (list == null || list.size() == 0) {
+            return null;
+        }
+        if (list.size() == 1) {
+            return list.get(0);
+        }
+        log.warn("found many data {} for {}", list.size(), useCode ? code : id);
+        return null;
     }
 
     private List<FastreeEntity> queryNodes(Integer id, String code, boolean parent) {
@@ -451,19 +467,17 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         return "DELETE FROM " + sqlStatementsSource.tableName() + " WHERE kind = :kind AND lftno >= :lftno AND rgtno <= :rgtno";
     }
 
-    private String getInsertSql() {
-        StringBuilder cols = new StringBuilder();
+    private String getInsertSql(Map<String, Object> custom) {
+        final StringBuilder cols = new StringBuilder();
+        final StringBuilder vals = new StringBuilder();
         cols.append("kind, `code`, lftno, rgtno");
-        if (StringUtils.hasText(this.columns)) {
-            cols.append("," + this.columns);
-        }
-        StringBuilder vals = new StringBuilder();
         vals.append(":kind, :code, :lftno, :rgtno");
         if (StringUtils.hasText(this.columns)) {
             String[] arr = this.columns.split(",");
             for (int i = 0; i < arr.length; i++) {
-                if (StringUtils.hasText(arr[i])) {
-                    vals.append(":").append(arr[i]);
+                if (StringUtils.hasText(arr[i]) && custom.containsKey(arr[i])) {
+                    cols.append(",").append(arr[i]);
+                    vals.append(", :").append(arr[i]);
                 }
             }
         }
