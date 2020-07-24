@@ -98,11 +98,11 @@ public interface FastreeManagerService {
     /**
      * init.
      * @param code code
-     * @param kind kind
+     * @param gpname gpname
      * @return
      */
-    default FastreeEntity init(String kind, String code) {
-        return init(kind, code, Collections.emptyMap());
+    default FastreeEntity init(String gpname, String code) {
+        return init(gpname, code, Collections.emptyMap());
     }
 
 
@@ -118,10 +118,10 @@ public interface FastreeManagerService {
     /**
      * init.
      * @param code code
-     * @param kind kind
+     * @param gpname gpname
      * @return
      */
-    FastreeEntity init(String kind, String code, Map<String, Object> custom);
+    FastreeEntity init(String gpname, String code, Map<String, Object> custom);
 
     /**
      * remove.

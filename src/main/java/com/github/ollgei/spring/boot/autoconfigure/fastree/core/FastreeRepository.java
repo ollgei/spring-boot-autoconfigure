@@ -94,18 +94,18 @@ public interface FastreeRepository {
     /**
      * init.
      * @param code code
-     * @param kind kind
+     * @param gpname gpname
      */
-    default FastreeEntity init(String kind, String code) {
-        return init(kind, code, Collections.emptyMap());
+    default FastreeEntity init(String gpname, String code) {
+        return init(gpname, code, Collections.emptyMap());
     }
 
     /**
      * init.
      * @param code code
-     * @param kind kind
+     * @param gpname gpname
      */
-    FastreeEntity init(String kind, String code, Map<String, Object> custom);
+    FastreeEntity init(String gpname, String code, Map<String, Object> custom);
 
     /**
      * remove.

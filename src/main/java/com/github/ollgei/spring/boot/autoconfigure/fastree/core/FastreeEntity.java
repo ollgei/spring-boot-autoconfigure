@@ -17,9 +17,9 @@ public class FastreeEntity implements Comparable<FastreeEntity> {
      */
     private Integer id;
     /**
-     * kind.
+     * gpname.
      */
-    private String kind;
+    private String gpname;
     /**
      * code.
      */

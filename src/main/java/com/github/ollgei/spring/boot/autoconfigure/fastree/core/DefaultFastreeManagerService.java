@@ -67,8 +67,8 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public FastreeEntity init(String kind, String code, Map<String, Object> custom) {
-        return repository.init(kind, code, custom);
+    public FastreeEntity init(String gpname, String code, Map<String, Object> custom) {
+        return repository.init(gpname, code, custom);
     }
 
     @Override
