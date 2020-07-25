@@ -3,18 +3,23 @@ package com.github.ollgei.spring.boot.autoconfigure.fastree.core;
 import java.util.List;
 import java.util.Map;
 
+import com.github.ollgei.spring.boot.autoconfigure.fastree.FastreeProperties;
+
 /**
  * desc.
  * @author 1.0.0
  * @since zjw
  */
-public class DefaultFastreeManagerService implements FastreeManagerService {
+public class CommonFastreeManagerService implements FastreeManagerService {
 
     static final String NAME = "common";
 
     private FastreeRepository repository;
 
-    public DefaultFastreeManagerService(FastreeRepository repository) {
+    private FastreeProperties fastreeProperties;
+
+    public CommonFastreeManagerService(FastreeProperties properties, FastreeRepository repository) {
+        this.fastreeProperties = properties;
         this.repository = repository;
     }
 

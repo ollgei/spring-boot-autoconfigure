@@ -6,7 +6,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
-import com.github.ollgei.spring.boot.autoconfigure.fastree.core.DefaultFastreeManagerService;
+import com.github.ollgei.spring.boot.autoconfigure.fastree.core.CommonFastreeManagerService;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeManagerService;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeManagerStrategyService;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeRepository;
@@ -20,8 +20,8 @@ public abstract class FastreeConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultFastreeManagerService defaultFastreeManagerService(FastreeProperties fastreeProperties, FastreeRepository fastreeRepository) {
-        return new DefaultFastreeManagerService(fastreeRepository);
+    public CommonFastreeManagerService commonFastreeManagerService(FastreeProperties fastreeProperties, FastreeRepository fastreeRepository) {
+        return new CommonFastreeManagerService(fastreeProperties, fastreeRepository);
     }
 
     @Bean

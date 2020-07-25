@@ -32,6 +32,6 @@ public class FastreeManagerStrategyService {
     }
 
     public FastreeManagerService common() {
-        return services.get(DefaultFastreeManagerService.NAME);
+        return services.get(CommonFastreeManagerService.NAME);
     }
 }
