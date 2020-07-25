@@ -22,13 +22,13 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public List<FastreeEntity> queryWithChildren(String code) {
-        return repository.queryWithChildren(code);
+    public List<FastreeEntity> queryWithChildren(FastreeKeyEntity keyEntity) {
+        return repository.queryWithChildren(keyEntity);
     }
 
     @Override
-    public List<FastreeEntity> queryWithParent(String code) {
-        return repository.queryWithParent(code);
+    public List<FastreeEntity> queryWithParent(FastreeKeyEntity keyEntity) {
+        return repository.queryWithParent(keyEntity);
     }
 
     @Override
@@ -37,8 +37,8 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public FastreeEntity queryParent(String code) {
-        return repository.queryParent(code);
+    public FastreeEntity queryParent(FastreeKeyEntity keyEntity) {
+        return repository.queryParent(keyEntity);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public Integer queryLevel(String code) {
-        return repository.queryLevel(code);
+    public Integer queryLevel(FastreeKeyEntity keyEntity) {
+        return repository.queryLevel(keyEntity);
     }
 
     @Override
@@ -62,18 +62,18 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public void addOne(String pcode, String code, Map<String, Object> custom) {
-        repository.save(pcode, code, custom);
+    public void addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom) {
+        repository.save(keyEntity, code, custom);
     }
 
     @Override
-    public FastreeEntity init(String gpname, String code, Map<String, Object> custom) {
-        return repository.init(gpname, code, custom);
+    public FastreeEntity init(FastreeKeyEntity keyEntity, Map<String, Object> custom) {
+        return repository.init(keyEntity, custom);
     }
 
     @Override
-    public void removeIncludeChildren(String code) {
-        repository.remove(code);
+    public void removeIncludeChildren(FastreeKeyEntity keyEntity) {
+        repository.remove(keyEntity);
     }
 
     @Override

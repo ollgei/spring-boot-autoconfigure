@@ -19,15 +19,15 @@ public interface FastreeManagerService {
 
     /**
      * query none lock.
-     * @param code code
+     * @param keyEntity keyEntity
      */
-    List<FastreeEntity> queryWithChildren(String code);
+    List<FastreeEntity> queryWithChildren(FastreeKeyEntity keyEntity);
 
     /**
      * query none lock.
-     * @param code code
+     * @param keyEntity keyEntity
      */
-    List<FastreeEntity> queryWithParent(String code);
+    List<FastreeEntity> queryWithParent(FastreeKeyEntity keyEntity);
 
     /**
      * query none lock.
@@ -37,9 +37,9 @@ public interface FastreeManagerService {
 
     /**
      * query none lock.
-     * @param code code
+     * @param keyEntity keyEntity
      */
-    FastreeEntity queryParent(String code);
+    FastreeEntity queryParent(FastreeKeyEntity keyEntity);
 
     /**
      * query none lock.
@@ -55,9 +55,9 @@ public interface FastreeManagerService {
 
     /**
      * query none lock.
-     * @param code code
+     * @param keyEntity keyEntity
      */
-    Integer queryLevel(String code);
+    Integer queryLevel(FastreeKeyEntity keyEntity);
 
     /**
      * 增加.
@@ -66,7 +66,10 @@ public interface FastreeManagerService {
      * @return
      */
     default void addOne(String pcode, String code) {
-        addOne(pcode, code, Collections.emptyMap());
+        FastreeKeyEntity keyEntity = new FastreeKeyEntity();
+        keyEntity.setGpname(pcode);
+        keyEntity.setCode(code);
+        addOne(keyEntity, code, Collections.emptyMap());
     }
 
     /**
@@ -81,11 +84,11 @@ public interface FastreeManagerService {
 
     /**
      * 增加.
-     * @param pcode pcode
+     * @param keyEntity keyEntity
      * @param code code
      * @return
      */
-    void addOne(String pcode, String code, Map<String, Object> custom);
+    void addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom);
 
     /**
      * 增加.
@@ -102,7 +105,10 @@ public interface FastreeManagerService {
      * @return
      */
     default FastreeEntity init(String gpname, String code) {
-        return init(gpname, code, Collections.emptyMap());
+        FastreeKeyEntity keyEntity = new FastreeKeyEntity();
+        keyEntity.setCode(code);
+        keyEntity.setGpname(gpname);
+        return init(keyEntity, Collections.emptyMap());
     }
 
 
@@ -117,18 +123,17 @@ public interface FastreeManagerService {
 
     /**
      * init.
-     * @param code code
-     * @param gpname gpname
+     * @param keyEntity keyEntity
      * @return
      */
-    FastreeEntity init(String gpname, String code, Map<String, Object> custom);
+    FastreeEntity init(FastreeKeyEntity keyEntity, Map<String, Object> custom);
 
     /**
      * remove.
-     * @param code code
+     * @param keyEntity keyEntity
      * @return
      */
-    void removeIncludeChildren(String code);
+    void removeIncludeChildren(FastreeKeyEntity keyEntity);
 
     /**
      * 增加.

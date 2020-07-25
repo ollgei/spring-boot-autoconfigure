@@ -14,6 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.StringUtils;
 
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeEntity;
+import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeKeyEntity;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeRepository;
 import com.github.ollgei.spring.boot.autoconfigure.jdbc.AbstractJdbcTemplateRepository;
 import lombok.NonNull;
@@ -43,13 +44,13 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public List<FastreeEntity> queryWithChildren(String code) {
-        return queryWithCode(code, false);
+    public List<FastreeEntity> queryWithChildren(FastreeKeyEntity key) {
+        return queryWithCode(key, false);
     }
 
     @Override
-    public List<FastreeEntity> queryWithParent(String code) {
-        return queryWithCode(code, true);
+    public List<FastreeEntity> queryWithParent(FastreeKeyEntity key) {
+        return queryWithCode(key, true);
     }
 
     @Override
@@ -63,8 +64,8 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public FastreeEntity queryParent(String code) {
-        return queryParent(null, code);
+    public FastreeEntity queryParent(FastreeKeyEntity keyEntity) {
+        return queryParent(null, keyEntity);
     }
 
     @Override
@@ -73,15 +74,16 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public Integer queryLevel(String code) {
-        return queryLevel(null, code);
+    public Integer queryLevel(FastreeKeyEntity keyEntity) {
+        return queryLevel(null, keyEntity);
     }
 
     @Override
-    public Boolean save(String pcode, String code, Map<String, Object> custom) {
+    public Boolean save(FastreeKeyEntity key, String code, Map<String, Object> custom) {
         return transactionTemplate.execute(status -> {
             final Map<String, Object> params = new HashMap<>();
-            params.put("code", pcode);
+            params.put("code", key.getCode());
+            params.put("gpname", key.getGpname());
             final FastreeEntity parentEntity =
                     jdbcTemplate.queryForObject(getQuerySqlUseCode(), params, (rs, rowNum) -> {
                         FastreeEntity entity = new FastreeEntity();
@@ -128,13 +130,13 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public FastreeEntity init(String gpname, String code, Map<String, Object> custom) {
+    public FastreeEntity init(FastreeKeyEntity key, Map<String, Object> custom) {
         return transactionTemplate.execute(status -> {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             //insert
             final Map<String, Object> params3 = new HashMap<>();
-            params3.put("gpname", gpname);
-            params3.put("code", code);
+            params3.put("gpname", key.getGpname());
+            params3.put("code", key.getCode());
             params3.put("lftno", 1);
             params3.put("rgtno", 2);
             params3.putAll(custom);
@@ -144,7 +146,8 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             }
             final FastreeEntity root = new FastreeEntity();
             root.setId(keyHolder.getKey().intValue());
-            root.setCode(code);
+            root.setCode(key.getCode());
+            root.setGpname(key.getGpname());
             root.setLftNo(1);
             root.setLftNo(2);
             return root;
@@ -174,10 +177,11 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public Boolean remove(String code) {
+    public Boolean remove(FastreeKeyEntity keyEntity) {
         return transactionTemplate.execute(status -> {
             final Map<String, Object> params = new HashMap<>();
-            params.put("code", code);
+            params.put("code", keyEntity.getCode());
+            params.put("gpname", keyEntity.getGpname());
             final FastreeEntity parentEntity =
                     jdbcTemplate.queryForObject(getQuerySqlUseCode(), params, (rs, rowNum) -> {
                         FastreeEntity entity = new FastreeEntity();
@@ -246,23 +250,23 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         return true;
     }
 
-    private List<FastreeEntity> queryWithCode(String code, boolean parent) {
-        return queryNodes(null, code, parent);
+    private List<FastreeEntity> queryWithCode(FastreeKeyEntity key, boolean parent) {
+        return queryNodes(null, key, parent);
     }
 
     private List<FastreeEntity> queryWithId(Integer id, boolean parent) {
         return queryNodes(id, null, parent);
     }
 
-    private Integer queryLevel(Integer id, String code) {
-        final boolean useCode = StringUtils.hasText(code);
+    private Integer queryLevel(Integer id, FastreeKeyEntity keyEntity) {
         final Map<String, Object> params = new HashMap<>();
-        if (useCode) {
-            params.put("code", code);
+        if (Objects.nonNull(keyEntity)) {
+            params.put("code", keyEntity.getCode());
+            params.put("gpname", keyEntity.getGpname());
         } else {
             params.put("id", id);
         }
-        final String sql = useCode ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
+        final String sql = Objects.nonNull(keyEntity) ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
         final FastreeEntity parentEntity =
                 jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
                     FastreeEntity entity = new FastreeEntity();
@@ -283,15 +287,15 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         return jdbcTemplate.queryForObject(getQuerySqlWithLevel(), params2, (rs, rowNum) -> rs.getInt(1));
     }
 
-    private FastreeEntity queryParent(Integer id, String code) {
-        final boolean useCode = StringUtils.hasText(code);
+    private FastreeEntity queryParent(Integer id, FastreeKeyEntity keyEntity) {
         final Map<String, Object> params = new HashMap<>();
-        if (useCode) {
-            params.put("code", code);
+        if (Objects.nonNull(keyEntity)) {
+            params.put("code", keyEntity.getCode());
+            params.put("gpname", keyEntity.getGpname());
         } else {
             params.put("id", id);
         }
-        final String sql = useCode ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
+        final String sql = Objects.nonNull(keyEntity) ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
         final List<FastreeEntity> parentEntities =
                 jdbcTemplate.query(sql, params, (rs, rowNum) -> {
                     FastreeEntity entity = new FastreeEntity();
@@ -342,19 +346,19 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         if (list.size() == 1) {
             return list.get(0);
         }
-        log.warn("found many data {} for {}", list.size(), useCode ? code : id);
+        log.warn("found many data {} for {}", list.size(), Objects.nonNull(keyEntity) ? keyEntity : id);
         return null;
     }
 
-    private List<FastreeEntity> queryNodes(Integer id, String code, boolean parent) {
-        final boolean useCode = StringUtils.hasText(code);
+    private List<FastreeEntity> queryNodes(Integer id, FastreeKeyEntity key, boolean parent) {
         final Map<String, Object> params = new HashMap<>();
-        if (useCode) {
-            params.put("code", code);
+        if (Objects.nonNull(key)) {
+            params.put("code", key.getCode());
+            params.put("gpname", key.getGpname());
         } else {
             params.put("id", id);
         }
-        final String sql = useCode ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
+        final String sql = Objects.nonNull(key) ? getQuerySqlUseCodeNoneLock() : getQuerySqlNoneLock();
         final FastreeEntity parentEntity =
                 jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> {
                     FastreeEntity entity = new FastreeEntity();
@@ -401,7 +405,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     private String getQuerySqlUseCode() {
-        return "SELECT gpname, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE code = :code FOR UPDATE";
+        return "SELECT gpname, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE gpname = :gpname AND code = :code FOR UPDATE";
     }
 
     private String getQuerySqlNoneLock() {
@@ -409,7 +413,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     private String getQuerySqlUseCodeNoneLock() {
-        return "SELECT gpname, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE code = :code";
+        return "SELECT gpname, rgtno, lftno, code, id FROM " + sqlStatementsSource.tableName() +" WHERE gpname = :gpname AND code = :code";
     }
 
     private String getQueryParentSql() {

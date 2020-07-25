@@ -19,15 +19,15 @@ public interface FastreeRepository {
 
     /**
      * query none lock.
-     * @param code code
+     * @param key key
      */
-    List<FastreeEntity> queryWithChildren(String code);
+    List<FastreeEntity> queryWithChildren(FastreeKeyEntity key);
 
     /**
      * query none lock.
-     * @param code code
+     * @param key key
      */
-    List<FastreeEntity> queryWithParent(String code);
+    List<FastreeEntity> queryWithParent(FastreeKeyEntity key);
 
     /**
      * query none lock.
@@ -43,9 +43,9 @@ public interface FastreeRepository {
 
     /**
      * query none lock.
-     * @param code code
+     * @param key key
      */
-    FastreeEntity queryParent(String code);
+    FastreeEntity queryParent(FastreeKeyEntity key);
 
     /**
      * query none lock.
@@ -55,9 +55,9 @@ public interface FastreeRepository {
 
     /**
      * query none lock.
-     * @param code code
+     * @param key key
      */
-    Integer queryLevel(String code);
+    Integer queryLevel(FastreeKeyEntity key);
 
     /**
      * save.
@@ -65,7 +65,10 @@ public interface FastreeRepository {
      * @param code code
      */
     default Boolean save(String pcode, String code) {
-        return save(pcode, code, Collections.emptyMap());
+        FastreeKeyEntity keyEntity = new FastreeKeyEntity();
+        keyEntity.setGpname(pcode);
+        keyEntity.setCode(pcode);
+        return save(keyEntity, code, Collections.emptyMap());
     }
 
     /**
@@ -79,10 +82,10 @@ public interface FastreeRepository {
 
     /**
      * save.
-     * @param pcode parent code
+     * @param key parent key
      * @param code code
      */
-    Boolean save(String pcode, String code, Map<String, Object> custom);
+    Boolean save(FastreeKeyEntity key, String code, Map<String, Object> custom);
 
     /**
      * save.
@@ -97,15 +100,17 @@ public interface FastreeRepository {
      * @param gpname gpname
      */
     default FastreeEntity init(String gpname, String code) {
-        return init(gpname, code, Collections.emptyMap());
+        FastreeKeyEntity keyEntity = new FastreeKeyEntity();
+        keyEntity.setCode(code);
+        keyEntity.setGpname(gpname);
+        return init(keyEntity, Collections.emptyMap());
     }
 
     /**
      * init.
-     * @param code code
-     * @param gpname gpname
+     * @param key key
      */
-    FastreeEntity init(String gpname, String code, Map<String, Object> custom);
+    FastreeEntity init(FastreeKeyEntity key, Map<String, Object> custom);
 
     /**
      * remove.
@@ -115,8 +120,8 @@ public interface FastreeRepository {
 
     /**
      * remove.
-     * @param code code
+     * @param keyEntity keyEntity
      */
-    Boolean remove(String code);
+    Boolean remove(FastreeKeyEntity keyEntity);
 
 }
