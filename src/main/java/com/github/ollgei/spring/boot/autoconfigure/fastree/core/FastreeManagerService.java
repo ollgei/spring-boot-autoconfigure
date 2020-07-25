@@ -142,4 +142,6 @@ public interface FastreeManagerService {
      */
     void removeIncludeChildren(Integer id);
 
+    String name();
+
 }

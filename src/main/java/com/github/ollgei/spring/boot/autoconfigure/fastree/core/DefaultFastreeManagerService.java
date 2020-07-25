@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public class DefaultFastreeManagerService implements FastreeManagerService {
 
+    static final String NAME = "common";
+
     private FastreeRepository repository;
 
     public DefaultFastreeManagerService(FastreeRepository repository) {
@@ -79,5 +81,10 @@ public class DefaultFastreeManagerService implements FastreeManagerService {
     @Override
     public void removeIncludeChildren(Integer id) {
         repository.remove(id);
+    }
+
+    @Override
+    public String name() {
+        return NAME;
     }
 }
