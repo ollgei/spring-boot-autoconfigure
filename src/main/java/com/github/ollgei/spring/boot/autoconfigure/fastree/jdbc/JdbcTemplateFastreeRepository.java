@@ -327,13 +327,12 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             entity.setLftNo(rs.getInt(3));
             entity.setCode(rs.getString(4));
             entity.setId(rs.getInt(5));
-            final String columns = this.columns;
-            if (StringUtils.hasText(columns)) {
+            if (StringUtils.hasText(this.columns)) {
                 final Map<String, Object> custom = new HashMap<>();
-                final String[] cs = columns.split(",");
+                final String[] cs = this.columns.split(",");
                 for (int i = 0; i < cs.length; i++) {
                     if (StringUtils.hasText(cs[i])) {
-                        custom.put(cs[i], rs.getObject(i + 6));
+                        custom.put(cs[i].trim(), rs.getObject(i + 6));
                     }
                 }
                 entity.setCustom(custom);
@@ -385,13 +384,12 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             entity.setLftNo(rs.getInt(3));
             entity.setCode(rs.getString(4));
             entity.setId(rs.getInt(5));
-            final String columns = this.columns;
-            if (StringUtils.hasText(columns)) {
+            if (StringUtils.hasText(this.columns)) {
                 final Map<String, Object> custom = new HashMap<>();
-                final String[] cs = columns.split(",");
+                final String[] cs = this.columns.split(",");
                 for (int i = 0; i < cs.length; i++) {
                     if (StringUtils.hasText(cs[i])) {
-                        custom.put(cs[i], rs.getObject(i + 6));
+                        custom.put(cs[i].trim(), rs.getObject(i + 6));
                     }
                 }
                 entity.setCustom(custom);
@@ -482,10 +480,14 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         if (StringUtils.hasText(this.columns)) {
             String[] arr = this.columns.split(",");
             for (int i = 0; i < arr.length; i++) {
-                if (StringUtils.hasText(arr[i]) && custom.containsKey(arr[i])) {
-                    cols.append(",").append(arr[i]);
-                    vals.append(", :").append(arr[i]);
+                if (StringUtils.hasText(arr[i])) {
+                    final String key = arr[i].trim();
+                    if (custom.containsKey(key)) {
+                        cols.append(",").append(key);
+                        vals.append(", :").append(key);
+                    }
                 }
+
             }
         }
         return "INSERT INTO " + sqlStatementsSource.tableName() + "(" + cols.toString() +") VALUES (" + vals.toString() + ")";

@@ -14,6 +14,7 @@ public interface FastreeManagerService {
     /**
      * query none lock.
      * @param id id
+     * @return
      */
     List<FastreeEntity> queryWithChildren(Integer id);
 
@@ -50,12 +51,14 @@ public interface FastreeManagerService {
     /**
      * query none lock.
      * @param id id
+     * @return
      */
     Integer queryLevel(Integer id);
 
     /**
      * query none lock.
      * @param keyEntity keyEntity
+     * @return
      */
     Integer queryLevel(FastreeKeyEntity keyEntity);
 
@@ -86,6 +89,7 @@ public interface FastreeManagerService {
      * 增加.
      * @param keyEntity keyEntity
      * @param code code
+     * @param custom custom
      * @return
      */
     void addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom);
@@ -101,7 +105,7 @@ public interface FastreeManagerService {
     /**
      * init.
      * @param code code
-     * @param gpname gpname
+     * @param gpname group name
      * @return
      */
     default FastreeEntity init(String gpname, String code) {
@@ -124,6 +128,7 @@ public interface FastreeManagerService {
     /**
      * init.
      * @param keyEntity keyEntity
+     * @param custom custom
      * @return
      */
     FastreeEntity init(FastreeKeyEntity keyEntity, Map<String, Object> custom);
@@ -142,6 +147,10 @@ public interface FastreeManagerService {
      */
     void removeIncludeChildren(Integer id);
 
+    /**
+     * name.
+     * @return
+     */
     String name();
 
 }
