@@ -64,13 +64,13 @@ public class CommonFastreeManagerService implements FastreeManagerService {
     }
 
     @Override
-    public void addOne(Integer pid, String code, Map<String, Object> custom) {
-        repository.save(pid, code, custom);
+    public FastreeEntity addOne(Integer pid, String code, Map<String, Object> custom) {
+        return repository.save(pid, code, custom);
     }
 
     @Override
-    public void addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom) {
-        repository.save(keyEntity, code, custom);
+    public FastreeEntity addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom) {
+        return repository.save(keyEntity, code, custom);
     }
 
     @Override

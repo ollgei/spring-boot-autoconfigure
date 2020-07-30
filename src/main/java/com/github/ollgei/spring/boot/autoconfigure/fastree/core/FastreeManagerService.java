@@ -5,11 +5,64 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * entity.
+ * manager.
  * @author ollgei
  * @since 1.0.0
  */
 public interface FastreeManagerService {
+
+    /**
+     * init code可以是中文.
+     * @param code code
+     * @return
+     */
+    default FastreeEntity init(String code) {
+        return init(code, code);
+    }
+
+    /**
+     * init code可以是中文.
+     * @param code code
+     * @return
+     */
+    default FastreeEntity init(String code, Map<String, Object> custom) {
+        return init(code, code, custom);
+    }
+
+    /**
+     * init.
+     * @param code code
+     * @param gpname group name
+     * @return
+     */
+    default FastreeEntity init(String gpname, String code) {
+        FastreeKeyEntity keyEntity = new FastreeKeyEntity();
+        keyEntity.setCode(code);
+        keyEntity.setGpname(gpname);
+        return init(keyEntity, Collections.emptyMap());
+    }
+
+    /**
+     * init.
+     * @param code code
+     * @param gpname group name
+     * @param custom custom
+     * @return
+     */
+    default FastreeEntity init(String gpname, String code, Map<String, Object> custom) {
+        final FastreeKeyEntity keyEntity = new FastreeKeyEntity();
+        keyEntity.setCode(code);
+        keyEntity.setGpname(gpname);
+        return init(keyEntity, custom);
+    }
+
+    /**
+     * init.
+     * @param keyEntity keyEntity
+     * @param custom custom
+     * @return
+     */
+    FastreeEntity init(FastreeKeyEntity keyEntity, Map<String, Object> custom);
 
     /**
      * query none lock.
@@ -68,11 +121,11 @@ public interface FastreeManagerService {
      * @param code code
      * @return
      */
-    default void addOne(String pcode, String code) {
+    default FastreeEntity addOne(String pcode, String code) {
         FastreeKeyEntity keyEntity = new FastreeKeyEntity();
         keyEntity.setGpname(pcode);
         keyEntity.setCode(code);
-        addOne(keyEntity, code, Collections.emptyMap());
+        return addOne(keyEntity, code, Collections.emptyMap());
     }
 
     /**
@@ -81,8 +134,8 @@ public interface FastreeManagerService {
      * @param code code
      * @return
      */
-    default void addOne(Integer pid, String code) {
-        addOne(pid, code, Collections.emptyMap());
+    default FastreeEntity addOne(Integer pid, String code) {
+        return addOne(pid, code, Collections.emptyMap());
     }
 
     /**
@@ -92,7 +145,7 @@ public interface FastreeManagerService {
      * @param custom custom
      * @return
      */
-    void addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom);
+    FastreeEntity addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom);
 
     /**
      * 增加.
@@ -100,38 +153,7 @@ public interface FastreeManagerService {
      * @param code code
      * @return
      */
-    void addOne(Integer pid, String code, Map<String, Object> custom);
-
-    /**
-     * init.
-     * @param code code
-     * @param gpname group name
-     * @return
-     */
-    default FastreeEntity init(String gpname, String code) {
-        FastreeKeyEntity keyEntity = new FastreeKeyEntity();
-        keyEntity.setCode(code);
-        keyEntity.setGpname(gpname);
-        return init(keyEntity, Collections.emptyMap());
-    }
-
-
-    /**
-     * init.
-     * @param code code
-     * @return
-     */
-    default FastreeEntity init(String code) {
-        return init(code, code);
-    }
-
-    /**
-     * init.
-     * @param keyEntity keyEntity
-     * @param custom custom
-     * @return
-     */
-    FastreeEntity init(FastreeKeyEntity keyEntity, Map<String, Object> custom);
+    FastreeEntity addOne(Integer pid, String code, Map<String, Object> custom);
 
     /**
      * remove.

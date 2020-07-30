@@ -64,7 +64,7 @@ public interface FastreeRepository {
      * @param pcode parent code
      * @param code code
      */
-    default Boolean save(String pcode, String code) {
+    default FastreeEntity save(String pcode, String code) {
         FastreeKeyEntity keyEntity = new FastreeKeyEntity();
         keyEntity.setGpname(pcode);
         keyEntity.setCode(pcode);
@@ -76,7 +76,7 @@ public interface FastreeRepository {
      * @param pid parent id
      * @param code code
      */
-    default Boolean save(Integer pid, String code) {
+    default FastreeEntity save(Integer pid, String code) {
         return save(pid, code, Collections.emptyMap());
     }
 
@@ -85,14 +85,14 @@ public interface FastreeRepository {
      * @param key parent key
      * @param code code
      */
-    Boolean save(FastreeKeyEntity key, String code, Map<String, Object> custom);
+    FastreeEntity save(FastreeKeyEntity key, String code, Map<String, Object> custom);
 
     /**
      * save.
      * @param pid parent id
      * @param code code
      */
-    Boolean save(Integer pid, String code, Map<String, Object> custom);
+    FastreeEntity save(Integer pid, String code, Map<String, Object> custom);
 
     /**
      * init.

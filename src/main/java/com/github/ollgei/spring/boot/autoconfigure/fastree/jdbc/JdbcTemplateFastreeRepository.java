@@ -1,5 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.fastree.jdbc;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +81,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
     }
 
     @Override
-    public Boolean save(FastreeKeyEntity key, String code, Map<String, Object> custom) {
+    public FastreeEntity save(FastreeKeyEntity key, String code, Map<String, Object> custom) {
         return transactionTemplate.execute(status -> {
             final Map<String, Object> params = new HashMap<>();
             params.put("code", key.getCode());
@@ -93,22 +95,21 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
                     });
             //创建失败
             if (Objects.isNull(parentEntity)) {
-                return false;
+                return null;
             }
+
             jdbcTemplate.query(getQuerySqlUseCode(), params, (rs, rowNum) -> {
                 FastreeEntity entity = new FastreeEntity();
                 entity.setGpname(rs.getString(1));
                 entity.setRgtNo(rs.getInt(2));
                 return entity;
             });
-            final Boolean result =
-                    saveWithTransaction(parentEntity.getGpname(), parentEntity.getRgtNo(), code, custom);
-            return result;
+            return saveWithTransaction(parentEntity.getGpname(), parentEntity.getRgtNo(), code, custom);
         });
     }
 
     @Override
-    public Boolean save(Integer pid, String code, Map<String, Object> custom) {
+    public FastreeEntity save(Integer pid, String code, Map<String, Object> custom) {
         return transactionTemplate.execute(status -> {
             final Map<String, Object> params = new HashMap<>();
             params.put("id", pid);
@@ -121,11 +122,9 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
                     });
             //创建失败
             if (Objects.isNull(parentEntity)) {
-                return false;
+                return null;
             }
-            final Boolean result =
-                    saveWithTransaction(parentEntity.getGpname(), parentEntity.getRgtNo(), code, custom);
-            return result;
+            return saveWithTransaction(parentEntity.getGpname(), parentEntity.getRgtNo(), code, custom);
         });
     }
 
@@ -199,7 +198,7 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         });
     }
 
-    private Boolean saveWithTransaction(String gpname, Integer rgtNo, String code, Map<String, Object> custom) {
+    private FastreeEntity saveWithTransaction(String gpname, Integer rgtNo, String code, Map<String, Object> custom) {
         //update
         final Map<String, Object> params1 = new HashMap<>();
         params1.put("rgtno", rgtNo);
@@ -213,18 +212,25 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
             log.warn("no found for lftno >= {}", rgtNo);
         }
         //insert
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         final Map<String, Object> params2 = new HashMap<>();
         params2.put("gpname", gpname);
         params2.put("code", code);
         params2.put("lftno", rgtNo);
         params2.put("rgtno", rgtNo + 1);
         params2.putAll(custom);
-        int insertedRows = jdbcTemplate.update(getInsertSql(custom), params2);
+        int insertedRows = jdbcTemplate.update(getInsertSql(custom), new MapSqlParameterSource(params2), keyHolder);
         if (insertedRows != 1) {
             throw new RuntimeException("插入失败");
         }
 
-        return true;
+        final FastreeEntity entity = new FastreeEntity();
+        entity.setId(keyHolder.getKey().intValue());
+        entity.setCode(code);
+        entity.setGpname(gpname);
+        entity.setLftNo(rgtNo);
+        entity.setLftNo(rgtNo + 1);
+        return entity;
     }
 
     private Boolean removeWithTransaction(String gpname, Integer lftNo, Integer rgtNo) {
@@ -320,25 +326,8 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         params2.put("gpname", parentEntity.getGpname());
 
         //EmptyResultDataAccessException IncorrectResultSizeDataAccessException
-        final List<FastreeEntity> list = jdbcTemplate.query(getQueryParentSql(), params2, (rs, rowNum) -> {
-            final FastreeEntity entity = new FastreeEntity();
-            entity.setGpname(rs.getString(1));
-            entity.setRgtNo(rs.getInt(2));
-            entity.setLftNo(rs.getInt(3));
-            entity.setCode(rs.getString(4));
-            entity.setId(rs.getInt(5));
-            if (StringUtils.hasText(this.columns)) {
-                final Map<String, Object> custom = new HashMap<>();
-                final String[] cs = this.columns.split(",");
-                for (int i = 0; i < cs.length; i++) {
-                    if (StringUtils.hasText(cs[i])) {
-                        custom.put(cs[i].trim(), rs.getObject(i + 6));
-                    }
-                }
-                entity.setCustom(custom);
-            }
-            return entity;
-        });
+        final List<FastreeEntity> list = jdbcTemplate.query(getQueryParentSql(), params2,
+                (rs, rowNum) -> mapToFastreeEntity(rs));
         if (list == null || list.size() == 0) {
             return null;
         }
@@ -347,6 +336,26 @@ public class JdbcTemplateFastreeRepository extends AbstractJdbcTemplateRepositor
         }
         log.warn("found many data {} for {}", list.size(), Objects.nonNull(keyEntity) ? keyEntity : id);
         return null;
+    }
+
+    private FastreeEntity mapToFastreeEntity(ResultSet rs) throws SQLException {
+        final FastreeEntity entity = new FastreeEntity();
+        entity.setGpname(rs.getString(1));
+        entity.setRgtNo(rs.getInt(2));
+        entity.setLftNo(rs.getInt(3));
+        entity.setCode(rs.getString(4));
+        entity.setId(rs.getInt(5));
+        if (StringUtils.hasText(this.columns)) {
+            final Map<String, Object> custom = new HashMap<>();
+            final String[] cs = this.columns.split(",");
+            for (int i = 0; i < cs.length; i++) {
+                if (StringUtils.hasText(cs[i])) {
+                    custom.put(cs[i].trim(), rs.getObject(i + 6));
+                }
+            }
+            entity.setCustom(custom);
+        }
+        return entity;
     }
 
     private List<FastreeEntity> queryNodes(Integer id, FastreeKeyEntity key, boolean parent) {
