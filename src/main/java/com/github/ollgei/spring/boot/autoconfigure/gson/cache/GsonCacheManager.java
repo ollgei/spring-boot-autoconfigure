@@ -30,6 +30,15 @@ public interface GsonCacheManager {
 
     /**
      * desc.
+     * @param builder builder
+     * @return
+     */
+    default GsonCache get(GsonBuilder builder) {
+        return get(DEFAULT_NAME, builder);
+    }
+
+    /**
+     * desc.
      * @param name name
      * @param builder builder
      * @return

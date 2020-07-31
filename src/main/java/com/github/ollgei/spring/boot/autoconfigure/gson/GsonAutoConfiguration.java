@@ -44,7 +44,7 @@ public class GsonAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public GsonBuilder gsonBuilder(List<GsonBuilderCustomizer> customizers) {
+	public GsonBuilder ollgeiGsonBuilder(List<GsonBuilderCustomizer> customizers) {
 		GsonBuilder builder = new GsonBuilder();
 		customizers.forEach((c) -> c.customize(builder));
 		return builder;
@@ -52,12 +52,12 @@ public class GsonAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public Gson gson(GsonBuilder gsonBuilder) {
+	public Gson ollgeiGson(GsonBuilder gsonBuilder) {
 		return gsonBuilder.create();
 	}
 
 	@Bean
-	public StandardGsonBuilderCustomizer standardGsonBuilderCustomizer(GsonProperties gsonProperties) {
+	public StandardGsonBuilderCustomizer ollgeiStandardGsonBuilderCustomizer(GsonProperties gsonProperties) {
 		return new StandardGsonBuilderCustomizer(gsonProperties);
 	}
 
