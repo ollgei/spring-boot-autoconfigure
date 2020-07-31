@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.gson;
+package com.github.ollgei.spring.boot.autoconfigure.gson.cache;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.ollgei.base.commonj.gson.GsonBuilder;
 
 /**
  * simple cache.
@@ -22,8 +21,8 @@ class CaffeineGsonCacheConfiguration {
 
     @Bean
     @SuppressWarnings("all")
-    CaffeineGsonCacheManager caffeineGsonCacheManager(GsonCacheProperties cacheGsonProperties, GsonBuilder gsonBuilder) {
-        return new CaffeineGsonCacheManager(cacheGsonProperties, gsonBuilder);
+    CaffeineGsonCacheManager caffeineGsonCacheManager(GsonCacheProperties cacheGsonProperties) {
+        return new CaffeineGsonCacheManager(cacheGsonProperties);
     }
 
 }

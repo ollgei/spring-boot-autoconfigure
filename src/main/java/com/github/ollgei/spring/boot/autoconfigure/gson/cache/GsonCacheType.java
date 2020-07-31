@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.ollgei.spring.boot.autoconfigure.gson;
+package com.github.ollgei.spring.boot.autoconfigure.gson.cache;
 
 /**
  * Supported cache types (defined in order of precedence).

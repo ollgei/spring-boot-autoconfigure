@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.ollgei.spring.boot.autoconfigure.gson;
+package com.github.ollgei.spring.boot.autoconfigure.gson.cache;
 
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;

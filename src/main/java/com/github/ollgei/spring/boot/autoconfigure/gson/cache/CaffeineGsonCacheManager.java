@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.gson;
+package com.github.ollgei.spring.boot.autoconfigure.gson.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

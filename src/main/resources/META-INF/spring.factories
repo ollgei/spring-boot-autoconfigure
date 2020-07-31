@@ -2,4 +2,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.segment.JdbcTemplateBoundSegmentAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.fastree.JdbcTemplateFastreeAutoConfiguration
+com.github.ollgei.spring.boot.autoconfigure.fastree.JdbcTemplateFastreeAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.gson.cache.GsonCacheAutoConfiguration

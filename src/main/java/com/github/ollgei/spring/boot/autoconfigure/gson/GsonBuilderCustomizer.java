@@ -16,8 +16,8 @@
 
 package com.github.ollgei.spring.boot.autoconfigure.gson;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.github.ollgei.base.commonj.gson.Gson;
+import com.github.ollgei.base.commonj.gson.GsonBuilder;
 
 /**
  * Callback interface that can be implemented by beans wishing to further customize the

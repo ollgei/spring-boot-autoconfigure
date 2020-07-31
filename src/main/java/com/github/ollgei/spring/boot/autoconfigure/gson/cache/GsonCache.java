@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.gson;
+package com.github.ollgei.spring.boot.autoconfigure.gson.cache;
 
 import java.util.Collections;
 import java.util.Map;
