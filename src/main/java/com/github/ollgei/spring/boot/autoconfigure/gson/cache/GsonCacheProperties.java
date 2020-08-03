@@ -16,8 +16,6 @@
 
 package com.github.ollgei.spring.boot.autoconfigure.gson.cache;
 
-import java.util.Map;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.github.ollgei.base.commonj.gson.Gson;
@@ -47,8 +45,4 @@ public class GsonCacheProperties {
      */
     private int maxSize = 10000;
 
-    /**
-     * features.
-     */
-    private Map<String, GsonCacheProperties> features;
 }
