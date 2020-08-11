@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.jdbc;
+package com.github.ollgei.spring.boot.autoconfigure.internal.jdbc;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;

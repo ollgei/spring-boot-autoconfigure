@@ -18,7 +18,7 @@ import org.springframework.util.StringUtils;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeEntity;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeKeyEntity;
 import com.github.ollgei.spring.boot.autoconfigure.fastree.core.FastreeRepository;
-import com.github.ollgei.spring.boot.autoconfigure.jdbc.AbstractJdbcTemplateRepository;
+import com.github.ollgei.spring.boot.autoconfigure.internal.jdbc.AbstractJdbcTemplateRepository;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 

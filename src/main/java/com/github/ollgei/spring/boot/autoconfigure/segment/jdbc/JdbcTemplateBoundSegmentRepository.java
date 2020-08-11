@@ -8,7 +8,7 @@ import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.github.ollgei.spring.boot.autoconfigure.jdbc.AbstractJdbcTemplateRepository;
+import com.github.ollgei.spring.boot.autoconfigure.internal.jdbc.AbstractJdbcTemplateRepository;
 import com.github.ollgei.spring.boot.autoconfigure.segment.BoundSegmentProperties;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.BoundSegmentRepository;
 import com.github.ollgei.spring.boot.autoconfigure.segment.core.SectionDefination;

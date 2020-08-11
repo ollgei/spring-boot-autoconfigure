@@ -166,7 +166,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
         final int step = calcStep(name);
 
         //更新数据库（step）,最大值增加,步长可能增加
-        SectionDefination definationForUpdate = new SectionDefination();
+        final SectionDefination definationForUpdate = new SectionDefination();
         definationForUpdate.setName(name);
         definationForUpdate.setStep(step);
         final SectionDefination defination = repository.updateMaxAndStep(definationForUpdate);
