@@ -10,13 +10,12 @@ import lombok.Data;
 @Data
 public class AsyncRetryObject {
 
-    public static final int MAX_VERSION = 1;
     /***version == 1***/
     /**版本号*/
-    private Integer version = MAX_VERSION;
-    /**请求数据*/
-    private Object request;
-    /**上下文数据*/
+    private Integer version = 1;
+    /**类型*/
+    private String kind;
+    /**请求上下文*/
     private Object context;
 
 }

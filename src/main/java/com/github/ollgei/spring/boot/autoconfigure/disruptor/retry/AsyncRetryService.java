@@ -30,7 +30,7 @@ public class AsyncRetryService {
         //异步发布消息
         final AsyncRetrySubscription subscription = new AsyncRetrySubscription();
         subscription.setContext(object.getContext());
-        subscription.setRequest(object.getRequest());
+        subscription.setKind(object.getKind());
         publisher.write(subscription);
     }
 

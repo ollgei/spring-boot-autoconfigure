@@ -29,6 +29,7 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryLocalService;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryRepository;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryService;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetrySubscriber;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -78,6 +79,13 @@ public class OllgeiDisruptorAutoConfiguration {
     @ConditionalOnBean({AsyncRetryRepository.class, AsyncRetryLocalService.class})
     public AsyncRetryService asyncRetryService(OllgeiDisruptorPublisher ollgeiDisruptorPublisher, AsyncRetryRepository asyncRetryRepository, AsyncRetryLocalService asyncRetryLocalService) {
         return new AsyncRetryService(ollgeiDisruptorPublisher, asyncRetryRepository, asyncRetryLocalService);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(AsyncRetryService.class)
+    public AsyncRetrySubscriber asyncRetrySubscriber(AsyncRetryService asyncRetryService) {
+        return new AsyncRetrySubscriber(asyncRetryService);
     }
 
 }

@@ -17,8 +17,8 @@ public class AsyncRetrySubscriber implements OllgeiDisruptorSubscriber<AsyncRetr
 
     @Override
     public void onNext(AsyncRetrySubscription subscription) {
-        final AsyncRetryObject object = new AsyncRetryObject();
-        object.setRequest(subscription.getRequest());
+        AsyncRetryObject object = new AsyncRetryObject();
+        object.setKind(subscription.getKind());
         object.setContext(subscription.getContext());
         asyncRetryService.run(object);
     }

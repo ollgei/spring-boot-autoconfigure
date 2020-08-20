@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class AsyncRetrySubscription extends AbstractSubscription {
-    /**请求数据*/
-    private Object request;
+    /**类型*/
+    private String kind;
     /**上下文数据*/
     private Object context;
 }
