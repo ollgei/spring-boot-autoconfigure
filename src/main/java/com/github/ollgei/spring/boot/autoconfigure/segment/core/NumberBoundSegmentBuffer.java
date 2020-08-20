@@ -73,7 +73,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
         }
     }
 
-    public long tryGetValue(final String name) {
+    private long tryGetValue(final String name) {
         final BoundSegment<NumberElementSection> segment = get(name);
         if (Objects.isNull(segment)) {
             return INVALID_VALUE;
@@ -124,6 +124,7 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
             final String name = defination.getName();
             tags.add(name);
 
+            //返回为空，不会放入到缓存中
             putIfAbsent(name, k -> {
                 if (!name.equals(k)) {
                     return null;
