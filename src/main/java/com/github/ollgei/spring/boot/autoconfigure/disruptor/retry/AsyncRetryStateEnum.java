@@ -1,5 +1,8 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
 
+import com.github.ollgei.base.commonj.errors.CauseException;
+import com.github.ollgei.base.commonj.errors.ErrorCodeEnum;
+import com.github.ollgei.base.commonj.errors.ErrorException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -26,7 +29,7 @@ public enum AsyncRetryStateEnum {
     /**下游失败 011*/
     DOWNSTREAM_FAIL(~4 & 0x07);
 
-    private Integer code;
+    private int code;
 
     public static boolean hasSuccess(int state, AsyncRetryStateEnum successState) {
         return (state & successState.getCode()) == successState.getCode();
@@ -36,7 +39,13 @@ public enum AsyncRetryStateEnum {
         return (state | failState.getCode()) == failState.getCode();
     }
 
-    public static void main(String[] args) {
-        System.out.println(AsyncRetryStateEnum.LOCAL_FAIL.getCode());
+    public static AsyncRetryStateEnum resolve(int state) {
+        final AsyncRetryStateEnum[] values = AsyncRetryStateEnum.values();
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].getCode() == state) {
+                return values[i];
+            }
+        }
+        throw new ErrorException(ErrorCodeEnum.ILLEGAL_STATE, new CauseException("异步重试状态不正确"));
     }
 }

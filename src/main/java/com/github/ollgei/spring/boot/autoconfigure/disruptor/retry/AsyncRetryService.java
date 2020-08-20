@@ -37,45 +37,47 @@ public class AsyncRetryService {
     public void run(AsyncRetryObject object) {
         final AsyncRetryStateEnum rState = retryRepository.readState(object);
         final int state = (rState == AsyncRetryStateEnum.INIT) ? AsyncRetryStateEnum.UPSTREAM_FAIL.getCode() : rState.getCode();
-        final AsyncRetryUpstreamResult upstreamResult;
+        final AsyncRetryUpstreamResponse uResponse;
         if (AsyncRetryStateEnum.hasFail(state, AsyncRetryStateEnum.UPSTREAM_FAIL)) {
             //1 执行upstream 保持幂等性
-            upstreamResult = localService.upstream(object);
-            if (upstreamResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
-                retryRepository.updateUpstreamState(upstreamResult, AsyncRetryStateEnum.UPSTREAM_SUCCESS.getCode());
-            } else if (upstreamResult.getValue() == AsyncRetryResultEnum.NOOP) {
+            final AsyncRetryResult<AsyncRetryUpstreamResponse> uResult = localService.upstream(object);
+            uResponse = uResult.getReponse();
+            if (uResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
+                retryRepository.updateUpstreamState(uResponse, AsyncRetryStateEnum.UPSTREAM_SUCCESS.getCode());
+            } else if (uResult.getValue() == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
-                retryRepository.updateUpstreamState(upstreamResult, AsyncRetryStateEnum.UPSTREAM_FAIL.getCode());
+                retryRepository.updateUpstreamState(uResponse, AsyncRetryStateEnum.UPSTREAM_FAIL.getCode());
                 return;
             }
         } else {
-            upstreamResult = retryRepository.readUpstreamResult(object);
+            uResponse = retryRepository.readUpstreamResponse(object);
         }
 
         //2 执行本地业务处理 保持幂等性
-        final AsyncRetryLocalResult localResult;
+        final AsyncRetryLocalResponse lResponse;
         if (AsyncRetryStateEnum.hasFail(state, AsyncRetryStateEnum.LOCAL_FAIL)) {
-            localResult = localService.invoke(object, upstreamResult);
-            if (localResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
-                retryRepository.updateLocalState(localResult, AsyncRetryStateEnum.LOCAL_SUCCESS.getCode());
-            } else if (localResult.getValue() == AsyncRetryResultEnum.NOOP) {
+            final AsyncRetryResult<AsyncRetryLocalResponse> lResult = localService.invoke(object, uResponse);
+            lResponse = lResult.getReponse();
+            if (lResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
+                retryRepository.updateLocalState(lResult.getReponse(), AsyncRetryStateEnum.LOCAL_SUCCESS.getCode());
+            } else if (lResult.getValue() == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
-                retryRepository.updateLocalState(localResult, AsyncRetryStateEnum.LOCAL_FAIL.getCode());
+                retryRepository.updateLocalState(lResult.getReponse(), AsyncRetryStateEnum.LOCAL_FAIL.getCode());
                 return;
             }
         } else {
-            localResult = retryRepository.readLocalResult(object);
+            lResponse = retryRepository.readLocalResponse(object);
         }
 
         //判断第3位是0
         if (AsyncRetryStateEnum.hasFail(state, AsyncRetryStateEnum.DOWNSTREAM_FAIL)) {
             //3 执行下游业务处理 保持幂等性
-            final AsyncRetryResult result = localService.downstream(object, upstreamResult, localResult);
-            if (result.getValue() == AsyncRetryResultEnum.SUCCESS) {
+            final AsyncRetryResultEnum result = localService.downstream(object, uResponse, lResponse);
+            if (result == AsyncRetryResultEnum.SUCCESS) {
                 retryRepository.updateDownstreamState(AsyncRetryStateEnum.DOWNSTREAM_SUCCESS.getCode());
-            } else if (result.getValue() == AsyncRetryResultEnum.NOOP) {
+            } else if (result == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
                 retryRepository.updateDownstreamState(AsyncRetryStateEnum.DOWNSTREAM_FAIL.getCode());

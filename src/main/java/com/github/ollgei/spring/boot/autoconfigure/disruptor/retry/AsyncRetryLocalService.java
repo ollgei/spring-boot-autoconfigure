@@ -5,27 +5,27 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
  * @author zjw
  * @since 1.0.0
  */
-public interface AsyncRetryLocalService {
+public interface AsyncRetryLocalService<T extends AsyncRetryUpstreamResponse, U extends AsyncRetryLocalResponse> {
     /**
      * 上游处理.
      * @param object object
      * @return
      */
-    <T extends AsyncRetryUpstreamResult> T upstream(AsyncRetryObject object);
+    AsyncRetryResult<T> upstream(AsyncRetryObject object);
     /**
      * 上游处理.
      * @param object object
-     * @param uResult upstream
+     * @param uResponse upstream
      * @return
      */
-    <T extends AsyncRetryLocalResult> T invoke(AsyncRetryObject object, AsyncRetryUpstreamResult uResult);
+    AsyncRetryResult<U> invoke(AsyncRetryObject object, T uResponse);
     /**
      * 通知给下游.
      * @param object object
-     * @param lResult local
-     * @param uResult upstream
+     * @param lResponse local
+     * @param uResponse upstream
      * @return
      */
-    AsyncRetryResult downstream(AsyncRetryObject object, AsyncRetryUpstreamResult uResult, AsyncRetryLocalResult lResult);
+    AsyncRetryResultEnum downstream(AsyncRetryObject object, T uResponse, U lResponse);
 
 }

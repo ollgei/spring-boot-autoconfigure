@@ -1,7 +1,6 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
 
 import lombok.Data;
-import lombok.ToString;
 
 /**
  * result.
@@ -9,6 +8,5 @@ import lombok.ToString;
  * @since 1.0.0
  */
 @Data
-@ToString(callSuper = true)
-public class AsyncRetryUpstreamResult extends AsyncRetryResult {
+public class AsyncRetryUpstreamResponse {
 }

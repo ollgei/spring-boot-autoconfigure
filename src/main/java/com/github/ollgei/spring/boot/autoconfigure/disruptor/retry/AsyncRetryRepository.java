@@ -5,7 +5,7 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
  * @author ollgei
  * @since 1.0.0
  */
-public interface AsyncRetryRepository {
+public interface AsyncRetryRepository<T extends AsyncRetryUpstreamResponse, U extends AsyncRetryLocalResponse> {
 
     /**
      * 持久化到数据库中.
@@ -21,18 +21,18 @@ public interface AsyncRetryRepository {
     AsyncRetryStateEnum readState(AsyncRetryObject object);
     /**
      * 更新upstream状态.
-     * @param result result
+     * @param response response
      * @param state 新状态
      * @return
      */
-    <T extends AsyncRetryUpstreamResult> int updateUpstreamState(T result, int state);
+    int updateUpstreamState(T response, int state);
     /**
      * 更新local状态.
-     * @param result result
+     * @param response response
      * @param state 新状态
      * @return
      */
-    <T extends AsyncRetryLocalResult> int updateLocalState(T result, int state);
+    int updateLocalState(U response, int state);
     /**
      * 更新状态.
      * @param state 新状态
@@ -44,12 +44,12 @@ public interface AsyncRetryRepository {
      * @param object object
      * @return
      */
-    <T extends AsyncRetryUpstreamResult> T readUpstreamResult(AsyncRetryObject object);
+    T readUpstreamResponse(AsyncRetryObject object);
     /**
      * 读取本地处理返回的对象.
      * @param object object
      * @return
      */
-    <T extends AsyncRetryLocalResult> T readLocalResult(AsyncRetryObject object);
+    U readLocalResponse(AsyncRetryObject object);
 
 }
