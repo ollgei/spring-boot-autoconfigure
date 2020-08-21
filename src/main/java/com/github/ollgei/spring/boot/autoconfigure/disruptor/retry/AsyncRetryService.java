@@ -14,19 +14,16 @@ public class AsyncRetryService {
 
     private OllgeiDisruptorPublisher publisher;
 
-    private AsyncRetryRepository retryRepository;
-
     private AsyncRetryLocalService localService;
 
-    public AsyncRetryService(OllgeiDisruptorPublisher publisher, AsyncRetryRepository retryRepository, AsyncRetryLocalService retryLocalService) {
+    public AsyncRetryService(OllgeiDisruptorPublisher publisher, AsyncRetryLocalService retryLocalService) {
         this.publisher = publisher;
-        this.retryRepository = retryRepository;
         this.localService = retryLocalService;
     }
 
     public void start(AsyncRetryObject object) {
         //写入到数据库中
-        retryRepository.persist(object);
+        localService.persist(object);
         //异步发布消息
         final AsyncRetrySubscription subscription = new AsyncRetrySubscription();
         subscription.setContext(object.getContext());
@@ -35,7 +32,7 @@ public class AsyncRetryService {
     }
 
     public void run(AsyncRetryObject object) {
-        final AsyncRetryStateEnum rState = retryRepository.readState(object);
+        final AsyncRetryStateEnum rState = localService.readState(object);
         final int state = (rState == AsyncRetryStateEnum.INIT) ? AsyncRetryStateEnum.UPSTREAM_FAIL.getCode() : rState.getCode();
         final AsyncRetryUpstreamResponse uResponse;
         if (AsyncRetryStateEnum.hasFail(state, AsyncRetryStateEnum.UPSTREAM_FAIL)) {
@@ -43,15 +40,15 @@ public class AsyncRetryService {
             final AsyncRetryResult<AsyncRetryUpstreamResponse> uResult = localService.upstream(object);
             uResponse = uResult.getReponse();
             if (uResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
-                retryRepository.updateUpstreamState(uResponse, AsyncRetryStateEnum.UPSTREAM_SUCCESS.getCode());
+                localService.writeUpstreamResponse(uResponse);
             } else if (uResult.getValue() == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
-                retryRepository.updateUpstreamState(uResponse, AsyncRetryStateEnum.UPSTREAM_FAIL.getCode());
+                localService.updateState(AsyncRetryStateEnum.UPSTREAM_FAIL.getCode());
                 return;
             }
         } else {
-            uResponse = retryRepository.readUpstreamResponse(object);
+            uResponse = localService.readUpstreamResponse(object);
         }
 
         //2 执行本地业务处理 保持幂等性
@@ -60,15 +57,15 @@ public class AsyncRetryService {
             final AsyncRetryResult<AsyncRetryLocalResponse> lResult = localService.invoke(object, uResponse);
             lResponse = lResult.getReponse();
             if (lResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
-                retryRepository.updateLocalState(lResult.getReponse(), AsyncRetryStateEnum.LOCAL_SUCCESS.getCode());
+                localService.writeLocalResponse(lResult.getReponse());
             } else if (lResult.getValue() == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
-                retryRepository.updateLocalState(lResult.getReponse(), AsyncRetryStateEnum.LOCAL_FAIL.getCode());
+                localService.updateState(AsyncRetryStateEnum.LOCAL_FAIL.getCode());
                 return;
             }
         } else {
-            lResponse = retryRepository.readLocalResponse(object);
+            lResponse = localService.readLocalResponse(object);
         }
 
         //判断第3位是0
@@ -76,11 +73,11 @@ public class AsyncRetryService {
             //3 执行下游业务处理 保持幂等性
             final AsyncRetryResultEnum result = localService.downstream(object, uResponse, lResponse);
             if (result == AsyncRetryResultEnum.SUCCESS) {
-                retryRepository.updateDownstreamState(AsyncRetryStateEnum.DOWNSTREAM_SUCCESS.getCode());
+                localService.updateState(AsyncRetryStateEnum.DOWNSTREAM_SUCCESS.getCode());
             } else if (result == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
-                retryRepository.updateDownstreamState(AsyncRetryStateEnum.DOWNSTREAM_FAIL.getCode());
+                localService.updateState(AsyncRetryStateEnum.DOWNSTREAM_FAIL.getCode());
                 return;
             }
         }
