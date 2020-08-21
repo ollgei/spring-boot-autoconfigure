@@ -26,9 +26,9 @@ import org.springframework.context.annotation.Bean;
 
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryLocalService;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryService;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetrySubscriber;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryDefaultService;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryDefaultSubscriber;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryLocalDefaultService;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -75,16 +75,17 @@ public class OllgeiDisruptorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(AsyncRetryLocalService.class)
-    public AsyncRetryService asyncRetryService(OllgeiDisruptorPublisher ollgeiDisruptorPublisher, AsyncRetryLocalService asyncRetryLocalService) {
-        return new AsyncRetryService(ollgeiDisruptorPublisher, asyncRetryLocalService);
+    @ConditionalOnBean(AsyncRetryLocalDefaultService.class)
+    public AsyncRetryDefaultService asyncRetryDefaultService(OllgeiDisruptorPublisher ollgeiDisruptorPublisher,
+                                                      AsyncRetryLocalDefaultService asyncRetryLocalDefaultService) {
+        return new AsyncRetryDefaultService(ollgeiDisruptorPublisher, asyncRetryLocalDefaultService);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(AsyncRetryService.class)
-    public AsyncRetrySubscriber asyncRetrySubscriber(AsyncRetryService asyncRetryService) {
-        return new AsyncRetrySubscriber(asyncRetryService);
+    @ConditionalOnBean(AsyncRetryDefaultService.class)
+    public AsyncRetryDefaultSubscriber asyncRetrySubscriber(AsyncRetryDefaultService asyncRetryDefaultService) {
+        return new AsyncRetryDefaultSubscriber(asyncRetryDefaultService);
     }
 
 }

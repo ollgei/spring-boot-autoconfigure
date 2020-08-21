@@ -13,14 +13,14 @@ public interface AsyncRetryLocalService<T extends AsyncRetryUpstreamResponse, U 
      */
     AsyncRetryResult<T> upstream(AsyncRetryObject object);
     /**
-     * 上游处理.
+     * 本地处理.
      * @param object object
      * @param uResponse upstream
      * @return
      */
     AsyncRetryResult<U> invoke(AsyncRetryObject object, T uResponse);
     /**
-     * 通知给下游.
+     * 下游处理.
      * @param object object
      * @param lResponse local
      * @param uResponse upstream
@@ -40,45 +40,50 @@ public interface AsyncRetryLocalService<T extends AsyncRetryUpstreamResponse, U 
      */
     AsyncRetryStateEnum readState(AsyncRetryObject object);
     /**
-     * 更新upstream状态.
-     * @param response response
-     * @return
-     */
-    default int writeUpstreamResponse(T response) {
-        return writeUpstreamResponse(response, AsyncRetryStateEnum.UPSTREAM_SUCCESS.getCode());
-    }
-
-    /**
-     * 更新upstream状态.
-     * @param response response
-     * @param state state
-     * @return
-     */
-    int writeUpstreamResponse(T response, int state);
-    /**
-     * 更新upstream状态.
-     * @param response response
-     * @return
-     */
-    default int writeLocalResponse(U response) {
-        return writeLocalResponse(response, AsyncRetryStateEnum.LOCAL_SUCCESS.getCode());
-    }
-    /**
-     * 更新local状态.
-     * @param response response
-     * @param state state
-     * @return
-     */
-    int writeLocalResponse(U response, int state);
-    /**
      * 更新状态.
+     * @param object object
      * @param state 新状态
      * @return
      */
-    int updateState(int state);
+    int writeState(AsyncRetryObject object, int state);
+    /**
+     * 更新upstream状态.
+     * @param object object
+     * @param response response
+     * @return
+     */
+    default int writeUpstreamResponse(AsyncRetryObject object, T response) {
+        return writeUpstreamResponse(object, response, AsyncRetryStateEnum.UPSTREAM_SUCCESS.getCode());
+    }
+    /**
+     * 更新upstream状态.
+     * @param object object
+     * @param response response
+     * @param state state
+     * @return
+     */
+    int writeUpstreamResponse(AsyncRetryObject object, T response, int state);
+    /**
+     * 更新upstream状态.
+     * @param object object
+     * @param response response
+     * @return
+     */
+    default int writeLocalResponse(AsyncRetryObject object, U response) {
+        return writeLocalResponse(object, response, AsyncRetryStateEnum.LOCAL_SUCCESS.getCode());
+    }
+    /**
+     * 更新local状态.
+     * @param object object
+     * @param response response
+     * @param state state
+     * @return
+     */
+    int writeLocalResponse(AsyncRetryObject object, U response, int state);
 
     /**
      * 读取上游返回的对象.
+     * @param object object
      * @param object object
      * @return
      */

@@ -12,6 +12,6 @@ public class AsyncRetryResult<T> {
     /**执行结果*/
     private AsyncRetryResultEnum value;
     /**结果返回*/
-    private T reponse;
+    private T response;
 
 }
