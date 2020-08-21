@@ -16,6 +16,9 @@
 
 package com.github.ollgei.spring.boot.autoconfigure.disruptor;
 
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -24,10 +27,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorNoopService;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSimpleSubscriber;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryDefaultService;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryDefaultSubscriber;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.retry.AsyncRetryLocalDefaultService;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -53,7 +58,6 @@ public class OllgeiDisruptorAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public OllgeiDisruptorPublisher ollgeiDisruptorPublisher(OllgeiDisruptorSubscriber subscriber) {
-        OllgeiDisruptorPublisher.builder().build();
         return OllgeiDisruptorPublisher.builder()
                         .setBufferSize(properties.getBufferSize())
                         .setSubscriberCount(properties.getSubscriberSize())
@@ -66,26 +70,13 @@ public class OllgeiDisruptorAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public OllgeiDisruptorSubscriber ollgeiDisruptorSubscriber() {
-        return subscription -> {
-            throw new RuntimeException("Not Config Disruptor Subscriber!!");
-        };
+    public OllgeiDisruptorService ollgeiDisruptorNoopService() {
+        return new OllgeiDisruptorNoopService();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(AsyncRetryLocalDefaultService.class)
-    public AsyncRetryDefaultService asyncRetryDefaultService(OllgeiDisruptorPublisher ollgeiDisruptorPublisher,
-                                                      AsyncRetryLocalDefaultService asyncRetryLocalDefaultService) {
-        return new AsyncRetryDefaultService(ollgeiDisruptorPublisher, asyncRetryLocalDefaultService);
+    public OllgeiDisruptorSubscriber ollgeiDisruptorSubscriber(ObjectProvider<OllgeiDisruptorService> ollgeiDisruptorServices) {
+        return new OllgeiDisruptorSimpleSubscriber(ollgeiDisruptorServices.stream().collect(Collectors.toList()));
     }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnBean(AsyncRetryDefaultService.class)
-    public AsyncRetryDefaultSubscriber asyncRetrySubscriber(AsyncRetryDefaultService asyncRetryDefaultService) {
-        return new AsyncRetryDefaultSubscriber(asyncRetryDefaultService);
-    }
-
 }

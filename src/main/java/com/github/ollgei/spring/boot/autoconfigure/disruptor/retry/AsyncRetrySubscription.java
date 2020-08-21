@@ -3,6 +3,11 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.AbstractSubscription;
 import lombok.Data;
 
+/**
+ * desc.
+ * @author ollgei
+ * @since 1.0.0
+ */
 @Data
 public class AsyncRetrySubscription extends AbstractSubscription {
     /**类型*/

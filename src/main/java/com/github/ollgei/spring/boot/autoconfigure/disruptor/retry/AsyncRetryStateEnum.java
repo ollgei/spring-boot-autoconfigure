@@ -8,8 +8,8 @@ import lombok.Getter;
 
 /**
  * state.
- * @author zjw
- * @since 1.1.0
+ * @author ollgei
+ * @since 1.0.0
  */
 @Getter
 @AllArgsConstructor

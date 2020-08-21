@@ -1,21 +1,17 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
 
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
+
 /**
  * desc.
  * @author ollgei
  * @since 1.0.0
  */
-public interface AsyncRetryService {
+public interface AsyncRetryService extends OllgeiDisruptorService {
     /**
      * 启动.
-     * @param object object
+     * @param context context
      * @return
      */
-    void start(AsyncRetryObject object);
-    /**
-     * 运行.
-     * @param object object
-     * @return
-     */
-    void run(AsyncRetryObject object);
+    void init(Object context);
 }
