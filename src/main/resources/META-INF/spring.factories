@@ -5,4 +5,5 @@ com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorAutoConfigu
 com.github.ollgei.spring.boot.autoconfigure.segment.JdbcTemplateBoundSegmentAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.fastree.JdbcTemplateFastreeAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.gson.GsonAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.gson.cache.GsonCacheAutoConfiguration
+com.github.ollgei.spring.boot.autoconfigure.gson.cache.GsonCacheAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration
