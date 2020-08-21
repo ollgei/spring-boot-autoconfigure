@@ -9,4 +9,12 @@ import lombok.Data;
  */
 @Data
 public class AsyncRetryUpstreamResponse {
+    /**result*/
+    private AsyncRetryResultEnum result;
+
+    public static AsyncRetryUpstreamResponse from(AsyncRetryResultEnum resultEnum) {
+        final AsyncRetryUpstreamResponse response = new AsyncRetryUpstreamResponse();
+        response.setResult(resultEnum);
+        return response;
+    }
 }

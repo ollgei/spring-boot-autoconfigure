@@ -14,14 +14,14 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @param context object
      * @return
      */
-    AsyncRetryResult<T> upstream(C context);
+    T upstream(C context);
     /**
      * 中游处理.
      * @param context object
      * @param uResponse upstream
      * @return
      */
-    AsyncRetryResult<U> midstream(C context, T uResponse);
+    U midstream(C context, T uResponse);
     /**
      * 下游处理.
      * @param context object
@@ -72,17 +72,17 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @param response response
      * @return
      */
-    default int writeLocalResponse(C context, U response) {
-        return writeLocalResponse(context, response, AsyncRetryStateEnum.MIDSTREAM_SUCCESS.getCode());
+    default int writeMidstreamResponse(C context, U response) {
+        return writeMidstreamResponse(context, response, AsyncRetryStateEnum.MIDSTREAM_SUCCESS.getCode());
     }
     /**
-     * 更新local状态.
+     * 更新midstream状态.
      * @param context object
      * @param response response
      * @param state state
      * @return
      */
-    int writeLocalResponse(C context, U response, int state);
+    int writeMidstreamResponse(C context, U response, int state);
 
     /**
      * 读取上游返回的对象.

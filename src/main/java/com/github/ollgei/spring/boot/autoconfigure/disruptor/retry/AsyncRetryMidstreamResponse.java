@@ -9,6 +9,14 @@ import lombok.ToString;
  * @since 1.0.0
  */
 @Data
-@ToString(callSuper = true)
-public class AsyncRetryMidstreamResponse extends AsyncRetryResult {
+@ToString
+public class AsyncRetryMidstreamResponse {
+    /**result*/
+    private AsyncRetryResultEnum result;
+
+    public static AsyncRetryMidstreamResponse from(AsyncRetryResultEnum resultEnum) {
+        final AsyncRetryMidstreamResponse response = new AsyncRetryMidstreamResponse();
+        response.setResult(resultEnum);
+        return response;
+    }
 }

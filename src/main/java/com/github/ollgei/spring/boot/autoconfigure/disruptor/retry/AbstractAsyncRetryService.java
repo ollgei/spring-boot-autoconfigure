@@ -17,10 +17,6 @@ public abstract class AbstractAsyncRetryService<C extends OllgeiDisruptorContext
 
     private OllgeiDisruptorPublisher publisher;
 
-    public AbstractAsyncRetryService(OllgeiDisruptorPublisher publisher) {
-        this.publisher = publisher;
-    }
-
     @Override
     public void init(C context) {
         //1 序列化到数据库中，方便重试使用
@@ -39,11 +35,10 @@ public abstract class AbstractAsyncRetryService<C extends OllgeiDisruptorContext
         final T uResponse;
         if (AsyncRetryStateEnum.hasFail(state, AsyncRetryStateEnum.UPSTREAM_FAIL)) {
             //1 执行upstream 保持幂等性
-            final AsyncRetryResult<T> uResult = upstream(context);
-            uResponse = uResult.getResponse();
-            if (uResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
+            uResponse = upstream(context);
+            if (uResponse.getResult() == AsyncRetryResultEnum.SUCCESS) {
                 writeUpstreamResponse(context, uResponse);
-            } else if (uResult.getValue() == AsyncRetryResultEnum.NOOP) {
+            } else if (uResponse.getResult() == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
                 writeState(context, AsyncRetryStateEnum.UPSTREAM_FAIL.getCode());
@@ -56,11 +51,10 @@ public abstract class AbstractAsyncRetryService<C extends OllgeiDisruptorContext
         //2 执行中游业务处理 保持幂等性(本地处理)
         final U mResponse;
         if (AsyncRetryStateEnum.hasFail(state, AsyncRetryStateEnum.MIDSTREAM_FAIL)) {
-            final AsyncRetryResult<U> lResult = midstream(context, uResponse);
-            mResponse = lResult.getResponse();
-            if (lResult.getValue() == AsyncRetryResultEnum.SUCCESS) {
-                writeLocalResponse(context, mResponse);
-            } else if (lResult.getValue() == AsyncRetryResultEnum.NOOP) {
+            mResponse = midstream(context, uResponse);
+            if (mResponse.getResult() == AsyncRetryResultEnum.SUCCESS) {
+                writeMidstreamResponse(context, mResponse);
+            } else if (mResponse.getResult() == AsyncRetryResultEnum.NOOP) {
                 //continue;
             } else {
                 writeState(context, AsyncRetryStateEnum.MIDSTREAM_FAIL.getCode());
