@@ -13,7 +13,7 @@ public class OllgeiDisruptorNoopService implements OllgeiDisruptorService {
     }
 
     @Override
-    public void init(OllgeiDisruptorContext context) {
+    public void initAndPublish(OllgeiDisruptorContext context) {
 
     }
 

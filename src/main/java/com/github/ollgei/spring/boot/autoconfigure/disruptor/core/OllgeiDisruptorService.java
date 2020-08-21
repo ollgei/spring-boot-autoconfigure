@@ -16,7 +16,7 @@ public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
      * @param context context
      * @return
      */
-    void init(C context);
+    void initAndPublish(C context);
     /**
      * 执行.
      * @param context context
