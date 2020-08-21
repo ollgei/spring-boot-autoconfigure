@@ -16,10 +16,10 @@ import lombok.Getter;
 public enum AsyncRetryStateEnum {
     /**初始 000*/
     INIT(0),
-    /**本地成功 001*/
-    LOCAL_SUCCESS(1),
-    /**本地失败 110*/
-    LOCAL_FAIL(~1 & 0x07),
+    /**中游成功 001*/
+    MIDSTREAM_SUCCESS(1),
+    /**中游失败 110*/
+    MIDSTREAM_FAIL(~1 & 0x07),
     /**上游成功 010*/
     UPSTREAM_SUCCESS(2),
     /**上游失败 101*/

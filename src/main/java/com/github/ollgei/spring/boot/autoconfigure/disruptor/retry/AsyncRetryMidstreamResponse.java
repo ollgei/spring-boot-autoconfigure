@@ -10,5 +10,5 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class AsyncRetryLocalResponse extends AsyncRetryResult {
+public class AsyncRetryMidstreamResponse extends AsyncRetryResult {
 }

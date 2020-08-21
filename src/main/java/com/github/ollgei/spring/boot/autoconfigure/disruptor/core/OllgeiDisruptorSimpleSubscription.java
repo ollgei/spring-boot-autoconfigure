@@ -13,7 +13,7 @@ public class OllgeiDisruptorSimpleSubscription extends AbstractSubscription {
     /**类型*/
     private String kind;
     /**上下文数据*/
-    private Object context;
+    private OllgeiDisruptorContext context;
 
     public String getKind() {
         return kind;
@@ -23,11 +23,11 @@ public class OllgeiDisruptorSimpleSubscription extends AbstractSubscription {
         this.kind = kind;
     }
 
-    public Object getContext() {
+    public OllgeiDisruptorContext getContext() {
         return context;
     }
 
-    public void setContext(Object context) {
+    public void setContext(OllgeiDisruptorContext context) {
         this.context = context;
     }
 }
