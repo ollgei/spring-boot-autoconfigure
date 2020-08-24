@@ -1,7 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.serialization;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * desc.
@@ -9,7 +9,7 @@ import lombok.Setter;
  * @since 1.0.0
  */
 @Getter
-@Setter
+@Builder
 public class SerializationObject {
     /**版本*/
     private Integer version = 1;

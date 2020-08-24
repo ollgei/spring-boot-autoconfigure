@@ -37,6 +37,9 @@ final class SerializationConfigurations {
 		Map<SerializationType, Class<?>> mappings = new EnumMap<>(SerializationType.class);
         mappings.put(SerializationType.KRYO2, Kryo2SerializationConfiguration.class);
         mappings.put(SerializationType.GSON, GsonSerializationConfiguration.class);
+        mappings.put(SerializationType.KRYO, KryoSerializationConfiguration.class);
+        mappings.put(SerializationType.JAVA, JavaSerializationConfiguration.class);
+        mappings.put(SerializationType.PROTOSTUFF, ProtostuffSerializationConfiguration.class);
 		MAPPINGS = Collections.unmodifiableMap(mappings);
 	}
 

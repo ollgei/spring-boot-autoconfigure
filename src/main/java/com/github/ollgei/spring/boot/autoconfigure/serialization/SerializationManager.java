@@ -63,4 +63,39 @@ public interface SerializationManager {
             throw new ErrorException(ErrorCodeEnum.FAIL_SERIALIZATION, ex);
         }
     }
+
+    /**
+     * 序列化对象.
+     * @param object object
+     * @return
+     */
+    default byte[] serializeNativeObject(Object object) {
+        final UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream();
+        try {
+            final ObjectOutput serialize = get().serialize(os);
+            serialize.writeObject(object);
+            serialize.flushBuffer();
+            return os.toByteArray();
+        } catch (Exception ex) {
+            log.warn("序列化失败:{}", ex.getMessage());
+            throw new ErrorException(ErrorCodeEnum.FAIL_SERIALIZATION, ex);
+        }
+    }
+
+    /**
+     * 反序列化对象.
+     * @param bytes bytes
+     * @param cls class
+     * @return
+     */
+    default  <T> T deserializeNativeObject(byte[] bytes, Class<T> cls) {
+        final UnsafeByteArrayInputStream is = new UnsafeByteArrayInputStream(bytes);
+        try {
+            final ObjectInput deserialize = get().deserialize(is);
+            return deserialize.readObject(cls);
+        } catch (Exception ex) {
+            log.warn("反序列化失败:{}", ex.getMessage());
+            throw new ErrorException(ErrorCodeEnum.FAIL_SERIALIZATION, ex);
+        }
+    }
 }

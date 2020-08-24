@@ -13,5 +13,17 @@ public enum SerializationType {
     /**
      * GSON.
      */
-    GSON;
+    GSON,
+    /**
+     * KRYO.
+     */
+    KRYO,
+    /**
+     * KRYO.
+     */
+    JAVA,
+    /**
+     * Protostuff.
+     */
+    PROTOSTUFF;
 }
