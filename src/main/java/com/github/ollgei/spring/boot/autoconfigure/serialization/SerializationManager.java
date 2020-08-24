@@ -29,11 +29,12 @@ public interface SerializationManager {
      * @param object object
      * @return
      */
-    default byte[] serializeObject(Object object) {
+    default byte[] serializeObject(SerializationObject object) {
         final UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream();
         try {
             final ObjectOutput serialize = get().serialize(os);
-            serialize.writeObject(object);
+            serialize.writeInt(object.getVersion());
+            serialize.writeObject(object.getObject());
             serialize.flushBuffer();
             return os.toByteArray();
         } catch (Exception ex) {
@@ -52,6 +53,10 @@ public interface SerializationManager {
         final UnsafeByteArrayInputStream is = new UnsafeByteArrayInputStream(bytes);
         try {
             final ObjectInput deserialize = get().deserialize(is);
+            final int version = deserialize.readInt();
+            if (log.isInfoEnabled()) {
+                log.info("反序列化版本:{}", version);
+            }
             return deserialize.readObject(cls);
         } catch (Exception ex) {
             log.warn("反序列化失败:{}", ex.getMessage());
