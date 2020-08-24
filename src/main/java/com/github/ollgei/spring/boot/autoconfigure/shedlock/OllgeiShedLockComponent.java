@@ -8,10 +8,11 @@ import java.util.concurrent.Callable;
  * @since 1.0.0
  */
 public interface OllgeiShedLockComponent {
-    String DEFAULT_NAME = "default";
+    /**全局锁*/
+    String DEFAULT_NAME = "GLOBAL";
 
     /**
-     * desc.
+     * execute.
      * @param name name
      * @param runnable runnable
      * @return
@@ -19,7 +20,7 @@ public interface OllgeiShedLockComponent {
     void execute(String name, Runnable runnable);
 
     /**
-     * desc.
+     * execute.
      * @param name name
      * @param callable callable
      * @return
@@ -27,7 +28,7 @@ public interface OllgeiShedLockComponent {
     <T> T execute(String name, Callable<T> callable);
 
     /**
-     * desc.
+     * execute.
      * @param runnable runnable
      * @return
      */
@@ -36,7 +37,7 @@ public interface OllgeiShedLockComponent {
     }
 
     /**
-     * desc.
+     * execute.
      * @param callable callable
      * @return
      */

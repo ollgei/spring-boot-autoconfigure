@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
+package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 import com.github.ollgei.base.commonj.errors.CauseException;
 import com.github.ollgei.base.commonj.errors.ErrorCodeEnum;

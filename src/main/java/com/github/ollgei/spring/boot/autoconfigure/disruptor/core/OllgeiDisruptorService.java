@@ -16,11 +16,27 @@ public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
      * @param context context
      * @return
      */
-    void initAndPublish(C context);
+    default void writeAndPublish(C context) {
+        write(context);
+        publish(context);
+    }
+
+    /**
+     * 初始化.
+     * @param context context
+     * @return
+     */
+    void publish(C context);
+    /**
+     * 持久化到数据库中.
+     * @param context context
+     * @return
+     */
+    void write(C context);
     /**
      * 执行.
      * @param context context
      * @return
      */
-    void run(C context);
+    void read(C context);
 }

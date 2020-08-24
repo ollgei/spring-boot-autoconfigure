@@ -19,6 +19,6 @@ public class OllgeiDisruptorSimpleSubscriber implements OllgeiDisruptorSubscribe
     public void onNext(OllgeiDisruptorSimpleSubscription subscription) {
         disruptorServiceList.stream().
                 filter(s -> s.kind() != null && s.kind().equals(subscription.getKind())).
-                forEach(s -> s.run(subscription.getContext()));
+                forEach(s -> s.read(subscription.getContext()));
     }
 }

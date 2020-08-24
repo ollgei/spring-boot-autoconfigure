@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
+package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
@@ -12,16 +12,13 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public abstract class AbstractAsyncRetryService<C extends OllgeiDisruptorContext,T extends AsyncRetryUpstreamResponse, U extends AsyncRetryMidstreamResponse>
-        implements AsyncRetryService<C, T, U> {
+public abstract class AbstractAsyncRetryService<C extends OllgeiDisruptorContext,T extends AsyncRetryUpstreamResponse, U extends AsyncRetryMidstreamResponse, S extends AsyncRetryDownstreamResponse>
+        implements AsyncRetryService<C, T, U, S> {
 
     private OllgeiDisruptorPublisher publisher;
 
     @Override
-    public void initAndPublish(C context) {
-        //1 序列化到数据库中，方便重试使用
-        init(context);
-        //2 异步发布消息
+    public void publish(C context) {
         final OllgeiDisruptorSimpleSubscription subscription = new OllgeiDisruptorSimpleSubscription();
         subscription.setContext(context);
         subscription.setKind(kind());
@@ -29,7 +26,7 @@ public abstract class AbstractAsyncRetryService<C extends OllgeiDisruptorContext
     }
 
     @Override
-    public void run(C context) {
+    public void read(C context) {
         final AsyncRetryStateEnum rState = readState(context);
         int state = (rState == AsyncRetryStateEnum.INIT) ? AsyncRetryStateEnum.UPSTREAM_FAIL.getCode() : rState.getCode();
         final T uResponse;

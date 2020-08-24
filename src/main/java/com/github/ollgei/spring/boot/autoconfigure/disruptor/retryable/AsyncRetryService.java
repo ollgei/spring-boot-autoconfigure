@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
+package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
@@ -8,7 +8,7 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
  * @author ollgei
  * @since 1.0.0
  */
-public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends AsyncRetryUpstreamResponse, U extends AsyncRetryMidstreamResponse> extends OllgeiDisruptorService<C> {
+public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends AsyncRetryUpstreamResponse, U extends AsyncRetryMidstreamResponse, S extends AsyncRetryDownstreamResponse> extends OllgeiDisruptorService<C> {
     /**
      * 上游处理.
      * @param context object
@@ -30,24 +30,6 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @return
      */
     AsyncRetryResultEnum downstream(C context, T uResponse, U mResponse);
-    /**
-     * 持久化到数据库中.
-     * @param context context
-     * @return
-     */
-    void init(C context);
-    /**
-     * lock.
-     * @param context context
-     * @return
-     */
-    void lockAndRun(C context);
-    /**
-     * unlock.
-     * @param context context
-     * @return
-     */
-    void unlock(C context);
     /**
      * 读取状态 {@link AsyncRetryStateEnum}.
      * @param context context
@@ -97,6 +79,24 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
     void writeMidstreamResponse(C context, U response, int state);
 
     /**
+     * 更新downstream状态.
+     * @param context object
+     * @param response response
+     * @return
+     */
+    default void writeDownstreamResponse(C context, S response) {
+        writeDownstreamResponse(context, response, AsyncRetryStateEnum.DOWNSTREAM_SUCCESS.getCode());
+    }
+    /**
+     * 更新downstream状态.
+     * @param context object
+     * @param response response
+     * @param state state
+     * @return
+     */
+    void writeDownstreamResponse(C context, S response, int state);
+
+    /**
      * 读取上游返回的对象.
      * @param context object
      * @return
@@ -108,4 +108,23 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @return
      */
     U readMidstreamResponse(C context);
+    /**
+     * 读取下游处理返回的对象.
+     * @param context object
+     * @return
+     */
+    S readDownstreamResponse(C context);
+
+    /**
+     * lock.
+     * @param context context
+     * @return
+     */
+    void lockAndRun(C context);
+    /**
+     * unlock.
+     * @param context context
+     * @return
+     */
+    void unlock(C context);
 }

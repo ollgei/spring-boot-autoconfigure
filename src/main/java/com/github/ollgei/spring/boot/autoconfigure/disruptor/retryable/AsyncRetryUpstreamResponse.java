@@ -1,4 +1,4 @@
-package com.github.ollgei.spring.boot.autoconfigure.disruptor.retry;
+package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 import lombok.Data;
 
