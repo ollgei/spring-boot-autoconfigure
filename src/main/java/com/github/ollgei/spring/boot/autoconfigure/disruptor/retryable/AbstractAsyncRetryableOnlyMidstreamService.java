@@ -17,6 +17,11 @@ public abstract class AbstractAsyncRetryableOnlyMidstreamService<C extends Ollge
     }
 
     @Override
+    public U midstream(C context, AsyncRetryableUpstreamResponse uResponse) {
+        return midstream(context);
+    }
+
+    @Override
     public AsyncRetryableDownstreamResponse downstream(C context, AsyncRetryableUpstreamResponse uResponse, U mResponse) {
         return AsyncRetryableDownstreamResponse.from(AsyncRetryableResultEnum.NOOP);
     }
@@ -40,4 +45,11 @@ public abstract class AbstractAsyncRetryableOnlyMidstreamService<C extends Ollge
     public AsyncRetryableDownstreamResponse readDownstreamResponse(C context) {
         return null;
     }
+
+    /**
+     * midstream.
+     * @param context context
+     * @return
+     */
+    abstract public U midstream(C context);
 }

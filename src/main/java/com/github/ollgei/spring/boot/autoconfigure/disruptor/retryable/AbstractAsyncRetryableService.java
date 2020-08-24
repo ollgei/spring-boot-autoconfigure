@@ -86,6 +86,7 @@ public abstract class AbstractAsyncRetryableService<C extends OllgeiDisruptorCon
                 state = state | AsyncRetryableStateEnum.DOWNSTREAM_FAIL.getCode();
             }
         }
+        //最后写入state
         writeState(context, state);
     }
 }

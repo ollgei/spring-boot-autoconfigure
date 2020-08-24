@@ -11,7 +11,6 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
 public abstract class AbstractAsyncRetryableNoneDownstreamService<C extends OllgeiDisruptorContext,T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse>
         extends AbstractAsyncRetryableService<C, T, U, AsyncRetryableDownstreamResponse> {
 
-
     @Override
     public AsyncRetryableDownstreamResponse downstream(C context, T uResponse, U mResponse) {
         return AsyncRetryableDownstreamResponse.from(AsyncRetryableResultEnum.NOOP);

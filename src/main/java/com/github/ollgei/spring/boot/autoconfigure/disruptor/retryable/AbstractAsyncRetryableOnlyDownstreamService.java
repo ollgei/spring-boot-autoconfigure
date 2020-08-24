@@ -22,6 +22,11 @@ public abstract class AbstractAsyncRetryableOnlyDownstreamService<C extends Ollg
     }
 
     @Override
+    public S downstream(C context, AsyncRetryableUpstreamResponse uResponse, AsyncRetryableMidstreamResponse mResponse) {
+        return downstream(context);
+    }
+
+    @Override
     public void writeUpstreamResponse(C context, AsyncRetryableUpstreamResponse response, int state) {
 
     }
@@ -40,4 +45,11 @@ public abstract class AbstractAsyncRetryableOnlyDownstreamService<C extends Ollg
     public AsyncRetryableMidstreamResponse readMidstreamResponse(C context) {
         return null;
     }
+
+    /**
+     * downstream.
+     * @param context context
+     * @return
+     */
+    abstract public S downstream(C context);
 }

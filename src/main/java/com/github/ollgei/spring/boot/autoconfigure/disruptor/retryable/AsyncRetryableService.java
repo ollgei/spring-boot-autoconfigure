@@ -23,12 +23,6 @@ public interface AsyncRetryableService<C extends OllgeiDisruptorContext, T exten
      */
     U midstream(C context, T uResponse);
     /**
-     * 中游处理.
-     * @param context object
-     * @return
-     */
-    U midstream(C context);
-    /**
      * 下游处理.
      * @param context object
      * @param uResponse upstream
