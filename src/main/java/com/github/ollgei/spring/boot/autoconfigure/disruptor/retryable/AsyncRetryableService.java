@@ -25,11 +25,10 @@ public interface AsyncRetryableService<C extends OllgeiDisruptorContext, T exten
     /**
      * 下游处理.
      * @param context object
-     * @param mResponse midstream
      * @param uResponse upstream
      * @return
      */
-    AsyncRetryableResultEnum downstream(C context, T uResponse, U mResponse);
+    S downstream(C context, T uResponse, U mResponse);
     /**
      * 读取状态 {@link AsyncRetryableStateEnum}.
      * @param context context
@@ -114,17 +113,4 @@ public interface AsyncRetryableService<C extends OllgeiDisruptorContext, T exten
      * @return
      */
     S readDownstreamResponse(C context);
-
-    /**
-     * lock.
-     * @param context context
-     * @return
-     */
-    void lockAndRun(C context);
-    /**
-     * unlock.
-     * @param context context
-     * @return
-     */
-    void unlock(C context);
 }

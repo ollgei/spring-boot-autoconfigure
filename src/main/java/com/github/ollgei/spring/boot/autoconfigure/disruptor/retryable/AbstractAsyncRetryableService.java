@@ -3,6 +3,8 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSimpleSubscription;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
+@Getter
+@Setter
 public abstract class AbstractAsyncRetryableService<C extends OllgeiDisruptorContext,T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
         implements AsyncRetryableService<C, T, U, S> {
 
@@ -66,21 +70,16 @@ public abstract class AbstractAsyncRetryableService<C extends OllgeiDisruptorCon
         //判断第3位是0
         if (AsyncRetryableStateEnum.hasFail(state, AsyncRetryableStateEnum.DOWNSTREAM_FAIL)) {
             //3 执行下游业务处理 保持幂等性
-            final AsyncRetryableResultEnum result = downstream(context, uResponse, mResponse);
-            if (result == AsyncRetryableResultEnum.SUCCESS || result == AsyncRetryableResultEnum.NOOP) {
+            final S dResponse = downstream(context, uResponse, mResponse);
+            if (dResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
+                writeDownstreamResponse(context, dResponse);
+                state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
+            } else if (dResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
                 state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
             }  else {
                 state = state | AsyncRetryableStateEnum.DOWNSTREAM_FAIL.getCode();
             }
         }
         writeState(context, state);
-    }
-
-    protected OllgeiDisruptorPublisher getPublisher() {
-        return publisher;
-    }
-
-    protected void setPublisher(OllgeiDisruptorPublisher publisher) {
-        this.publisher = publisher;
     }
 }

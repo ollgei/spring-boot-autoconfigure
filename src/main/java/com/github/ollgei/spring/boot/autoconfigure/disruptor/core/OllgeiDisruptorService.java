@@ -39,4 +39,35 @@ public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
      * @return
      */
     void read(C context);
+
+    /**
+     * 安全执行.
+     * @param context context
+     * @return
+     */
+    default void safeRead(C context) {
+        lock(context);
+        try {
+            read(context);
+        } finally {
+            unlock(context);
+        }
+    }
+
+    /**
+     * lock.
+     * @param context context
+     * @return
+     */
+    default void lock(C context) {
+
+    }
+    /**
+     * unlock.
+     * @param context context
+     * @return
+     */
+    default void unlock(C context) {
+
+    }
 }
