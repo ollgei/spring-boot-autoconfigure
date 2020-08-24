@@ -12,6 +12,11 @@ public abstract class AbstractAsyncRetryableNoneDownstreamService<C extends Ollg
         extends AbstractAsyncRetryableService<C, T, U, S> {
 
     @Override
+    public boolean skipDownstream() {
+        return true;
+    }
+
+    @Override
     public S downstream(C context, T uResponse, U mResponse) {
         return null;
     }

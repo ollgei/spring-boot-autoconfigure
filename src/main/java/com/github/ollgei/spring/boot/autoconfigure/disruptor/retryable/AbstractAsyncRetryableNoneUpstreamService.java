@@ -12,6 +12,11 @@ public abstract class AbstractAsyncRetryableNoneUpstreamService<C extends Ollgei
         extends AbstractAsyncRetryableService<C, T, U, S> {
 
     @Override
+    public boolean skipUpstream() {
+        return true;
+    }
+
+    @Override
     public T upstream(C context) {
         return null;
     }

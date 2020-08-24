@@ -12,6 +12,11 @@ public abstract class AbstractAsyncRetryableNoneMidstreamService<C extends Ollge
         extends AbstractAsyncRetryableService<C, T, U, S> {
 
     @Override
+    public boolean skipMidstream() {
+        return true;
+    }
+
+    @Override
     public U midstream(C context, T uResponse) {
         return null;
     }

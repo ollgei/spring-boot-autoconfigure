@@ -10,6 +10,27 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
  */
 public interface AsyncRetryableService<C extends OllgeiDisruptorContext, T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse> extends OllgeiDisruptorService<C> {
     /**
+     * 跳过上游.
+     * @return
+     */
+    default boolean skipUpstream() {
+        return false;
+    }
+    /**
+     * 跳过中游.
+     * @return
+     */
+    default boolean skipMidstream() {
+        return false;
+    }
+    /**
+     * 跳过下游.
+     * @return
+     */
+    default boolean skipDownstream() {
+        return false;
+    }
+    /**
      * 上游处理.
      * @param context object
      * @return
@@ -22,6 +43,12 @@ public interface AsyncRetryableService<C extends OllgeiDisruptorContext, T exten
      * @return
      */
     U midstream(C context, T uResponse);
+    /**
+     * 中游处理.
+     * @param context object
+     * @return
+     */
+    U midstream(C context);
     /**
      * 下游处理.
      * @param context object

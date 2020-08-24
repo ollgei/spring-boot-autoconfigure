@@ -12,6 +12,16 @@ public abstract class AbstractAsyncRetryableOnlyDownstreamService<C extends Ollg
         extends AbstractAsyncRetryableService<C, T, U, S> {
 
     @Override
+    public boolean skipUpstream() {
+        return true;
+    }
+
+    @Override
+    public boolean skipMidstream() {
+        return true;
+    }
+
+    @Override
     public T upstream(C context) {
         return null;
     }
