@@ -32,7 +32,7 @@ public abstract class AbstractAsyncRetryableOnlyMidstreamService<C extends Ollge
     }
 
     @Override
-    public T readUpstreamResponse(C context) {
+    public AsyncRetryableUpstreamResponse readUpstreamResponse(C context) {
         return null;
     }
 
