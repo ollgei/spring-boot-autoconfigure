@@ -9,8 +9,14 @@ import com.github.ollgei.base.commonj.dubbo.serialize.kryo.optimized.KryoSeriali
  * @since 1.0.0
  */
 public class Kryo2SerializationManager implements SerializationManager {
+    private Serialization serialization;
+
+    public Kryo2SerializationManager() {
+        this.serialization = new KryoSerialization2();
+    }
+
     @Override
     public Serialization get() {
-        return new KryoSerialization2();
+        return this.serialization;
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import com.github.ollgei.base.commonj.dubbo.serialize.Serialization;
 
 /**
- * autoconfiguration.
+ * auto configuration.
  * @author ollgei
  * @since 1.0.0
  */
