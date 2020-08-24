@@ -8,26 +8,21 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractAsyncRetryableNoneMidstreamService<C extends OllgeiDisruptorContext,T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
-        extends AbstractAsyncRetryableService<C, T, U, S> {
+public abstract class AbstractAsyncRetryableNoneMidstreamService<C extends OllgeiDisruptorContext,T extends AsyncRetryableUpstreamResponse, S extends AsyncRetryableDownstreamResponse>
+        extends AbstractAsyncRetryableService<C, T, AsyncRetryableMidstreamResponse, S> {
 
     @Override
-    public boolean skipMidstream() {
-        return true;
+    public AsyncRetryableMidstreamResponse midstream(C context, T uResponse) {
+        return AsyncRetryableMidstreamResponse.from(AsyncRetryableResultEnum.NOOP);
     }
 
     @Override
-    public U midstream(C context, T uResponse) {
-        return null;
-    }
-
-    @Override
-    public void writeMidstreamResponse(C context, U response, int state) {
+    public void writeMidstreamResponse(C context, AsyncRetryableMidstreamResponse response, int state) {
 
     }
 
     @Override
-    public U readMidstreamResponse(C context) {
+    public AsyncRetryableMidstreamResponse readMidstreamResponse(C context) {
         return null;
     }
 }

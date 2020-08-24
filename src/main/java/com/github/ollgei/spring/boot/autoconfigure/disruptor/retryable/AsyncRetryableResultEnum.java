@@ -9,5 +9,7 @@ public enum AsyncRetryableResultEnum {
     /**成功*/
     SUCCESS,
     /**失败*/
-    FAIL;
+    FAIL,
+    /**无操作*/
+    NOOP;
 }

@@ -8,46 +8,36 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractAsyncRetryableOnlyDownstreamService<C extends OllgeiDisruptorContext,T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
-        extends AbstractAsyncRetryableService<C, T, U, S> {
+public abstract class AbstractAsyncRetryableOnlyDownstreamService<C extends OllgeiDisruptorContext, S extends AsyncRetryableDownstreamResponse>
+        extends AbstractAsyncRetryableService<C, AsyncRetryableUpstreamResponse, AsyncRetryableMidstreamResponse, S> {
 
     @Override
-    public boolean skipUpstream() {
-        return true;
+    public AsyncRetryableUpstreamResponse upstream(C context) {
+        return AsyncRetryableUpstreamResponse.from(AsyncRetryableResultEnum.NOOP);
     }
 
     @Override
-    public boolean skipMidstream() {
-        return true;
+    public AsyncRetryableMidstreamResponse midstream(C context, AsyncRetryableUpstreamResponse uResponse) {
+        return AsyncRetryableMidstreamResponse.from(AsyncRetryableResultEnum.NOOP);
     }
 
     @Override
-    public T upstream(C context) {
+    public void writeUpstreamResponse(C context, AsyncRetryableUpstreamResponse response, int state) {
+
+    }
+
+    @Override
+    public void writeMidstreamResponse(C context, AsyncRetryableMidstreamResponse response, int state) {
+
+    }
+
+    @Override
+    public AsyncRetryableUpstreamResponse readUpstreamResponse(C context) {
         return null;
     }
 
     @Override
-    public U midstream(C context, T uResponse) {
-        return null;
-    }
-
-    @Override
-    public void writeUpstreamResponse(C context, T response, int state) {
-
-    }
-
-    @Override
-    public void writeMidstreamResponse(C context, U response, int state) {
-
-    }
-
-    @Override
-    public T readUpstreamResponse(C context) {
-        return null;
-    }
-
-    @Override
-    public U readMidstreamResponse(C context) {
+    public AsyncRetryableMidstreamResponse readMidstreamResponse(C context) {
         return null;
     }
 }
