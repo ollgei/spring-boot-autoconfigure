@@ -1,14 +1,12 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
-
 /**
  * 异步重试.
  *
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractAsyncRetryableOnlyMidstreamService<C extends OllgeiDisruptorContext, U extends AsyncRetryableMidstreamResponse>
+public abstract class AbstractAsyncRetryableOnlyMidstreamService<C extends AsyncRetryableContext, U extends AsyncRetryableMidstreamResponse>
         extends AbstractAsyncRetryableService<C, AsyncRetryableUpstreamResponse, U, AsyncRetryableDownstreamResponse> {
 
     @Override

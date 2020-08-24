@@ -2,7 +2,6 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 import org.springframework.util.Assert;
 
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSimpleSubscription;
 import lombok.Getter;
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public abstract class AbstractAsyncRetryableService<C extends OllgeiDisruptorContext, T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
+public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableContext, T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
         implements AsyncRetryableService<C, T, U, S> {
 
     private OllgeiDisruptorPublisher publisher;
