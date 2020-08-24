@@ -77,12 +77,14 @@ public abstract class AbstractAsyncRetryableService<C extends OllgeiDisruptorCon
         }
 
         //判断第3位是0
+        final S dResponse;
         if (skipDownstream()) {
             state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
+            dResponse = null;
         } else {
             if (AsyncRetryableStateEnum.hasFail(state, AsyncRetryableStateEnum.DOWNSTREAM_FAIL)) {
                 //3 执行下游业务处理 保持幂等性
-                final S dResponse = downstream(context, uResponse, mResponse);
+                dResponse = downstream(context, uResponse, mResponse);
                 if (dResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
                     writeDownstreamResponse(context, dResponse);
                     state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
