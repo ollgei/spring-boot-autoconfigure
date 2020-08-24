@@ -8,9 +8,9 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class AsyncRetryResult<T> {
+public class AsyncRetryableResult<T> {
     /**执行结果*/
-    private AsyncRetryResultEnum value;
+    private AsyncRetryableResultEnum value;
     /**结果返回*/
     private T response;
 

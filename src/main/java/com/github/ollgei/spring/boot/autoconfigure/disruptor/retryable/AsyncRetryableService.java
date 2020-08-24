@@ -8,7 +8,7 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
  * @author ollgei
  * @since 1.0.0
  */
-public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends AsyncRetryUpstreamResponse, U extends AsyncRetryMidstreamResponse, S extends AsyncRetryDownstreamResponse> extends OllgeiDisruptorService<C> {
+public interface AsyncRetryableService<C extends OllgeiDisruptorContext, T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse> extends OllgeiDisruptorService<C> {
     /**
      * 上游处理.
      * @param context object
@@ -29,13 +29,13 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @param uResponse upstream
      * @return
      */
-    AsyncRetryResultEnum downstream(C context, T uResponse, U mResponse);
+    AsyncRetryableResultEnum downstream(C context, T uResponse, U mResponse);
     /**
-     * 读取状态 {@link AsyncRetryStateEnum}.
+     * 读取状态 {@link AsyncRetryableStateEnum}.
      * @param context context
      * @return
      */
-    AsyncRetryStateEnum readState(C context);
+    AsyncRetryableStateEnum readState(C context);
     /**
      * 更新状态.
      * @param context object
@@ -50,7 +50,7 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @return
      */
     default void writeUpstreamResponse(C context, T response) {
-        writeUpstreamResponse(context, response, AsyncRetryStateEnum.UPSTREAM_SUCCESS.getCode());
+        writeUpstreamResponse(context, response, AsyncRetryableStateEnum.UPSTREAM_SUCCESS.getCode());
     }
     /**
      * 更新upstream状态.
@@ -67,7 +67,7 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @return
      */
     default void writeMidstreamResponse(C context, U response) {
-        writeMidstreamResponse(context, response, AsyncRetryStateEnum.MIDSTREAM_SUCCESS.getCode());
+        writeMidstreamResponse(context, response, AsyncRetryableStateEnum.MIDSTREAM_SUCCESS.getCode());
     }
     /**
      * 更新midstream状态.
@@ -85,7 +85,7 @@ public interface AsyncRetryService<C extends OllgeiDisruptorContext, T extends A
      * @return
      */
     default void writeDownstreamResponse(C context, S response) {
-        writeDownstreamResponse(context, response, AsyncRetryStateEnum.DOWNSTREAM_SUCCESS.getCode());
+        writeDownstreamResponse(context, response, AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode());
     }
     /**
      * 更新downstream状态.
