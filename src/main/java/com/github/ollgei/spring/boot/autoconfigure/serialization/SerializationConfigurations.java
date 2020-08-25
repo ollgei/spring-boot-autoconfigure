@@ -39,7 +39,11 @@ final class SerializationConfigurations {
         mappings.put(SerializationType.GSON, GsonSerializationConfiguration.class);
         mappings.put(SerializationType.KRYO, KryoSerializationConfiguration.class);
         mappings.put(SerializationType.JAVA, JavaSerializationConfiguration.class);
+        mappings.put(SerializationType.COMPACTED_JAVA, CompactedjavaSerializationConfiguration.class);
         mappings.put(SerializationType.PROTOSTUFF, ProtostuffSerializationConfiguration.class);
+        mappings.put(SerializationType.FST, FstSerializationConfiguration.class);
+        mappings.put(SerializationType.NATIVE_HESSIAN, NativeHessianSerializationConfiguration.class);
+        mappings.put(SerializationType.HESSIAN, HessianSerializationConfiguration.class);
 		MAPPINGS = Collections.unmodifiableMap(mappings);
 	}
 

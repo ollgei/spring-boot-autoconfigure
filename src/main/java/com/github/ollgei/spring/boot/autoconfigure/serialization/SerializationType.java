@@ -25,5 +25,21 @@ public enum SerializationType {
     /**
      * Protostuff.
      */
-    PROTOSTUFF;
+    PROTOSTUFF,
+    /**
+     * compacted java.
+     */
+    COMPACTED_JAVA,
+    /**
+     * Fst.
+     */
+    FST,
+    /**
+     * NativeHessian.
+     */
+    NATIVE_HESSIAN,
+    /**
+     * NativeHessian.
+     */
+    HESSIAN;
 }
