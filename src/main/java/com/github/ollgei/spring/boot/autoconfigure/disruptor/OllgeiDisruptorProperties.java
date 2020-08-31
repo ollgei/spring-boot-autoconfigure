@@ -42,4 +42,29 @@ public class OllgeiDisruptorProperties {
 
     private String subscriberName = "ollgei";
 
+    private Retryable retryable;
+
+    @Data
+    public static final class Retryable {
+        /**
+         * delay(seconds).
+         */
+        private Integer delay = 10;
+
+        /**
+         * multiplier.
+         */
+        private Double multiplier = 1.0d;
+
+        /**
+         * maxAttempts.
+         */
+        private Integer maxAttempts = 5;
+
+        /**
+         * batchSize.
+         */
+        private Integer batchSize = 80;
+    }
+
 }
