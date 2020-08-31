@@ -7,4 +7,5 @@ com.github.ollgei.spring.boot.autoconfigure.fastree.JdbcTemplateFastreeAutoConfi
 com.github.ollgei.spring.boot.autoconfigure.gson.GsonAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.gson.cache.GsonCacheAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.serialization.SerializationAutoconfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration
+com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.j2cache.J2CacheAutoConfiguration

@@ -12,7 +12,7 @@
 
     <groupId>com.github.ollgei.spring</groupId>
     <artifactId>ollgei-boot-autoconfigure</artifactId>
-    <version>1.0.0.RC21</version>
+    <version>1.0.3</version>
     <inceptionYear>2020</inceptionYear>
 
     <licenses>
@@ -72,7 +72,13 @@
         <dependency>
             <groupId>com.github.ollgei.base</groupId>
             <artifactId>base-commonj-library</artifactId>
-            <version>1.0.0.RC18</version>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <version>10.10.1</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>de.ruedigermoeller</groupId>
