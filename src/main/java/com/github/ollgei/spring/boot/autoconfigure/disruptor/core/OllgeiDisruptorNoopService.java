@@ -8,11 +8,6 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
 public class OllgeiDisruptorNoopService implements OllgeiDisruptorService {
 
     @Override
-    public String kind() {
-        return null;
-    }
-
-    @Override
     public void publish(OllgeiDisruptorContext context) {
 
     }

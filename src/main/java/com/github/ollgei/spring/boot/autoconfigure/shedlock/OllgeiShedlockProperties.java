@@ -1,10 +1,12 @@
 package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 
 import java.time.Duration;
+import java.util.TimeZone;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
+import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 
 /**
  * desc.
@@ -24,5 +26,18 @@ public class OllgeiShedlockProperties {
      * lock least.
      */
     private Duration lockLeastFor = Duration.parse("PT0S");
+    /**
+     * Jdbctemplate.
+     */
+    private Jdbctemplate jdbctemplate;
+
+    @Data
+    public static class Jdbctemplate {
+        private String tableName;
+        private TimeZone timeZone;
+        private JdbcTemplateLockProvider.ColumnNames columns;
+        private String lockedByValue;
+        private boolean useDbTime;
+    }
 
 }

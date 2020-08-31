@@ -17,6 +17,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -39,6 +40,7 @@ import net.javacrumbs.shedlock.core.LockProvider;
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(LockProvider.class)
 @EnableConfigurationProperties(OllgeiShedlockProperties.class)
+@AutoConfigureAfter(JdbcTemplateShedlockAutoConfiguration.class)
 public class ShedlockAutoConfiguration {
 
     private OllgeiShedlockProperties ollgeiShedlockProperties;

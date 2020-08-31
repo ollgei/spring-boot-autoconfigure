@@ -16,9 +16,6 @@
 
 package com.github.ollgei.spring.boot.autoconfigure.disruptor;
 
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -29,7 +26,7 @@ import org.springframework.context.annotation.Bean;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorNoopService;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSimpleSubscriber;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.spring.SpringOllgeiDisruptorSubscriber;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -73,7 +70,7 @@ public class OllgeiDisruptorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public OllgeiDisruptorSubscriber ollgeiDisruptorSubscriber(ObjectProvider<OllgeiDisruptorService> ollgeiDisruptorServices) {
-        return new OllgeiDisruptorSimpleSubscriber(ollgeiDisruptorServices.stream().collect(Collectors.toList()));
+    public OllgeiDisruptorSubscriber ollgeiDisruptorSubscriber() {
+        return new SpringOllgeiDisruptorSubscriber();
     }
 }

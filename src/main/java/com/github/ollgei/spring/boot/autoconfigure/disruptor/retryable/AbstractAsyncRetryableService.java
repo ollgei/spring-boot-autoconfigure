@@ -1,11 +1,11 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSimpleSubscription;
-import lombok.Getter;
-import lombok.Setter;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.spring.SpringOllgeiDisruptorSubscription;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,19 +15,17 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-@Getter
-@Setter
 public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableContext, T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
-        implements AsyncRetryableService<C, T, U, S> {
+        implements AsyncRetryableService<C, T, U, S>, OllgeiDisruptorService<C> {
 
     private OllgeiDisruptorPublisher publisher;
 
     @Override
     public void publish(C context) {
         Assert.notNull(publisher, "OllgeiDisruptorPublisher not null!");
-        final OllgeiDisruptorSimpleSubscription subscription = new OllgeiDisruptorSimpleSubscription();
+        final SpringOllgeiDisruptorSubscription subscription = new SpringOllgeiDisruptorSubscription();
         subscription.setContext(context);
-        subscription.setKind(kind());
+        subscription.setClazz(this.getClass());
         publisher.write(subscription);
     }
 
@@ -87,5 +85,14 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
         }
         //最后写入state
         writeState(context, state);
+    }
+
+    public OllgeiDisruptorPublisher getPublisher() {
+        return publisher;
+    }
+
+    @Autowired
+    public void setPublisher(OllgeiDisruptorPublisher publisher) {
+        this.publisher = publisher;
     }
 }

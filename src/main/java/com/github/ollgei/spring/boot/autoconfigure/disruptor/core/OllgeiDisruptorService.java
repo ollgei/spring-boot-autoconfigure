@@ -7,11 +7,6 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
  */
 public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
     /**
-     * 类型.
-     * @return
-     */
-    String kind();
-    /**
      * 初始化.
      * @param context context
      * @return

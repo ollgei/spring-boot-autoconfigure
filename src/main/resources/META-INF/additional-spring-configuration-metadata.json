@@ -17,6 +17,18 @@
       "type": "java.lang.Boolean",
       "description": "enable segment.",
       "defaultValue": false
+    },
+    {
+      "name": "ollgei.shedlock.jdbctemplate.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable shedlock jdbctemplate.",
+      "defaultValue": false
+    },
+    {
+      "name": "ollgei.shedlock.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable shedlock.",
+      "defaultValue": false
     }
   ],
   "hints": []
