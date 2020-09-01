@@ -12,6 +12,7 @@ import lombok.Getter;
 @Builder
 public class SerializationObject {
     /**版本*/
+    @Builder.Default
     private Integer version = 1;
     /**object*/
     private Object object;

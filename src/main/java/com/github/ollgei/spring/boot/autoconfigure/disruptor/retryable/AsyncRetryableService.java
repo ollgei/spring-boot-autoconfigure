@@ -38,7 +38,18 @@ public interface AsyncRetryableService<C extends AsyncRetryableContext, T extend
      * @param state 新状态
      * @return
      */
-    void writeState(C context, int state);
+    default void writeState(C context, int state) {
+        writeState(context, state, false);
+    }
+
+    /**
+     * 更新状态.
+     * @param context object
+     * @param state 新状态
+     * @param success 是否成功
+     * @return
+     */
+    void writeState(C context, int state, boolean success);
     /**
      * 更新upstream状态.
      * @param context object

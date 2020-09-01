@@ -42,7 +42,7 @@ public class OllgeiDisruptorProperties {
 
     private String subscriberName = "ollgei";
 
-    private Retryable retryable;
+    private Retryable retryable = new Retryable();
 
     @Data
     public static final class Retryable {

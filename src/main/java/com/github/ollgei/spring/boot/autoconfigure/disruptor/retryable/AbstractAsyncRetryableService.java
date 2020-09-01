@@ -32,7 +32,7 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
     @Override
     public void read(C context) {
         final AsyncRetryableStateEnum rState = readState(context);
-        int state = (rState == AsyncRetryableStateEnum.INIT) ? AsyncRetryableStateEnum.UPSTREAM_FAIL.getCode() : rState.getCode();
+        int state = rState.getCode();
         final T uResponse;
 
         if (AsyncRetryableStateEnum.hasFail(state, AsyncRetryableStateEnum.UPSTREAM_FAIL)) {
@@ -44,7 +44,7 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
             } else if (uResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
                 state = state | AsyncRetryableStateEnum.UPSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state | AsyncRetryableStateEnum.UPSTREAM_FAIL.getCode());
+                writeState(context, state & AsyncRetryableStateEnum.UPSTREAM_FAIL.getCode());
                 return;
             }
         } else {
@@ -62,7 +62,7 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
             } else if (mResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
                 state = state | AsyncRetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state | AsyncRetryableStateEnum.MIDSTREAM_FAIL.getCode());
+                writeState(context, state & AsyncRetryableStateEnum.MIDSTREAM_FAIL.getCode());
                 return;
             }
         } else {
@@ -80,11 +80,12 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
             } else if (dResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
                 state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
             } else {
-                state = state | AsyncRetryableStateEnum.DOWNSTREAM_FAIL.getCode();
+                writeState(context, state & AsyncRetryableStateEnum.DOWNSTREAM_FAIL.getCode());
+                return;
             }
         }
         //最后写入state
-        writeState(context, state);
+        writeState(context, state, true);
     }
 
     public OllgeiDisruptorPublisher getPublisher() {
