@@ -53,28 +53,23 @@ public interface AsyncRetryableService<C extends AsyncRetryableContext, T extend
     /**
      * 更新upstream状态.
      * @param context object
-     * @param response response
-     * @return
-     */
-    default void writeUpstreamResponse(C context, T response) {
-        writeUpstreamResponse(context, response, AsyncRetryableStateEnum.UPSTREAM_SUCCESS.getCode());
-    }
-    /**
-     * 更新upstream状态.
-     * @param context object
-     * @param response response
+     * @param uResponse upstream response
+     * @param mResponse midstream response
+     * @param dResponse downstream response
      * @param state state
      * @return
      */
-    void writeUpstreamResponse(C context, T response, int state);
+    void writeResponse(C context, T uResponse, U mResponse, S dResponse, int state);
+
     /**
      * 更新upstream状态.
      * @param context object
-     * @param response response
+     * @param response upstream response
+     * @param state state
      * @return
      */
-    default void writeMidstreamResponse(C context, U response) {
-        writeMidstreamResponse(context, response, AsyncRetryableStateEnum.MIDSTREAM_SUCCESS.getCode());
+    default void writeUpstreamResponse(C context, T response, int state) {
+        writeResponse(context, response, null, null, state);
     }
     /**
      * 更新midstream状态.
@@ -83,17 +78,10 @@ public interface AsyncRetryableService<C extends AsyncRetryableContext, T extend
      * @param state state
      * @return
      */
-    void writeMidstreamResponse(C context, U response, int state);
-
-    /**
-     * 更新downstream状态.
-     * @param context object
-     * @param response response
-     * @return
-     */
-    default void writeDownstreamResponse(C context, S response) {
-        writeDownstreamResponse(context, response, AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode());
+    default void writeMidstreamResponse(C context, U response, int state) {
+        writeResponse(context, null, response, null, state);
     }
+
     /**
      * 更新downstream状态.
      * @param context object
@@ -101,7 +89,9 @@ public interface AsyncRetryableService<C extends AsyncRetryableContext, T extend
      * @param state state
      * @return
      */
-    void writeDownstreamResponse(C context, S response, int state);
+    default void writeDownstreamResponse(C context, S response, int state) {
+        writeResponse(context, null, null, response, state);
+    }
 
     /**
      * 读取上游返回的对象.

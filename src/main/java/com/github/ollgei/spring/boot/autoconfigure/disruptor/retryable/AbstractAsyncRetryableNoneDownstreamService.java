@@ -15,7 +15,12 @@ public abstract class AbstractAsyncRetryableNoneDownstreamService<C extends Asyn
     }
 
     @Override
-    public void writeDownstreamResponse(C context, AsyncRetryableDownstreamResponse response) {
+    public void writeResponse(C context, T uResponse, U mResponse, AsyncRetryableDownstreamResponse dResponse, int state) {
+        writeResponse(context, uResponse, mResponse, state);
+    }
+
+    @Override
+    public void writeDownstreamResponse(C context, AsyncRetryableDownstreamResponse response, int state) {
 
     }
 
@@ -23,4 +28,14 @@ public abstract class AbstractAsyncRetryableNoneDownstreamService<C extends Asyn
     public AsyncRetryableDownstreamResponse readDownstreamResponse(C context) {
         return null;
     }
+
+    /**
+     * 更新upstream状态.
+     * @param context object
+     * @param uResponse upstream response
+     * @param mResponse midstream response
+     * @param state state
+     * @return
+     */
+    abstract public void writeResponse(C context, T uResponse, U mResponse, int state);
 }

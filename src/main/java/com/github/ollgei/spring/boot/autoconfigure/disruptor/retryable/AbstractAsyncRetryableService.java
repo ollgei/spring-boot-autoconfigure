@@ -39,8 +39,8 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
             //1 执行upstream 保持幂等性
             uResponse = upstream(context);
             if (uResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
-                writeUpstreamResponse(context, uResponse);
                 state = state | AsyncRetryableStateEnum.UPSTREAM_SUCCESS.getCode();
+                writeUpstreamResponse(context, uResponse, state);
             } else if (uResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
                 state = state | AsyncRetryableStateEnum.UPSTREAM_SUCCESS.getCode();
             } else {
@@ -57,8 +57,8 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
         if (AsyncRetryableStateEnum.hasFail(state, AsyncRetryableStateEnum.MIDSTREAM_FAIL)) {
             mResponse = midstream(context, uResponse);
             if (mResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
-                writeMidstreamResponse(context, mResponse);
                 state = state | AsyncRetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
+                writeMidstreamResponse(context, mResponse, state);
             } else if (mResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
                 state = state | AsyncRetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
             } else {
@@ -75,8 +75,9 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
             //3 执行下游业务处理 保持幂等性
             dResponse = downstream(context, uResponse, mResponse);
             if (dResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
-                writeDownstreamResponse(context, dResponse);
                 state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
+                writeDownstreamResponse(context, dResponse, state);
+                return;
             } else if (dResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
                 state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
             } else {

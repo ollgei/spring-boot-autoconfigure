@@ -20,6 +20,11 @@ public abstract class AbstractAsyncRetryableOnlyUpstreamService<C extends AsyncR
     }
 
     @Override
+    public void writeResponse(C context, T uResponse, AsyncRetryableMidstreamResponse mResponse, AsyncRetryableDownstreamResponse dResponse, int state) {
+        writeResponse(context, uResponse, state);
+    }
+
+    @Override
     public void writeMidstreamResponse(C context, AsyncRetryableMidstreamResponse response, int state) {
     }
 
@@ -36,4 +41,13 @@ public abstract class AbstractAsyncRetryableOnlyUpstreamService<C extends AsyncR
     public AsyncRetryableDownstreamResponse readDownstreamResponse(C context) {
         return null;
     }
+
+    /**
+     * 更新upstream状态.
+     * @param context object
+     * @param uResponse upstream response
+     * @param state state
+     * @return
+     */
+    abstract public void writeResponse(C context, T uResponse, int state);
 }

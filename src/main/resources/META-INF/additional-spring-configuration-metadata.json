@@ -25,6 +25,12 @@
       "defaultValue": false
     },
     {
+      "name": "ollgei.shedlock.mybatis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable shedlock mybatis.",
+      "defaultValue": false
+    },
+    {
       "name": "ollgei.shedlock.enabled",
       "type": "java.lang.Boolean",
       "description": "enable shedlock.",
