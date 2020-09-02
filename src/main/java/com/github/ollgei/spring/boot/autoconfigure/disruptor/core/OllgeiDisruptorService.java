@@ -41,7 +41,9 @@ public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
      * @return
      */
     default void safeRead(C context) {
-        lock(context);
+        if (!lock(context)) {
+            return;
+        }
         try {
             read(context);
         } finally {
@@ -52,10 +54,10 @@ public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
     /**
      * lock.
      * @param context context
-     * @return
+     * @return true:next false:stop
      */
-    default void lock(C context) {
-
+    default boolean lock(C context) {
+        return true;
     }
     /**
      * unlock.

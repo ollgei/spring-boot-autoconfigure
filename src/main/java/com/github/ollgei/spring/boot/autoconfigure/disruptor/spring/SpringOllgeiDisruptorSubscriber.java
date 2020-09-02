@@ -16,10 +16,20 @@ public class SpringOllgeiDisruptorSubscriber implements OllgeiDisruptorSubscribe
 
     private ApplicationContext applicationContext;
 
+    private boolean safeMode;
+
+    public SpringOllgeiDisruptorSubscriber(boolean safeMode) {
+        this.safeMode = safeMode;
+    }
+
     @Override
     public void onNext(SpringOllgeiDisruptorSubscription subscription) {
         final OllgeiDisruptorService service = applicationContext.getBean(subscription.getClazz());
-        service.read(subscription.getContext());
+        if (safeMode) {
+            service.safeRead(subscription.getContext());
+        } else {
+            service.read(subscription.getContext());
+        }
     }
 
     @Override

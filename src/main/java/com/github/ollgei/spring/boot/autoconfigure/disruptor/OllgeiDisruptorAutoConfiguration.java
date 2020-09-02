@@ -71,6 +71,6 @@ public class OllgeiDisruptorAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public OllgeiDisruptorSubscriber ollgeiDisruptorSubscriber() {
-        return new SpringOllgeiDisruptorSubscriber();
+        return new SpringOllgeiDisruptorSubscriber(properties.isSafeMode());
     }
 }

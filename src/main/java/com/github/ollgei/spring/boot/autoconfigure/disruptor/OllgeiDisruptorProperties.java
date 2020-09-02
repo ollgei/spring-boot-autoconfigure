@@ -40,6 +40,8 @@ public class OllgeiDisruptorProperties {
 
     private boolean globalQueue = true;
 
+    private boolean safeMode = true;
+
     private String subscriberName = "ollgei";
 
     private Retryable retryable = new Retryable();
