@@ -26,9 +26,11 @@ import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.converter.HttpMessageConverter;
 
 import com.github.ollgei.base.commonj.gson.Gson;
 import com.github.ollgei.base.commonj.gson.GsonBuilder;
+import com.github.ollgei.base.commonj.gson.spring.GsonHttpMessageConverter;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for Gson.
@@ -55,6 +57,15 @@ public class GsonAutoConfiguration {
 	public Gson ollgeiGson(GsonBuilder gsonBuilder) {
 		return gsonBuilder.create();
 	}
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnClass(HttpMessageConverter.class)
+    public GsonHttpMessageConverter ollgeiGsonHttpMessageConverter(Gson gson) {
+        final GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
+        converter.setGson(gson);
+        return converter;
+    }
 
 	@Bean
 	public StandardGsonBuilderCustomizer ollgeiStandardGsonBuilderCustomizer(GsonProperties gsonProperties) {
