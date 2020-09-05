@@ -9,4 +9,5 @@ com.github.ollgei.spring.boot.autoconfigure.gson.cache.GsonCacheAutoConfiguratio
 com.github.ollgei.spring.boot.autoconfigure.serialization.SerializationAutoconfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.JdbcTemplateShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.FeignShedlockAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.shedlock.MybatisShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration
