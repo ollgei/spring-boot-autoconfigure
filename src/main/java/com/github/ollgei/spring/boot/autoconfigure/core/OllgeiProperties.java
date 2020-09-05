@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import lombok.Data;
 
 /**
- * desc.
+ * properties.
  * @author ollgei
  * @since 1.0.0
  */
@@ -13,6 +13,9 @@ import lombok.Data;
 @Data
 public class OllgeiProperties {
 
+    /**app id*/
     private String appId;
+    /**app name*/
+    private String appName;
 
 }

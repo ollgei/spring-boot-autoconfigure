@@ -19,21 +19,19 @@ package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.github.ollgei.spring.boot.autoconfigure.shedlock.provider.mybatis.MybatisLockProvider;
-import com.github.ollgei.spring.boot.autoconfigure.shedlock.provider.mybatis.MybatisStorageAccessor;
+import com.github.ollgei.spring.boot.autoconfigure.shedlock.provider.feign.FeignLockProvider;
+import com.github.ollgei.spring.boot.autoconfigure.shedlock.provider.feign.FeignStorageAccessor;
+import feign.Feign;
 import net.javacrumbs.shedlock.core.LockProvider;
-import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for Gson.
@@ -42,23 +40,22 @@ import org.apache.ibatis.session.SqlSessionFactory;
  * @author Ivan Golovko
  * @since 1.2.0
  */
-@ConditionalOnProperty(prefix = OllgeiShedlockProperties.PREFIX + ".mybatis", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = OllgeiShedlockProperties.PREFIX + ".feign", name = "enabled", havingValue = "true")
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(OllgeiShedlockProperties.class)
-@ConditionalOnClass({ SqlSessionFactory.class, DataSource.class, JdbcTemplate.class })
-@AutoConfigureAfter(DataSourceAutoConfiguration.class)
-public class MybatisShedlockAutoConfiguration {
+@ConditionalOnClass({ Feign.class })
+public class FeignShedlockAutoConfiguration {
 
     private OllgeiShedlockProperties ollgeiShedlockProperties;
 
-    public MybatisShedlockAutoConfiguration(OllgeiShedlockProperties ollgeiShedlockProperties) {
+    public FeignShedlockAutoConfiguration(OllgeiShedlockProperties ollgeiShedlockProperties) {
         this.ollgeiShedlockProperties = ollgeiShedlockProperties;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public LockProvider lockProvider(ObjectProvider<MybatisStorageAccessor> mybatisStorageAccessors) {
-        return new MybatisLockProvider(mybatisStorageAccessors.getIfUnique());
+    public LockProvider lockProvider(ObjectProvider<FeignStorageAccessor> feignStorageAccessors) {
+        return new FeignLockProvider(feignStorageAccessors.getIfUnique());
     }
 
 }

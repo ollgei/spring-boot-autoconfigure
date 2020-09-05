@@ -31,6 +31,12 @@
       "defaultValue": false
     },
     {
+      "name": "ollgei.shedlock.feign.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable shedlock feign.",
+      "defaultValue": false
+    },
+    {
       "name": "ollgei.shedlock.enabled",
       "type": "java.lang.Boolean",
       "description": "enable shedlock.",

@@ -1,12 +1,12 @@
 package com.github.ollgei.spring.boot.autoconfigure.shedlock.provider.mybatis;
 
-import net.javacrumbs.shedlock.support.AbstractStorageAccessor;
+import net.javacrumbs.shedlock.support.StorageAccessor;
 
 /**
- * desc.
+ * mybatis storage accessor.
  * @author ollgei
  * @return
  */
-public abstract class MybatisStorageAccessor extends AbstractStorageAccessor {
+public interface MybatisStorageAccessor extends StorageAccessor {
 
 }
