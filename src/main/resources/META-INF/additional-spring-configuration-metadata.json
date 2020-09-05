@@ -7,6 +7,12 @@
       "defaultValue": false
     },
     {
+      "name": "ollgei.segment.mybatis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable segment.",
+      "defaultValue": false
+    },
+    {
       "name": "ollgei.disruptor.enabled",
       "type": "java.lang.Boolean",
       "description": "enable disruptor.",

@@ -45,7 +45,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 @ConditionalOnProperty(prefix = OllgeiShedlockProperties.PREFIX + ".mybatis", name = "enabled", havingValue = "true")
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(OllgeiShedlockProperties.class)
-@ConditionalOnClass({ SqlSessionFactory.class, DataSource.class, JdbcTemplate.class })
+@ConditionalOnClass({ SqlSessionFactory.class, DataSource.class})
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 public class MybatisShedlockAutoConfiguration {
 
