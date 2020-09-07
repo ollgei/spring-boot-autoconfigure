@@ -5,6 +5,8 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import com.github.ollgei.base.commonj.utils.CommonHelper;
+import com.github.ollgei.spring.boot.autoconfigure.core.OllgeiProperties;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorProperties;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
@@ -30,6 +32,8 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     private SerializationManager serializationManager;
 
     private OllgeiDisruptorProperties ollgeiDisruptorProperties;
+
+    private OllgeiProperties ollgeiProperties;
 
     @Override
     public void publish(RetryableContext context) {
@@ -111,7 +115,11 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     @Override
     public void write(RetryableContext context) {
         final RetryableModel model = new RetryableModel();
-        model.setAppId(context.getAppId());
+        if (CommonHelper.hasText(context.getAppId())) {
+            model.setAppId(context.getAppId());
+        } else {
+            model.setAppId(ollgeiProperties.getAppId());
+        }
         model.setBizKind(context.getBizKind());
         model.setBizId(context.getBizId());
         model.setBizSubNo(context.getBizSubNo().shortValue());
@@ -217,5 +225,10 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     @Autowired
     public void setOllgeiDisruptorProperties(OllgeiDisruptorProperties ollgeiDisruptorProperties) {
         this.ollgeiDisruptorProperties = ollgeiDisruptorProperties;
+    }
+
+    @Autowired
+    public void setOllgeiProperties(OllgeiProperties ollgeiProperties) {
+        this.ollgeiProperties = ollgeiProperties;
     }
 }
