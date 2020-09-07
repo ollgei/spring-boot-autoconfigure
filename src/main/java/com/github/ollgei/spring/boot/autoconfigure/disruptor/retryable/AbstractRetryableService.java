@@ -1,11 +1,16 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorProperties;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.spring.SpringOllgeiDisruptorSubscription;
+import com.github.ollgei.spring.boot.autoconfigure.serialization.SerializationManager;
+import com.github.ollgei.spring.boot.autoconfigure.serialization.SerializationObject;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,6 +24,12 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
         implements RetryableService<C, T, U, S>, OllgeiDisruptorService<C> {
 
     private OllgeiDisruptorPublisher publisher;
+
+    private RetryableRepository retryableRepository;
+
+    private SerializationManager serializationManager;
+
+    private OllgeiDisruptorProperties ollgeiDisruptorProperties;
 
     @Override
     public void publish(C context) {
@@ -89,6 +100,60 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
         writeState(context, state, true);
     }
 
+    @Override
+    public void write(C context) {
+        final RetryableModel model = new RetryableModel();
+        model.setAppId(context.getAppId());
+        model.setBizKind(context.getBizKind());
+        model.setBizId(context.getBizId());
+        model.setBizSubNo(context.getBizSubNo().shortValue());
+        model.setState(RetryableStateEnum.INIT.getCode());
+        model.setRetryCount(0);
+        model.setNextRetryTimestamp(0L);
+        model.setParams(serializationManager.serializeNativeObject(context));
+        retryableRepository.save(model);
+    }
+
+    @Override
+    public RetryableStateEnum readState(C context) {
+        return RetryableStateEnum.resolve(retryableRepository.query(context).getState());
+    }
+
+    @Override
+    public void writeState(C context, int state, boolean success) {
+        final RetryableModel model = new RetryableModel();
+        model.setState(state);
+        if (!success) {
+            model.setNextRetryIncrTimestamp(getNextDelay());
+            model.setRetryIncrCount(1);
+        }
+        retryableRepository.update(context, model);
+    }
+
+    @Override
+    public void writeResponse(C context, T uResponse, U mResponse, S dResponse, int state) {
+        final RetryableModel model = new RetryableModel();
+        model.setState(state);
+        if (Objects.nonNull(uResponse)) {
+            model.setUpstreamResponse(serializationManager.serializeObject(
+                    SerializationObject.builder().object(uResponse).build()));
+        }
+        if (Objects.nonNull(mResponse)) {
+            model.setUpstreamResponse(serializationManager.serializeObject(
+                    SerializationObject.builder().object(mResponse).build()));
+        }
+        if (Objects.nonNull(dResponse)) {
+            model.setDownstreamResponse(serializationManager.serializeObject(
+                    SerializationObject.builder().object(dResponse).build()));
+        }
+        retryableRepository.update(context, model);
+    }
+
+    private long getNextDelay() {
+        final OllgeiDisruptorProperties.Retryable retryableProps = ollgeiDisruptorProperties.getRetryable();
+        return new Double(retryableProps.getDelay() * retryableProps.getMultiplier()).longValue();
+    }
+
     public OllgeiDisruptorPublisher getPublisher() {
         return publisher;
     }
@@ -96,5 +161,20 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     @Autowired
     public void setPublisher(OllgeiDisruptorPublisher publisher) {
         this.publisher = publisher;
+    }
+
+    @Autowired
+    public void setRetryableRepository(RetryableRepository retryableRepository) {
+        this.retryableRepository = retryableRepository;
+    }
+
+    @Autowired
+    public void setSerializationManager(SerializationManager serializationManager) {
+        this.serializationManager = serializationManager;
+    }
+
+    @Autowired
+    public void setOllgeiDisruptorProperties(OllgeiDisruptorProperties ollgeiDisruptorProperties) {
+        this.ollgeiDisruptorProperties = ollgeiDisruptorProperties;
     }
 }

@@ -25,11 +25,6 @@ public abstract class AbstractRetryableOnlyDownstreamService<C extends Retryable
     }
 
     @Override
-    public void writeResponse(C context, RetryableUpstreamResponse uResponse, RetryableMidstreamResponse mResponse, S dResponse, int state) {
-        writeResponse(context, dResponse, state);
-    }
-
-    @Override
     public void writeUpstreamResponse(C context, RetryableUpstreamResponse response, int state) {
 
     }
@@ -56,12 +51,4 @@ public abstract class AbstractRetryableOnlyDownstreamService<C extends Retryable
      */
     abstract public S downstream(C context);
 
-    /**
-     * 更新upstream状态.
-     * @param context object
-     * @param dResponse downstream response
-     * @param state state
-     * @return
-     */
-    abstract void writeResponse(C context, S dResponse, int state);
 }
