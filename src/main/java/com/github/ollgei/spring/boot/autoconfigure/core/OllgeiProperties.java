@@ -17,5 +17,7 @@ public class OllgeiProperties {
     private String appId;
     /**app name*/
     private String appName;
+    /**app key*/
+    private String appKey;
 
 }
