@@ -7,5 +7,5 @@ import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisrupto
  * @author ollgei
  * @since 1.0.0
  */
-public class AsyncRetryableContext extends OllgeiDisruptorContext {
+public class RetryableContext extends OllgeiDisruptorContext {
 }

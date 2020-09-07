@@ -6,31 +6,31 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractAsyncRetryableNoneMidstreamService<C extends AsyncRetryableContext,T extends AsyncRetryableUpstreamResponse, S extends AsyncRetryableDownstreamResponse>
-        extends AbstractAsyncRetryableService<C, T, AsyncRetryableMidstreamResponse, S> {
+public abstract class AbstractRetryableNoneMidstreamService<C extends RetryableContext,T extends RetryableUpstreamResponse, S extends RetryableDownstreamResponse>
+        extends AbstractRetryableService<C, T, RetryableMidstreamResponse, S> {
 
     @Override
-    public AsyncRetryableMidstreamResponse midstream(C context, T uResponse) {
-        return AsyncRetryableMidstreamResponse.from(AsyncRetryableResultEnum.NOOP);
+    public RetryableMidstreamResponse midstream(C context, T uResponse) {
+        return RetryableMidstreamResponse.from(RetryableResultEnum.NOOP);
     }
 
     @Override
-    public S downstream(C context, T uResponse, AsyncRetryableMidstreamResponse mResponse) {
+    public S downstream(C context, T uResponse, RetryableMidstreamResponse mResponse) {
         return downstream(context, uResponse);
     }
 
     @Override
-    public void writeResponse(C context, T uResponse, AsyncRetryableMidstreamResponse mResponse, S dResponse, int state) {
+    public void writeResponse(C context, T uResponse, RetryableMidstreamResponse mResponse, S dResponse, int state) {
         writeResponse(context, uResponse, dResponse, state);
     }
 
     @Override
-    public void writeMidstreamResponse(C context, AsyncRetryableMidstreamResponse response, int state) {
+    public void writeMidstreamResponse(C context, RetryableMidstreamResponse response, int state) {
 
     }
 
     @Override
-    public AsyncRetryableMidstreamResponse readMidstreamResponse(C context) {
+    public RetryableMidstreamResponse readMidstreamResponse(C context) {
         return null;
     }
 

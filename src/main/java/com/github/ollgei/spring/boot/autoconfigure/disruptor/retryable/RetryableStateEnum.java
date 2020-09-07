@@ -13,7 +13,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AsyncRetryableStateEnum {
+public enum RetryableStateEnum {
     /**初始 000*/
     INIT(0),
     /**中游成功 001*/
@@ -31,16 +31,16 @@ public enum AsyncRetryableStateEnum {
 
     private int code;
 
-    public static boolean hasSuccess(int state, AsyncRetryableStateEnum successState) {
+    public static boolean hasSuccess(int state, RetryableStateEnum successState) {
         return (state & successState.getCode()) == successState.getCode();
     }
 
-    public static boolean hasFail(int state, AsyncRetryableStateEnum failState) {
+    public static boolean hasFail(int state, RetryableStateEnum failState) {
         return (state | failState.getCode()) == failState.getCode();
     }
 
-    public static AsyncRetryableStateEnum resolve(int state) {
-        final AsyncRetryableStateEnum[] values = AsyncRetryableStateEnum.values();
+    public static RetryableStateEnum resolve(int state) {
+        final RetryableStateEnum[] values = RetryableStateEnum.values();
         for (int i = 0; i < values.length; i++) {
             if (values[i].getCode() == state) {
                 return values[i];

@@ -5,7 +5,7 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public interface AsyncRetryableService<C extends AsyncRetryableContext, T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse> {
+public interface RetryableService<C extends RetryableContext, T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse, S extends RetryableDownstreamResponse> {
     /**
      * 上游处理.
      * @param context object
@@ -27,11 +27,11 @@ public interface AsyncRetryableService<C extends AsyncRetryableContext, T extend
      */
     S downstream(C context, T uResponse, U mResponse);
     /**
-     * 读取状态 {@link AsyncRetryableStateEnum}.
+     * 读取状态 {@link RetryableStateEnum}.
      * @param context context
      * @return
      */
-    AsyncRetryableStateEnum readState(C context);
+    RetryableStateEnum readState(C context);
     /**
      * 更新状态.
      * @param context object

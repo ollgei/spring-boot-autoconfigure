@@ -15,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableContext, T extends AsyncRetryableUpstreamResponse, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
-        implements AsyncRetryableService<C, T, U, S>, OllgeiDisruptorService<C> {
+public abstract class AbstractRetryableService<C extends RetryableContext, T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse, S extends RetryableDownstreamResponse>
+        implements RetryableService<C, T, U, S>, OllgeiDisruptorService<C> {
 
     private OllgeiDisruptorPublisher publisher;
 
@@ -31,20 +31,20 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
 
     @Override
     public void read(C context) {
-        final AsyncRetryableStateEnum rState = readState(context);
+        final RetryableStateEnum rState = readState(context);
         int state = rState.getCode();
         final T uResponse;
 
-        if (AsyncRetryableStateEnum.hasFail(state, AsyncRetryableStateEnum.UPSTREAM_FAIL)) {
+        if (RetryableStateEnum.hasFail(state, RetryableStateEnum.UPSTREAM_FAIL)) {
             //1 执行upstream 保持幂等性
             uResponse = upstream(context);
-            if (uResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
-                state = state | AsyncRetryableStateEnum.UPSTREAM_SUCCESS.getCode();
+            if (uResponse.getResult() == RetryableResultEnum.SUCCESS) {
+                state = state | RetryableStateEnum.UPSTREAM_SUCCESS.getCode();
                 writeUpstreamResponse(context, uResponse, state);
-            } else if (uResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
-                state = state | AsyncRetryableStateEnum.UPSTREAM_SUCCESS.getCode();
+            } else if (uResponse.getResult() == RetryableResultEnum.NOOP) {
+                state = state | RetryableStateEnum.UPSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state & AsyncRetryableStateEnum.UPSTREAM_FAIL.getCode());
+                writeState(context, state & RetryableStateEnum.UPSTREAM_FAIL.getCode());
                 return;
             }
         } else {
@@ -54,15 +54,15 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
         //2 执行中游业务处理 保持幂等性(本地处理)
         final U mResponse;
 
-        if (AsyncRetryableStateEnum.hasFail(state, AsyncRetryableStateEnum.MIDSTREAM_FAIL)) {
+        if (RetryableStateEnum.hasFail(state, RetryableStateEnum.MIDSTREAM_FAIL)) {
             mResponse = midstream(context, uResponse);
-            if (mResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
-                state = state | AsyncRetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
+            if (mResponse.getResult() == RetryableResultEnum.SUCCESS) {
+                state = state | RetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
                 writeMidstreamResponse(context, mResponse, state);
-            } else if (mResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
-                state = state | AsyncRetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
+            } else if (mResponse.getResult() == RetryableResultEnum.NOOP) {
+                state = state | RetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state & AsyncRetryableStateEnum.MIDSTREAM_FAIL.getCode());
+                writeState(context, state & RetryableStateEnum.MIDSTREAM_FAIL.getCode());
                 return;
             }
         } else {
@@ -71,17 +71,17 @@ public abstract class AbstractAsyncRetryableService<C extends AsyncRetryableCont
 
         //判断第3位是0
         final S dResponse;
-        if (AsyncRetryableStateEnum.hasFail(state, AsyncRetryableStateEnum.DOWNSTREAM_FAIL)) {
+        if (RetryableStateEnum.hasFail(state, RetryableStateEnum.DOWNSTREAM_FAIL)) {
             //3 执行下游业务处理 保持幂等性
             dResponse = downstream(context, uResponse, mResponse);
-            if (dResponse.getResult() == AsyncRetryableResultEnum.SUCCESS) {
-                state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
+            if (dResponse.getResult() == RetryableResultEnum.SUCCESS) {
+                state = state | RetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
                 writeDownstreamResponse(context, dResponse, state);
                 return;
-            } else if (dResponse.getResult() == AsyncRetryableResultEnum.NOOP) {
-                state = state | AsyncRetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
+            } else if (dResponse.getResult() == RetryableResultEnum.NOOP) {
+                state = state | RetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state & AsyncRetryableStateEnum.DOWNSTREAM_FAIL.getCode());
+                writeState(context, state & RetryableStateEnum.DOWNSTREAM_FAIL.getCode());
                 return;
             }
         }

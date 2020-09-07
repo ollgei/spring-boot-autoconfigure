@@ -5,7 +5,7 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public enum AsyncRetryableResultEnum {
+public enum RetryableResultEnum {
     /**成功*/
     SUCCESS,
     /**失败*/

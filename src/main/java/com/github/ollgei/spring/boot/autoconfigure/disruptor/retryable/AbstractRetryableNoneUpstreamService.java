@@ -6,36 +6,36 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractAsyncRetryableNoneUpstreamService<C extends AsyncRetryableContext, U extends AsyncRetryableMidstreamResponse, S extends AsyncRetryableDownstreamResponse>
-        extends AbstractAsyncRetryableService<C, AsyncRetryableUpstreamResponse, U, S> {
+public abstract class AbstractRetryableNoneUpstreamService<C extends RetryableContext, U extends RetryableMidstreamResponse, S extends RetryableDownstreamResponse>
+        extends AbstractRetryableService<C, RetryableUpstreamResponse, U, S> {
 
     @Override
-    public AsyncRetryableUpstreamResponse upstream(C context) {
-        return AsyncRetryableUpstreamResponse.from(AsyncRetryableResultEnum.NOOP);
+    public RetryableUpstreamResponse upstream(C context) {
+        return RetryableUpstreamResponse.from(RetryableResultEnum.NOOP);
     }
 
     @Override
-    public U midstream(C context, AsyncRetryableUpstreamResponse uResponse) {
+    public U midstream(C context, RetryableUpstreamResponse uResponse) {
         return midstream(context);
     }
 
     @Override
-    public S downstream(C context, AsyncRetryableUpstreamResponse uResponse, U mResponse) {
+    public S downstream(C context, RetryableUpstreamResponse uResponse, U mResponse) {
         return downstream(context, mResponse);
     }
 
     @Override
-    public void writeResponse(C context, AsyncRetryableUpstreamResponse uResponse, U mResponse, S dResponse, int state) {
+    public void writeResponse(C context, RetryableUpstreamResponse uResponse, U mResponse, S dResponse, int state) {
         writeResponse(context, mResponse, dResponse, state);
     }
 
     @Override
-    public void writeUpstreamResponse(C context, AsyncRetryableUpstreamResponse response, int state) {
+    public void writeUpstreamResponse(C context, RetryableUpstreamResponse response, int state) {
 
     }
 
     @Override
-    public AsyncRetryableUpstreamResponse readUpstreamResponse(C context) {
+    public RetryableUpstreamResponse readUpstreamResponse(C context) {
         return null;
     }
 
