@@ -16,6 +16,7 @@ import lombok.Getter;
 public enum RetryableStateEnum {
     /**初始 000*/
     INIT(0),
+    SUCCESS(0x07),
     /**中游成功 001*/
     MIDSTREAM_SUCCESS(1),
     /**中游失败 110*/

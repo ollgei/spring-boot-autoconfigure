@@ -116,7 +116,7 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
 
     @Override
     public RetryableStateEnum readState(C context) {
-        return RetryableStateEnum.resolve(retryableRepository.query(context).getState());
+        return RetryableStateEnum.resolve(retryableRepository.readState(context));
     }
 
     @Override
@@ -152,6 +152,33 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     private long getNextDelay() {
         final OllgeiDisruptorProperties.Retryable retryableProps = ollgeiDisruptorProperties.getRetryable();
         return new Double(retryableProps.getDelay() * retryableProps.getMultiplier()).longValue();
+    }
+
+    @Override
+    public T readUpstreamResponse(C context, Class<T> cls) {
+        final byte[] response = retryableRepository.readUpstreamResponse(context);
+        if (Objects.isNull(response) || response.length == 0) {
+            return null;
+        }
+        return serializationManager.deserializeObject(response, cls);
+    }
+
+    @Override
+    public U readMidstreamResponse(C context, Class<U> cls) {
+        final byte[] response = retryableRepository.readMidstreamResponse(context);
+        if (Objects.isNull(response) || response.length == 0) {
+            return null;
+        }
+        return serializationManager.deserializeObject(response, cls);
+    }
+
+    @Override
+    public S readDownstreamResponse(C context, Class<S> cls) {
+        final byte[] response = retryableRepository.readMidstreamResponse(context);
+        if (Objects.isNull(response) || response.length == 0) {
+            return null;
+        }
+        return serializationManager.deserializeObject(response, cls);
     }
 
     public OllgeiDisruptorPublisher getPublisher() {

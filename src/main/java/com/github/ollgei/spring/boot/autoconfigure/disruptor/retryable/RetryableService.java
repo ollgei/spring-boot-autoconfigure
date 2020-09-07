@@ -96,6 +96,28 @@ public interface RetryableService<C extends RetryableContext, T extends Retryabl
     /**
      * 读取上游返回的对象.
      * @param context object
+     * @param cls class
+     * @return
+     */
+    T readUpstreamResponse(C context, Class<T> cls);
+    /**
+     * 读取本地处理返回的对象.
+     * @param context object
+     * @param cls class
+     * @return
+     */
+    U readMidstreamResponse(C context, Class<U> cls);
+    /**
+     * 读取下游处理返回的对象.
+     * @param context object
+     * @param cls class
+     * @return
+     */
+    S readDownstreamResponse(C context, Class<S> cls);
+
+    /**
+     * 读取上游返回的对象.
+     * @param context object
      * @return
      */
     T readUpstreamResponse(C context);

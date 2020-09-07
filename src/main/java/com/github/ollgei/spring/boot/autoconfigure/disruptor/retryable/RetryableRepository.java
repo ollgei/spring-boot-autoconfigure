@@ -9,7 +9,13 @@ public interface RetryableRepository<C extends RetryableContext> {
 
     void save(RetryableModel model);
 
-    RetryableModel query(C context);
+    int readState(C context);
+
+    byte[] readUpstreamResponse(C context);
+
+    byte[] readMidstreamResponse(C context);
+
+    byte[] readDownstreamResponse(C context);
 
     void update(C context, RetryableModel model);
 
