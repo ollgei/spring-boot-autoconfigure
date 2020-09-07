@@ -118,11 +118,11 @@ public class OllgeiDisruptorPublisher implements InitializingBean, DisposableBea
     }
 
     /**
-     * send disruptor data.
+     * synchronized send disruptor data.
      *
      * @param subscription subscription.
      */
-    public synchronized <T extends AbstractSubscription> void singleWrite(final T subscription) {
+    public synchronized <T extends AbstractSubscription> void syncWrite(final T subscription) {
         write(subscription);
     }
 
