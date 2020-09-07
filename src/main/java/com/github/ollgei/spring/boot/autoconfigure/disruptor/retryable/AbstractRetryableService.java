@@ -20,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public abstract class AbstractRetryableService<C extends RetryableContext, T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse, S extends RetryableDownstreamResponse>
-        implements RetryableService<C, T, U, S>, OllgeiDisruptorService<C> {
+public abstract class AbstractRetryableService<T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse, S extends RetryableDownstreamResponse>
+        implements RetryableService<T, U, S>, OllgeiDisruptorService<RetryableContext> {
 
     private OllgeiDisruptorPublisher publisher;
 
@@ -32,7 +32,7 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     private OllgeiDisruptorProperties ollgeiDisruptorProperties;
 
     @Override
-    public void publish(C context) {
+    public void publish(RetryableContext context) {
         Assert.notNull(publisher, "OllgeiDisruptorPublisher not null!");
         final SpringOllgeiDisruptorSubscription subscription = new SpringOllgeiDisruptorSubscription();
         subscription.setContext(context);
@@ -41,8 +41,15 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     }
 
     @Override
-    public void read(C context) {
+    public void read(RetryableContext context) {
         final RetryableStateEnum rState = readState(context);
+        if (rState == RetryableStateEnum.SUCCESS) {
+            if (log.isInfoEnabled()) {
+                log.info("【异步重试】已经全部执行完成");
+            }
+            countDown(context);
+            return;
+        }
         int state = rState.getCode();
         final T uResponse;
 
@@ -98,10 +105,11 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
         }
         //最后写入state
         writeState(context, state, true);
+        countDown(context);
     }
 
     @Override
-    public void write(C context) {
+    public void write(RetryableContext context) {
         final RetryableModel model = new RetryableModel();
         model.setAppId(context.getAppId());
         model.setBizKind(context.getBizKind());
@@ -110,17 +118,17 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
         model.setState(RetryableStateEnum.INIT.getCode());
         model.setRetryCount(0);
         model.setNextRetryTimestamp(0L);
-        model.setParams(serializationManager.serializeNativeObject(context));
+        model.setParams(serializationManager.serializeNativeObject(context.getData()));
         retryableRepository.save(model);
     }
 
     @Override
-    public RetryableStateEnum readState(C context) {
+    public RetryableStateEnum readState(RetryableContext context) {
         return RetryableStateEnum.resolve(retryableRepository.readState(context));
     }
 
     @Override
-    public void writeState(C context, int state, boolean success) {
+    public void writeState(RetryableContext context, int state, boolean success) {
         final RetryableModel model = new RetryableModel();
         model.setState(state);
         if (!success) {
@@ -131,7 +139,7 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     }
 
     @Override
-    public void writeResponse(C context, T uResponse, U mResponse, S dResponse, int state) {
+    public void writeResponse(RetryableContext context, T uResponse, U mResponse, S dResponse, int state) {
         final RetryableModel model = new RetryableModel();
         model.setState(state);
         if (Objects.nonNull(uResponse)) {
@@ -155,7 +163,7 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     }
 
     @Override
-    public T readUpstreamResponse(C context, Class<T> cls) {
+    public T readUpstreamResponse(RetryableContext context, Class<T> cls) {
         final byte[] response = retryableRepository.readUpstreamResponse(context);
         if (Objects.isNull(response) || response.length == 0) {
             return null;
@@ -164,7 +172,7 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     }
 
     @Override
-    public U readMidstreamResponse(C context, Class<U> cls) {
+    public U readMidstreamResponse(RetryableContext context, Class<U> cls) {
         final byte[] response = retryableRepository.readMidstreamResponse(context);
         if (Objects.isNull(response) || response.length == 0) {
             return null;
@@ -173,12 +181,18 @@ public abstract class AbstractRetryableService<C extends RetryableContext, T ext
     }
 
     @Override
-    public S readDownstreamResponse(C context, Class<S> cls) {
+    public S readDownstreamResponse(RetryableContext context, Class<S> cls) {
         final byte[] response = retryableRepository.readMidstreamResponse(context);
         if (Objects.isNull(response) || response.length == 0) {
             return null;
         }
         return serializationManager.deserializeObject(response, cls);
+    }
+
+    private void countDown(RetryableContext context) {
+        if (context.getLatch() != null && context.getLatch().getCount() > 0) {
+            context.getLatch().countDown();
+        }
     }
 
     public OllgeiDisruptorPublisher getPublisher() {

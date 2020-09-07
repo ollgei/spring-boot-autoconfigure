@@ -5,40 +5,40 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public interface RetryableService<C extends RetryableContext, T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse, S extends RetryableDownstreamResponse> {
+public interface RetryableService<T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse, S extends RetryableDownstreamResponse> {
     /**
      * 上游处理.
      * @param context object
      * @return
      */
-    T upstream(C context);
+    T upstream(RetryableContext context);
     /**
      * 中游处理.
      * @param context object
      * @param uResponse upstream
      * @return
      */
-    U midstream(C context, T uResponse);
+    U midstream(RetryableContext context, T uResponse);
     /**
      * 下游处理.
      * @param context object
      * @param uResponse upstream
      * @return
      */
-    S downstream(C context, T uResponse, U mResponse);
+    S downstream(RetryableContext context, T uResponse, U mResponse);
     /**
      * 读取状态 {@link RetryableStateEnum}.
      * @param context context
      * @return
      */
-    RetryableStateEnum readState(C context);
+    RetryableStateEnum readState(RetryableContext context);
     /**
      * 更新状态.
      * @param context object
      * @param state 新状态
      * @return
      */
-    default void writeState(C context, int state) {
+    default void writeState(RetryableContext context, int state) {
         writeState(context, state, false);
     }
 
@@ -49,7 +49,7 @@ public interface RetryableService<C extends RetryableContext, T extends Retryabl
      * @param success 是否成功
      * @return
      */
-    void writeState(C context, int state, boolean success);
+    void writeState(RetryableContext context, int state, boolean success);
     /**
      * 更新upstream状态.
      * @param context object
@@ -59,7 +59,7 @@ public interface RetryableService<C extends RetryableContext, T extends Retryabl
      * @param state state
      * @return
      */
-    void writeResponse(C context, T uResponse, U mResponse, S dResponse, int state);
+    void writeResponse(RetryableContext context, T uResponse, U mResponse, S dResponse, int state);
 
     /**
      * 更新upstream状态.
@@ -68,7 +68,7 @@ public interface RetryableService<C extends RetryableContext, T extends Retryabl
      * @param state state
      * @return
      */
-    default void writeUpstreamResponse(C context, T response, int state) {
+    default void writeUpstreamResponse(RetryableContext context, T response, int state) {
         writeResponse(context, response, null, null, state);
     }
     /**
@@ -78,7 +78,7 @@ public interface RetryableService<C extends RetryableContext, T extends Retryabl
      * @param state state
      * @return
      */
-    default void writeMidstreamResponse(C context, U response, int state) {
+    default void writeMidstreamResponse(RetryableContext context, U response, int state) {
         writeResponse(context, null, response, null, state);
     }
 
@@ -89,7 +89,7 @@ public interface RetryableService<C extends RetryableContext, T extends Retryabl
      * @param state state
      * @return
      */
-    default void writeDownstreamResponse(C context, S response, int state) {
+    default void writeDownstreamResponse(RetryableContext context, S response, int state) {
         writeResponse(context, null, null, response, state);
     }
 
@@ -99,38 +99,38 @@ public interface RetryableService<C extends RetryableContext, T extends Retryabl
      * @param cls class
      * @return
      */
-    T readUpstreamResponse(C context, Class<T> cls);
+    T readUpstreamResponse(RetryableContext context, Class<T> cls);
     /**
      * 读取本地处理返回的对象.
      * @param context object
      * @param cls class
      * @return
      */
-    U readMidstreamResponse(C context, Class<U> cls);
+    U readMidstreamResponse(RetryableContext context, Class<U> cls);
     /**
      * 读取下游处理返回的对象.
      * @param context object
      * @param cls class
      * @return
      */
-    S readDownstreamResponse(C context, Class<S> cls);
+    S readDownstreamResponse(RetryableContext context, Class<S> cls);
 
     /**
      * 读取上游返回的对象.
      * @param context object
      * @return
      */
-    T readUpstreamResponse(C context);
+    T readUpstreamResponse(RetryableContext context);
     /**
      * 读取本地处理返回的对象.
      * @param context object
      * @return
      */
-    U readMidstreamResponse(C context);
+    U readMidstreamResponse(RetryableContext context);
     /**
      * 读取下游处理返回的对象.
      * @param context object
      * @return
      */
-    S readDownstreamResponse(C context);
+    S readDownstreamResponse(RetryableContext context);
 }

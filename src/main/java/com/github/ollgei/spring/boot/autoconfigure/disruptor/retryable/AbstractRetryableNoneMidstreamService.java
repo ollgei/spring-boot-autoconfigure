@@ -6,27 +6,27 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractRetryableNoneMidstreamService<C extends RetryableContext,T extends RetryableUpstreamResponse, S extends RetryableDownstreamResponse>
-        extends AbstractRetryableService<C, T, RetryableMidstreamResponse, S> {
+public abstract class AbstractRetryableNoneMidstreamService<T extends RetryableUpstreamResponse, S extends RetryableDownstreamResponse>
+        extends AbstractRetryableService<T, RetryableMidstreamResponse, S> {
 
     @Override
-    public RetryableMidstreamResponse midstream(C context, T uResponse) {
+    public RetryableMidstreamResponse midstream(RetryableContext context, T uResponse) {
         return RetryableMidstreamResponse.from(RetryableResultEnum.NOOP);
     }
 
     @Override
-    public S downstream(C context, T uResponse, RetryableMidstreamResponse mResponse) {
+    public S downstream(RetryableContext context, T uResponse, RetryableMidstreamResponse mResponse) {
         return downstream(context, uResponse);
     }
 
 
     @Override
-    public void writeMidstreamResponse(C context, RetryableMidstreamResponse response, int state) {
+    public void writeMidstreamResponse(RetryableContext context, RetryableMidstreamResponse response, int state) {
 
     }
 
     @Override
-    public RetryableMidstreamResponse readMidstreamResponse(C context) {
+    public RetryableMidstreamResponse readMidstreamResponse(RetryableContext context) {
         return null;
     }
 
@@ -36,5 +36,5 @@ public abstract class AbstractRetryableNoneMidstreamService<C extends RetryableC
      * @param uResponse uResponse
      * @return
      */
-    abstract public S downstream(C context, T uResponse);
+    abstract public S downstream(RetryableContext context, T uResponse);
 }

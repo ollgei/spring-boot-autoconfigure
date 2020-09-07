@@ -6,41 +6,41 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractRetryableOnlyMidstreamService<C extends RetryableContext, U extends RetryableMidstreamResponse>
-        extends AbstractRetryableService<C, RetryableUpstreamResponse, U, RetryableDownstreamResponse> {
+public abstract class AbstractRetryableOnlyMidstreamService<U extends RetryableMidstreamResponse>
+        extends AbstractRetryableService<RetryableUpstreamResponse, U, RetryableDownstreamResponse> {
 
     @Override
-    public RetryableUpstreamResponse upstream(C context) {
+    public RetryableUpstreamResponse upstream(RetryableContext context) {
         return RetryableUpstreamResponse.from(RetryableResultEnum.NOOP);
     }
 
     @Override
-    public U midstream(C context, RetryableUpstreamResponse uResponse) {
+    public U midstream(RetryableContext context, RetryableUpstreamResponse uResponse) {
         return midstream(context);
     }
 
     @Override
-    public RetryableDownstreamResponse downstream(C context, RetryableUpstreamResponse uResponse, U mResponse) {
+    public RetryableDownstreamResponse downstream(RetryableContext context, RetryableUpstreamResponse uResponse, U mResponse) {
         return RetryableDownstreamResponse.from(RetryableResultEnum.NOOP);
     }
 
     @Override
-    public void writeUpstreamResponse(C context, RetryableUpstreamResponse response, int state) {
+    public void writeUpstreamResponse(RetryableContext context, RetryableUpstreamResponse response, int state) {
 
     }
 
     @Override
-    public void writeDownstreamResponse(C context, RetryableDownstreamResponse response, int state) {
+    public void writeDownstreamResponse(RetryableContext context, RetryableDownstreamResponse response, int state) {
 
     }
 
     @Override
-    public RetryableUpstreamResponse readUpstreamResponse(C context) {
+    public RetryableUpstreamResponse readUpstreamResponse(RetryableContext context) {
         return null;
     }
 
     @Override
-    public RetryableDownstreamResponse readDownstreamResponse(C context) {
+    public RetryableDownstreamResponse readDownstreamResponse(RetryableContext context) {
         return null;
     }
 
@@ -49,6 +49,6 @@ public abstract class AbstractRetryableOnlyMidstreamService<C extends RetryableC
      * @param context context
      * @return
      */
-    abstract public U midstream(C context);
+    abstract public U midstream(RetryableContext context);
 
 }

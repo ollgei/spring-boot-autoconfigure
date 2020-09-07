@@ -6,21 +6,21 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractRetryableNoneDownstreamService<C extends RetryableContext,T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse>
-        extends AbstractRetryableService<C, T, U, RetryableDownstreamResponse> {
+public abstract class AbstractRetryableNoneDownstreamService<T extends RetryableUpstreamResponse, U extends RetryableMidstreamResponse>
+        extends AbstractRetryableService<T, U, RetryableDownstreamResponse> {
 
     @Override
-    public RetryableDownstreamResponse downstream(C context, T uResponse, U mResponse) {
+    public RetryableDownstreamResponse downstream(RetryableContext context, T uResponse, U mResponse) {
         return RetryableDownstreamResponse.from(RetryableResultEnum.NOOP);
     }
 
     @Override
-    public void writeDownstreamResponse(C context, RetryableDownstreamResponse response, int state) {
+    public void writeDownstreamResponse(RetryableContext context, RetryableDownstreamResponse response, int state) {
 
     }
 
     @Override
-    public RetryableDownstreamResponse readDownstreamResponse(C context) {
+    public RetryableDownstreamResponse readDownstreamResponse(RetryableContext context) {
         return null;
     }
 }
