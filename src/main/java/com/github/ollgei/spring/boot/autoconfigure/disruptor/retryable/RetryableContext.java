@@ -25,6 +25,8 @@ public class RetryableContext extends OllgeiDisruptorContext {
     private Integer bizSubNo;
     /**data*/
     private Object data;
+    /**data*/
+    private Object responseData;
     /**latch*/
     private CountDownLatch latch;
 

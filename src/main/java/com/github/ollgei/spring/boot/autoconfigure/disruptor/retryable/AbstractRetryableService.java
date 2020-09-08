@@ -46,12 +46,19 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
     @Override
     public void read(RetryableContext context) {
+        try {
+            readInternal(context);
+        } finally {
+            countDown(context);
+        }
+    }
+
+    private void readInternal(RetryableContext context) {
         final RetryableStateEnum rState = readState(context);
         if (rState == RetryableStateEnum.SUCCESS) {
             if (log.isInfoEnabled()) {
                 log.info("【异步重试】已经全部执行完成");
             }
-            countDown(context);
             return;
         }
         int state = rState.getCode();
@@ -109,7 +116,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         }
         //最后写入state
         writeState(context, state, true);
-        countDown(context);
     }
 
     @Override
@@ -150,6 +156,10 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     public void writeResponse(RetryableContext context, T uResponse, U mResponse, S dResponse, int state) {
         final RetryableModel model = new RetryableModel();
         model.setState(state);
+        if (Objects.nonNull(context.getResponseData())) {
+            model.setResponse(serializationManager.serializeObject(
+                    SerializationObject.builder().object(context.getResponseData()).build()));
+        }
         if (Objects.nonNull(uResponse)) {
             model.setUpstreamResponse(serializationManager.serializeObject(
                     SerializationObject.builder().object(uResponse).build()));

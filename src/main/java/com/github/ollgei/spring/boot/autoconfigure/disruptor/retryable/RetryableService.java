@@ -26,6 +26,7 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
      * @return
      */
     S downstream(RetryableContext context, T uResponse, U mResponse);
+
     /**
      * 读取状态 {@link RetryableStateEnum}.
      * @param context context

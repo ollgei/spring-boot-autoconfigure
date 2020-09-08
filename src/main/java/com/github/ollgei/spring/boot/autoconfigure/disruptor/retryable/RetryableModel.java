@@ -42,6 +42,11 @@ public class RetryableModel {
     private byte[] params;
 
     /**
+     * 响应
+     */
+    private byte[] response;
+
+    /**
      * 返回参数
      */
     private byte[] midstreamResponse;
