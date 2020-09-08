@@ -17,6 +17,8 @@ public interface RetryableRepository {
 
     byte[] readDownstreamResponse(RetryableContext context);
 
+    byte[] readResponse(RetryableContext context);
+
     void update(RetryableContext context, RetryableModel model);
 
 }

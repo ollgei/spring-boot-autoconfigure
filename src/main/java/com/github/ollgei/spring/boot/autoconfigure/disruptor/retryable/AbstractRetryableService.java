@@ -121,11 +121,10 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     @Override
     public void write(RetryableContext context) {
         final RetryableModel model = new RetryableModel();
-        if (CommonHelper.hasText(context.getAppId())) {
-            model.setAppId(context.getAppId());
-        } else {
-            model.setAppId(ollgeiProperties.getAppId());
+        if (!CommonHelper.hasText(context.getAppId())) {
+            context.setAppId(ollgeiProperties.getAppId());
         }
+        model.setAppId(context.getAppId());
         model.setBizKind(context.getBizKind());
         model.setBizId(context.getBizId());
         model.setBizSubNo(context.getBizSubNo().shortValue());
@@ -165,7 +164,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
                     SerializationObject.builder().object(uResponse).build()));
         }
         if (Objects.nonNull(mResponse)) {
-            model.setUpstreamResponse(serializationManager.serializeObject(
+            model.setMidstreamResponse(serializationManager.serializeObject(
                     SerializationObject.builder().object(mResponse).build()));
         }
         if (Objects.nonNull(dResponse)) {
