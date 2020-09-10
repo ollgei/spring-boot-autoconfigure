@@ -47,6 +47,12 @@
       "type": "java.lang.Boolean",
       "description": "enable shedlock.",
       "defaultValue": false
+    },
+    {
+      "name": "ollgei.redis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei redis.",
+      "defaultValue": true
     }
   ],
   "hints": []
