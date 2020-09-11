@@ -43,7 +43,7 @@ import com.github.ollgei.spring.boot.autoconfigure.shedlock.OllgeiShedlockProper
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedisOperations.class)
 @EnableConfigurationProperties(OllgeiRedisProperties.class)
-@AutoConfigureAfter({ RedisAutoConfiguration.class, SerializationAutoconfiguration.class })
+@AutoConfigureAfter({ RedisAutoConfiguration.class })
 public class OllgeiRedisAutoConfiguration {
 
     @Bean
