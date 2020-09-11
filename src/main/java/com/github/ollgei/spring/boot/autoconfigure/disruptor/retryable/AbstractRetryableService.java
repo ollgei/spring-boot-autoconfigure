@@ -1,6 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -36,20 +37,25 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     private OllgeiProperties ollgeiProperties;
 
     @Override
-    public void publish(RetryableContext context) {
+    public void publish(RetryableContext context, CountDownLatch countDownLatch) {
         Assert.notNull(publisher, "OllgeiDisruptorPublisher not null!");
         final SpringOllgeiDisruptorSubscription subscription = new SpringOllgeiDisruptorSubscription();
         subscription.setContext(context);
+        if (countDownLatch != null) {
+            subscription.setCountDownLatch(countDownLatch);
+        }
         subscription.setClazz(this.getClass());
         publisher.write(subscription);
     }
 
     @Override
-    public void read(RetryableContext context) {
+    public void read(RetryableContext context, CountDownLatch countDownLatch) {
         try {
             readInternal(context);
         } finally {
-            countDown(context);
+            if (countDownLatch != null && countDownLatch.getCount() > 0) {
+                countDownLatch.countDown();
+            }
         }
     }
 
@@ -211,12 +217,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             return null;
         }
         return serializationManager.deserializeObject(response, cls);
-    }
-
-    private void countDown(RetryableContext context) {
-        if (context.getLatch() != null && context.getLatch().getCount() > 0) {
-            context.getLatch().countDown();
-        }
     }
 
     public OllgeiDisruptorPublisher getPublisher() {

@@ -26,9 +26,9 @@ public class SpringOllgeiDisruptorSubscriber implements OllgeiDisruptorSubscribe
     public void onNext(SpringOllgeiDisruptorSubscription subscription) {
         final OllgeiDisruptorService service = applicationContext.getBean(subscription.getClazz());
         if (safeMode) {
-            service.safeRead(subscription.getContext());
+            service.safeRead(subscription.getContext(), subscription.getCountDownLatch());
         } else {
-            service.read(subscription.getContext());
+            service.read(subscription.getContext(), subscription.getCountDownLatch());
         }
     }
 

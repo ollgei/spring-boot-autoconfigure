@@ -1,5 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * desc.
  * @author ollgei
@@ -8,7 +10,7 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.core;
 public class OllgeiDisruptorNoopService implements OllgeiDisruptorService {
 
     @Override
-    public void publish(OllgeiDisruptorContext context) {
+    public void publish(OllgeiDisruptorContext context, CountDownLatch countDownLatch) {
 
     }
 
@@ -18,7 +20,7 @@ public class OllgeiDisruptorNoopService implements OllgeiDisruptorService {
     }
 
     @Override
-    public void read(OllgeiDisruptorContext context) {
+    public void read(OllgeiDisruptorContext context, CountDownLatch countDownLatch) {
 
     }
 }

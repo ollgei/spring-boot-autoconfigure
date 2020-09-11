@@ -1,7 +1,5 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
-import java.util.concurrent.CountDownLatch;
-
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
 import lombok.Builder;
 import lombok.Data;
@@ -27,8 +25,6 @@ public class RetryableContext extends OllgeiDisruptorContext {
     private Object data;
     /**data*/
     private Object responseData;
-    /**latch*/
-    private CountDownLatch latch;
 
     public <T> T resolveData() {
        return (T) data;
