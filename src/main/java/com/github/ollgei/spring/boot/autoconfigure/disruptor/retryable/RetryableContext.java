@@ -30,4 +30,12 @@ public class RetryableContext extends OllgeiDisruptorContext {
     /**latch*/
     private CountDownLatch latch;
 
+    public <T> T resolveData() {
+       return (T) data;
+    }
+
+    public <T> T resolveResponseData() {
+        return (T) responseData;
+    }
+
 }
