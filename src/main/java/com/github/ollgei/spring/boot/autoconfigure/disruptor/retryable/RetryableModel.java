@@ -34,7 +34,7 @@ public class RetryableModel {
 
     private Integer retryCount;
 
-    private Long nextRetryTimestamp;
+    private Long nextRetryTimestamp = System.currentTimeMillis();
 
     /**
      * 参数

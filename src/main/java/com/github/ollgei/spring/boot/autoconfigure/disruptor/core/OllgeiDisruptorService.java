@@ -36,6 +36,15 @@ public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
     void read(C context);
 
     /**
+     * 清理.
+     * @param context context
+     * @return
+     */
+    default void cleanup(C context) {
+
+    }
+
+    /**
      * 安全执行.
      * @param context context
      * @return

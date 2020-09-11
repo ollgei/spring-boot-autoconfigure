@@ -53,6 +53,11 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         }
     }
 
+    @Override
+    public void cleanup(RetryableContext context) {
+        retryableRepository.remove(context);
+    }
+
     private void readInternal(RetryableContext context) {
         final RetryableStateEnum rState = readState(context);
         if (rState == RetryableStateEnum.SUCCESS) {
@@ -116,6 +121,8 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         }
         //最后写入state
         writeState(context, state, true);
+        //清理数据
+        cleanup(context);
     }
 
     @Override
@@ -132,7 +139,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         model.setRetryCount(0);
         model.setNextRetryTimestamp(0L);
         model.setParams(serializationManager.serializeNativeObject(context.getData()));
-        retryableRepository.save(model);
+        retryableRepository.save(context, model);
     }
 
     @Override
