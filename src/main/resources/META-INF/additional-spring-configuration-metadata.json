@@ -59,6 +59,12 @@
       "type": "java.lang.Boolean",
       "description": "enable ollgei consul.",
       "defaultValue": false
+    },
+    {
+      "name": "ollgei.consul.retry.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei consul retry.",
+      "defaultValue": false
     }
   ],
   "hints": []

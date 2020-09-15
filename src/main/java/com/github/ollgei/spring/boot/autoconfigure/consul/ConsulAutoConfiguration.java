@@ -42,7 +42,8 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(ConsulProperties.class)
-@ConditionalOnConsulEnabled
+@ConditionalOnClass(ConsulClient.class)
+@ConditionalOnProperty(prefix = "ollgei.consul", name = "enabled", havingValue = "true")
 public class ConsulAutoConfiguration {
 
 	@Bean
@@ -88,8 +89,7 @@ public class ConsulAutoConfiguration {
 	@EnableRetry(proxyTargetClass = true)
 	@Import(AopAutoConfiguration.class)
 	@EnableConfigurationProperties(RetryProperties.class)
-	@ConditionalOnProperty(value = "spring.cloud.consul.retry.enabled",
-			matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "ollgei.consul.retry", name = "enabled", havingValue = "true")
 	protected static class RetryConfiguration {
 
 		@Bean(name = "consulRetryInterceptor")
