@@ -10,13 +10,10 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class RetryableMidstreamResponse {
-    /**result*/
-    private RetryableResultEnum result;
+public class RetryableMidstreamResponse extends RetryableResponse {
 
     public static RetryableMidstreamResponse from(RetryableResultEnum resultEnum) {
-        final RetryableMidstreamResponse response = new RetryableMidstreamResponse();
-        response.setResult(resultEnum);
-        return response;
+        return RetryableResponse.from(new RetryableMidstreamResponse(), resultEnum);
     }
+
 }

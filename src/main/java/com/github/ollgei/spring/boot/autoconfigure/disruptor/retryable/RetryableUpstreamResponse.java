@@ -8,13 +8,10 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class RetryableUpstreamResponse {
-    /**result*/
-    private RetryableResultEnum result;
+public class RetryableUpstreamResponse extends RetryableResponse {
 
     public static RetryableUpstreamResponse from(RetryableResultEnum resultEnum) {
-        final RetryableUpstreamResponse response = new RetryableUpstreamResponse();
-        response.setResult(resultEnum);
-        return response;
+        return RetryableResponse.from(new RetryableUpstreamResponse(), resultEnum);
     }
+
 }

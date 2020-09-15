@@ -19,8 +19,10 @@ public class RetryableContext extends OllgeiDisruptorContext {
     private String bizKind;
     /**BIZ ID*/
     private String bizId;
-    /**BI Sub No*/
+    /**BIZ Sub No*/
     private Integer bizSubNo;
+    /**upstream channel*/
+    private String channel;
     /**data*/
     private Object data;
     /**data*/

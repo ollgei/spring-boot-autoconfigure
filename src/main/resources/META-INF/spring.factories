@@ -12,4 +12,5 @@ com.github.ollgei.spring.boot.autoconfigure.shedlock.JdbcTemplateShedlockAutoCon
 com.github.ollgei.spring.boot.autoconfigure.shedlock.FeignShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.MybatisShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration
+com.github.ollgei.spring.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.modelmapper.ModelMapperAutoConfiguration
