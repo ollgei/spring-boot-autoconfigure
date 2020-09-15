@@ -53,6 +53,12 @@
       "type": "java.lang.Boolean",
       "description": "enable ollgei redis.",
       "defaultValue": true
+    },
+    {
+      "name": "ollgei.consul.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei consul.",
+      "defaultValue": false
     }
   ],
   "hints": []

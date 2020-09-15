@@ -3,7 +3,7 @@ package com.github.ollgei.spring.boot.autoconfigure.shedlock.provider.feign;
 import net.javacrumbs.shedlock.support.StorageBasedLockProvider;
 
 /**
- * mybatis lock provider.
+ * feign lock provider.
  * @author ollgei
  * @since 1.0.0
  */
