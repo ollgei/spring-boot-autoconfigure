@@ -13,4 +13,5 @@ com.github.ollgei.spring.boot.autoconfigure.shedlock.FeignShedlockAutoConfigurat
 com.github.ollgei.spring.boot.autoconfigure.shedlock.MybatisShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.modelmapper.ModelMapperAutoConfiguration
+com.github.ollgei.spring.boot.autoconfigure.modelmapper.ModelMapperAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.consul.ConsulAutoConfiguration

@@ -47,12 +47,6 @@ public class ConsulAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ConsulProperties consulProperties() {
-		return new ConsulProperties();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
 	public ConsulClient consulClient(ConsulProperties consulProperties) {
 		final int agentPort = consulProperties.getPort();
 		final String agentHost = !StringUtils.isEmpty(consulProperties.getScheme())
