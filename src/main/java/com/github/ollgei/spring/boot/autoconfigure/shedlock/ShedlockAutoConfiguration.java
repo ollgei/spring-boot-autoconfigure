@@ -19,7 +19,6 @@ package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -51,9 +50,8 @@ public class ShedlockAutoConfiguration {
 
     @Bean
 	@ConditionalOnMissingBean
-    @ConditionalOnBean(LockProvider.class)
-	public OllgeiShedLockComponent ollgeiShedLockComponent(ObjectProvider<LockProvider> lockProvider) {
-		return new DefaultOllgeiShedLockComponent(ollgeiShedlockProperties, lockProvider.getIfAvailable());
+	public OllgeiShedLockComponent ollgeiShedLockComponent(ObjectProvider<LockProvider> lockProviderIf) {
+		return new DefaultOllgeiShedLockComponent(ollgeiShedlockProperties, lockProviderIf.getIfAvailable());
 	}
 
 }
