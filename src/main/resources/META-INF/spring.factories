@@ -11,6 +11,7 @@ com.github.ollgei.spring.boot.autoconfigure.serialization.SerializationAutoconfi
 com.github.ollgei.spring.boot.autoconfigure.shedlock.JdbcTemplateShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.MybatisShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.shedlock.HttpclientShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.ConsulShedlockAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.shedlock.ConsulShedlockCloudAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration,\

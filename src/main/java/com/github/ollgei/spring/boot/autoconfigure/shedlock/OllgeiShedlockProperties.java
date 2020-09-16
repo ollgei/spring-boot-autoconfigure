@@ -30,6 +30,10 @@ public class OllgeiShedlockProperties {
      * Jdbctemplate.
      */
     private Jdbctemplate jdbctemplate;
+    /**
+     * Httpclient.
+     */
+    private Httpclient httpclient;
 
     @Data
     public static class Jdbctemplate {
@@ -40,4 +44,9 @@ public class OllgeiShedlockProperties {
         private boolean useDbTime;
     }
 
+    @Data
+    public static class Httpclient {
+        private Duration minSessionTtl = Duration.ofSeconds(10);
+        private Duration gracefulShutdownInterval = Duration.ofSeconds(2);
+    }
 }
