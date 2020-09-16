@@ -16,6 +16,7 @@
 
 package com.github.ollgei.spring.boot.autoconfigure.consul;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnAvailableEndpoint;
 import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -71,15 +72,15 @@ public class ConsulAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		@ConditionalOnAvailableEndpoint
-		public ConsulEndpoint consulEndpoint(ConsulClient consulClient) {
-			return new ConsulEndpoint(consulClient);
+		public ConsulEndpoint consulEndpoint(ObjectProvider<ConsulClient> consulClientIf) {
+			return new ConsulEndpoint(consulClientIf.getIfAvailable());
 		}
 
 		@Bean
 		@ConditionalOnMissingBean
 		@ConditionalOnEnabledHealthIndicator("consul")
-		public ConsulHealthIndicator consulHealthIndicator(ConsulClient consulClient) {
-			return new ConsulHealthIndicator(consulClient);
+		public ConsulHealthIndicator consulHealthIndicator(ObjectProvider<ConsulClient> consulClientIf) {
+			return new ConsulHealthIndicator(consulClientIf.getIfAvailable());
 		}
 
 	}
