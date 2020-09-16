@@ -23,7 +23,7 @@ import org.springframework.core.style.ToStringCreator;
  * @author Spencer Gibb
  */
 @ConfigurationProperties("ollgei.consul.retry")
-public class RetryProperties {
+public class OllgeiRetryProperties {
 
 	/** If consul retry is enabled. */
 	private boolean enabled = true;
@@ -40,7 +40,7 @@ public class RetryProperties {
 	/** Maximum number of attempts. */
 	private int maxAttempts = 6;
 
-	public RetryProperties() {
+	public OllgeiRetryProperties() {
 	}
 
 	public boolean isEnabled() {

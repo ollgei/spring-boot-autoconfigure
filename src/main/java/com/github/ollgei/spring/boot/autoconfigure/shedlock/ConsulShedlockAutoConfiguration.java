@@ -22,11 +22,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.ecwid.consul.v1.ConsulClient;
+import com.github.ollgei.spring.boot.autoconfigure.consul.OllgeiConsulAutoConfiguration;
 import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.consul.ConsulLockProvider;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for Gson.
@@ -35,28 +37,16 @@ import net.javacrumbs.shedlock.core.LockProvider;
  * @author Ivan Golovko
  * @since 1.2.0
  */
-@ConditionalOnProperty(prefix = OllgeiShedlockProperties.PREFIX, name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = OllgeiShedlockProperties.PREFIX + ".consul", name = "enabled", havingValue = "true")
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(LockProvider.class)
-@EnableConfigurationProperties(OllgeiShedlockProperties.class)
-@AutoConfigureAfter({
-        JdbcTemplateShedlockAutoConfiguration.class,
-        MybatisShedlockAutoConfiguration.class,
-        ConsulShedlockAutoConfiguration.class,
-        ConsulShedlockCloudAutoConfiguration.class,
-})
-public class ShedlockAutoConfiguration {
-
-    private OllgeiShedlockProperties ollgeiShedlockProperties;
-
-    public ShedlockAutoConfiguration(OllgeiShedlockProperties ollgeiShedlockProperties) {
-        this.ollgeiShedlockProperties = ollgeiShedlockProperties;
-    }
+@ConditionalOnClass({ ConsulClient.class, ConsulLockProvider.class })
+@AutoConfigureAfter({OllgeiConsulAutoConfiguration.class})
+public class ConsulShedlockAutoConfiguration {
 
     @Bean
-	@ConditionalOnMissingBean
-	public OllgeiShedLockComponent ollgeiShedLockComponent(ObjectProvider<LockProvider> lockProviderIf) {
-		return new DefaultOllgeiShedLockComponent(ollgeiShedlockProperties, lockProviderIf.getIfAvailable());
-	}
+    @ConditionalOnMissingBean
+    public LockProvider lockProvider(ObjectProvider<ConsulClient> consulClientIf) {
+        return new ConsulLockProvider(consulClientIf.getIfAvailable());
+    }
 
 }

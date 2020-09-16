@@ -42,21 +42,21 @@ import org.aspectj.lang.annotation.Aspect;
  * @author Spencer Gibb
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(ConsulProperties.class)
+@EnableConfigurationProperties(OllgeiConsulProperties.class)
 @ConditionalOnClass(ConsulClient.class)
 @ConditionalOnProperty(prefix = "ollgei.consul", name = "enabled", havingValue = "true")
-public class ConsulAutoConfiguration {
+public class OllgeiConsulAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public ConsulClient consulClient(ConsulProperties consulProperties) {
+	public ConsulClient consulClient(OllgeiConsulProperties consulProperties) {
 		final int agentPort = consulProperties.getPort();
 		final String agentHost = !StringUtils.isEmpty(consulProperties.getScheme())
 				? consulProperties.getScheme() + "://" + consulProperties.getHost()
 				: consulProperties.getHost();
 
 		if (consulProperties.getTls() != null) {
-			ConsulProperties.TLSConfig tls = consulProperties.getTls();
+			OllgeiConsulProperties.TLSConfig tls = consulProperties.getTls();
 			TLSConfig tlsConfig = new TLSConfig(tls.getKeyStoreInstanceType(),
 					tls.getCertificatePath(), tls.getCertificatePassword(),
 					tls.getKeyStorePath(), tls.getKeyStorePassword());
@@ -72,15 +72,15 @@ public class ConsulAutoConfiguration {
 		@Bean
 		@ConditionalOnMissingBean
 		@ConditionalOnAvailableEndpoint
-		public ConsulEndpoint consulEndpoint(ObjectProvider<ConsulClient> consulClientIf) {
-			return new ConsulEndpoint(consulClientIf.getIfAvailable());
+		public OllgeiConsulEndpoint ollgeiConsulEndpoint(ObjectProvider<ConsulClient> consulClientIf) {
+			return new OllgeiConsulEndpoint(consulClientIf.getIfAvailable());
 		}
 
 		@Bean
 		@ConditionalOnMissingBean
 		@ConditionalOnEnabledHealthIndicator("consul")
-		public ConsulHealthIndicator consulHealthIndicator(ObjectProvider<ConsulClient> consulClientIf) {
-			return new ConsulHealthIndicator(consulClientIf.getIfAvailable());
+		public OllgeiConsulHealthIndicator ollgeiConsulHealthIndicator(ObjectProvider<ConsulClient> consulClientIf) {
+			return new OllgeiConsulHealthIndicator(consulClientIf.getIfAvailable());
 		}
 
 	}
@@ -89,14 +89,14 @@ public class ConsulAutoConfiguration {
 	@Configuration(proxyBeanMethods = false)
 	@EnableRetry(proxyTargetClass = true)
 	@Import(AopAutoConfiguration.class)
-	@EnableConfigurationProperties(RetryProperties.class)
+	@EnableConfigurationProperties(OllgeiRetryProperties.class)
     @ConditionalOnProperty(prefix = "ollgei.consul.retry", name = "enabled", havingValue = "true")
 	protected static class RetryConfiguration {
 
 		@Bean(name = "consulRetryInterceptor")
 		@ConditionalOnMissingBean(name = "consulRetryInterceptor")
 		public RetryOperationsInterceptor consulRetryInterceptor(
-				RetryProperties properties) {
+				OllgeiRetryProperties properties) {
 			return RetryInterceptorBuilder.stateless()
 					.backOffOptions(properties.getInitialInterval(),
 							properties.getMultiplier(), properties.getMaxInterval())

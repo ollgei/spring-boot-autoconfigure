@@ -37,9 +37,9 @@
       "defaultValue": false
     },
     {
-      "name": "ollgei.shedlock.feign.enabled",
+      "name": "ollgei.shedlock.consul.enabled",
       "type": "java.lang.Boolean",
-      "description": "enable shedlock feign.",
+      "description": "enable shedlock consul.",
       "defaultValue": false
     },
     {

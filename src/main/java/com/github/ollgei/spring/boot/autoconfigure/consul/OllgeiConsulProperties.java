@@ -29,7 +29,7 @@ import com.ecwid.consul.transport.TLSConfig.KeyStoreInstanceType;
  */
 @ConfigurationProperties("ollgei.consul")
 @Validated
-public class ConsulProperties {
+public class OllgeiConsulProperties {
 
 	/** Consul agent hostname. Defaults to 'localhost'. */
 	@NotNull
@@ -93,7 +93,7 @@ public class ConsulProperties {
 
 	@Override
 	public String toString() {
-		return "ConsulProperties{" + "host='" + this.host + '\'' + ", port=" + this.port
+		return "OllgeiConsulProperties{" + "host='" + this.host + '\'' + ", port=" + this.port
 				+ ", scheme=" + this.scheme + ", tls=" + this.tls + ", enabled="
 				+ this.enabled + '}';
 	}

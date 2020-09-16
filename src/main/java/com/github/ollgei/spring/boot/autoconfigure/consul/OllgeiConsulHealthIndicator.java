@@ -30,11 +30,11 @@ import com.ecwid.consul.v1.catalog.CatalogServicesRequest;
 /**
  * @author Spencer Gibb
  */
-public class ConsulHealthIndicator extends AbstractHealthIndicator {
+public class OllgeiConsulHealthIndicator extends AbstractHealthIndicator {
 
 	private ConsulClient consul;
 
-	public ConsulHealthIndicator(ConsulClient consul) {
+	public OllgeiConsulHealthIndicator(ConsulClient consul) {
 		this.consul = consul;
 	}
 

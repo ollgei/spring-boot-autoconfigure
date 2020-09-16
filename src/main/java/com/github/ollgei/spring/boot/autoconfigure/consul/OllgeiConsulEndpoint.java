@@ -38,11 +38,11 @@ import com.ecwid.consul.v1.catalog.model.Node;
  * @author Spencer Gibb
  */
 @Endpoint(id = "consul")
-public class ConsulEndpoint {
+public class OllgeiConsulEndpoint {
 
 	private ConsulClient consul;
 
-	public ConsulEndpoint(ConsulClient consul) {
+	public OllgeiConsulEndpoint(ConsulClient consul) {
 		this.consul = consul;
 	}
 
