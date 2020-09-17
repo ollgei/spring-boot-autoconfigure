@@ -38,7 +38,10 @@ public class OllgeiShedlockProperties {
     public static class Jdbctemplate {
         private String tableName;
         private TimeZone timeZone;
-        private String columns;
+        private final String columnName = "name";
+        private final String columnLockUntil = "lock_until";
+        private final String columnLockedAt = "locked_at";
+        private final String columnLockedBy = "locked_by";
         private String lockedByValue;
         private boolean useDbTime;
     }
