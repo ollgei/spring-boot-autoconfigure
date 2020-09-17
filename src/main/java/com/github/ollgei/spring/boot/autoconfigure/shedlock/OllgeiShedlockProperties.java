@@ -28,11 +28,11 @@ public class OllgeiShedlockProperties {
     /**
      * Jdbctemplate.
      */
-    private Jdbctemplate jdbctemplate;
+    private Jdbctemplate jdbctemplate = new Jdbctemplate();
     /**
      * Httpclient.
      */
-    private Httpclient httpclient;
+    private Httpclient httpclient = new Httpclient();
 
     @Data
     public static class Jdbctemplate {
