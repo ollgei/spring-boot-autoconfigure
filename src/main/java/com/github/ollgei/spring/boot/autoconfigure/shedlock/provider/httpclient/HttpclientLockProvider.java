@@ -23,7 +23,6 @@ import static net.javacrumbs.shedlock.core.ClockProvider.now;
  */
 public class HttpclientLockProvider implements LockProvider, AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(HttpclientLockProvider.class);
-    private static final Duration DEFAULT_GRACEFUL_SHUTDOWN_INTERVAL = Duration.ofSeconds(2);
     @SuppressWarnings("all")
     private final ScheduledExecutorService unlockScheduler = Executors.newSingleThreadScheduledExecutor();
 
