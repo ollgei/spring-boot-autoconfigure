@@ -16,12 +16,11 @@
 
 package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +34,6 @@ import net.javacrumbs.shedlock.core.LockProvider;
  * @author Ivan Golovko
  * @since 1.2.0
  */
-@ConditionalOnProperty(prefix = OllgeiShedlockProperties.PREFIX, name = "enabled", havingValue = "true")
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(LockProvider.class)
 @EnableConfigurationProperties(OllgeiShedlockProperties.class)
@@ -44,6 +42,7 @@ import net.javacrumbs.shedlock.core.LockProvider;
         MybatisShedlockAutoConfiguration.class,
         ConsulShedlockAutoConfiguration.class,
         ConsulShedlockCloudAutoConfiguration.class,
+        HttpclientShedlockAutoConfiguration.class
 })
 public class ShedlockAutoConfiguration {
 
@@ -55,8 +54,10 @@ public class ShedlockAutoConfiguration {
 
     @Bean
 	@ConditionalOnMissingBean
-	public OllgeiShedLockComponent ollgeiShedLockComponent(ObjectProvider<LockProvider> lockProviderIf) {
-		return new DefaultOllgeiShedLockComponent(ollgeiShedlockProperties, lockProviderIf.getIfAvailable());
+    @ConditionalOnBean(LockProvider.class)
+    @SuppressWarnings("all")
+	public OllgeiShedLockComponent ollgeiShedLockComponent(LockProvider lockProvider) {
+		return new DefaultOllgeiShedLockComponent(ollgeiShedlockProperties, lockProvider);
 	}
 
 }

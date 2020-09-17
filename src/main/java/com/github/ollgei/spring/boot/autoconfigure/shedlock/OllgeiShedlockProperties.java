@@ -6,7 +6,6 @@ import java.util.TimeZone;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
-import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 
 /**
  * desc.
@@ -39,7 +38,7 @@ public class OllgeiShedlockProperties {
     public static class Jdbctemplate {
         private String tableName;
         private TimeZone timeZone;
-        private JdbcTemplateLockProvider.ColumnNames columns;
+        private String columns;
         private String lockedByValue;
         private boolean useDbTime;
     }

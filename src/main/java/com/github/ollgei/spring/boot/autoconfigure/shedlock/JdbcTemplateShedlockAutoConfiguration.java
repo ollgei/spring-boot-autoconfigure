@@ -66,9 +66,10 @@ public class JdbcTemplateShedlockAutoConfiguration {
         if (ollgeiShedlockProperties.isUseDbTime()) {
             builder.usingDbTime();
         }
-        if (Objects.nonNull(ollgeiShedlockProperties.getColumns())) {
-            builder.withColumnNames(ollgeiShedlockProperties.getColumns());
-        }
+//        if (Objects.nonNull(ollgeiShedlockProperties.getColumns())) {
+//            JdbcTemplateLockProvider.ColumnNames columnNames = new JdbcTemplateLockProvider.ColumnNames();
+//            builder.withColumnNames(ollgeiShedlockProperties.getColumns());
+//        }
         if (Objects.nonNull(ollgeiShedlockProperties.getTimeZone())) {
             builder.withTimeZone(ollgeiShedlockProperties.getTimeZone());
         }
