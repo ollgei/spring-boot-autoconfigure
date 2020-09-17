@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.github.ollgei.spring.boot.autoconfigure.shedlock.OllgeiShedlockProperties;
 import net.javacrumbs.shedlock.core.LockConfiguration;
@@ -45,48 +44,45 @@ public class HttpclientLockProvider implements LockProvider, AutoCloseable {
     @Override
     @NonNull
     public Optional<SimpleLock> lock(@NonNull LockConfiguration lockConfiguration) {
-        String sessionId = createSession(lockConfiguration);
-        if (StringUtils.hasText(sessionId)) {
+        if (!createSession(lockConfiguration)) {
             return Optional.empty();
         }
-        return tryLock(sessionId, lockConfiguration);
+        return tryLock(lockConfiguration);
     }
 
-    void unlock(String sessionId, LockConfiguration lockConfiguration) {
+    void unlock(LockConfiguration lockConfiguration) {
         Duration additionalSessionTtl = Duration.between(now(), lockConfiguration.getLockAtLeastUntil());
         if (!additionalSessionTtl.isNegative() && !additionalSessionTtl.isZero()) {
             logger.debug("Lock will still be held for {}", additionalSessionTtl);
-            scheduleUnlock(sessionId, additionalSessionTtl);
+            scheduleUnlock(lockConfiguration.getName(), additionalSessionTtl);
         } else {
-            destroy(sessionId);
+            destroy(lockConfiguration.getName());
         }
     }
 
-    private String createSession(LockConfiguration lockConfiguration) {
+    private boolean createSession(LockConfiguration lockConfiguration) {
         long ttlInSeconds = Math.max(lockConfiguration.getLockAtMostFor().getSeconds(), minSessionTtl.getSeconds());
         final ShedLockSession object = new ShedLockSession();
         object.setName(lockConfiguration.getName());
-        object.setLockAtMostFor(lockConfiguration.getLockAtMostFor());
-        object.setLockAtLeastFor(lockConfiguration.getLockAtLeastFor());
-        String sessionId = httpclient.tryLock(object);
-        logger.debug("Acquired session {} for {} seconds", sessionId, ttlInSeconds);
-        return sessionId;
+        object.setLockAtMostFor(Duration.ofSeconds(ttlInSeconds).toString());
+        object.setLockAtLeastFor(lockConfiguration.getLockAtLeastFor().toString());
+        return httpclient.tryLock(object);
     }
 
-    private Optional<SimpleLock> tryLock(String sessionId, LockConfiguration lockConfiguration) {
-        return Optional.of(new HttpclientSimpleLock(lockConfiguration, this, sessionId));
+    private Optional<SimpleLock> tryLock(LockConfiguration lockConfiguration) {
+        return Optional.of(new HttpclientSimpleLock(lockConfiguration, this));
     }
 
-    private void scheduleUnlock(String sessionId, Duration unlockTime) {
+    private void scheduleUnlock(String name, Duration unlockTime) {
         unlockScheduler.schedule(
-                catchExceptions(() -> destroy(sessionId)),
+                catchExceptions(() -> destroy(name)),
                 unlockTime.toMillis(), TimeUnit.MILLISECONDS
         );
     }
 
-    private void destroy(String sessionId) {
-        logger.debug("Destroying sessionId {}", sessionId);
-        httpclient.unlock(sessionId);
+    private void destroy(String name) {
+        logger.debug("Destroying name {}", name);
+        httpclient.unlock(name);
     }
 
     private Runnable catchExceptions(Runnable runnable) {

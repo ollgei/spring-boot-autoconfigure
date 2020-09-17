@@ -2,6 +2,9 @@ package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 
 import java.util.concurrent.Callable;
 
+import net.javacrumbs.shedlock.core.LockConfiguration;
+import net.javacrumbs.shedlock.core.SimpleLock;
+
 /**
  * desc.
  * @author ollgei
@@ -10,6 +13,36 @@ import java.util.concurrent.Callable;
 public interface OllgeiShedLockComponent {
     /**全局锁*/
     String DEFAULT_NAME = "GLOBAL";
+
+    /**
+     * desc.
+     * @param lockConfiguration config
+     * @return
+     */
+    SimpleLock lock(LockConfiguration lockConfiguration);
+
+    /**
+     * desc.
+     * @param lock lock
+     * @return
+     */
+    void unlock(SimpleLock lock, LockConfiguration lockConfiguration);
+
+    /**
+     * execute.
+     * @param lockConfiguration lockConfiguration
+     * @param runnable runnable
+     * @return
+     */
+    void execute(LockConfiguration lockConfiguration, Runnable runnable);
+
+    /**
+     * execute.
+     * @param lockConfiguration lockConfiguration
+     * @param callable callable
+     * @return
+     */
+    <T> T execute(LockConfiguration lockConfiguration, Callable<T> callable);
 
     /**
      * execute.

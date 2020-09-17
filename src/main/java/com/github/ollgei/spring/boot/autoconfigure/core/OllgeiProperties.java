@@ -1,5 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.core;
 
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
@@ -19,5 +21,7 @@ public class OllgeiProperties {
     private String appName;
     /**app key*/
     private String appKey;
+    /**client IDs: id:secret*/
+    private Map<String, String> clients;
 
 }

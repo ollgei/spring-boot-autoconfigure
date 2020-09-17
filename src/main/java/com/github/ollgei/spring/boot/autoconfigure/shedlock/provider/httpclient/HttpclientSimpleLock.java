@@ -5,18 +5,15 @@ import net.javacrumbs.shedlock.core.LockConfiguration;
 
 class HttpclientSimpleLock extends AbstractSimpleLock {
     private final HttpclientLockProvider httpclientLockProvider;
-    private final String sessionId;
 
     public HttpclientSimpleLock(LockConfiguration lockConfiguration,
-                                HttpclientLockProvider httpclientLockProvider,
-                                String sessionId) {
+                                HttpclientLockProvider httpclientLockProvider) {
         super(lockConfiguration);
         this.httpclientLockProvider = httpclientLockProvider;
-        this.sessionId = sessionId;
     }
 
     @Override
     protected void doUnlock() {
-        httpclientLockProvider.unlock(sessionId, lockConfiguration);
+        httpclientLockProvider.unlock(lockConfiguration);
     }
 }

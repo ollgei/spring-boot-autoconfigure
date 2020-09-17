@@ -10,15 +10,15 @@ public interface ShedlockHttpclient {
     /**
      * desc.
      * @param object object
-     * @return lock id
+     * @return true/false
      */
-    String tryLock(ShedLockSession object);
+    boolean tryLock(ShedLockSession object);
 
     /**
      * desc.
-     * @param lockId lockId
+     * @param name name
      * @return
      */
-    void unlock(String lockId);
+    void unlock(String name);
 
 }

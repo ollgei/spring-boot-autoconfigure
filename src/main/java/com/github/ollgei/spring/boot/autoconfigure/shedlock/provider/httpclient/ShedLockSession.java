@@ -1,7 +1,5 @@
 package com.github.ollgei.spring.boot.autoconfigure.shedlock.provider.httpclient;
 
-import java.time.Duration;
-
 import lombok.Data;
 
 /**
@@ -24,11 +22,11 @@ public class ShedLockSession {
     /**
      * Duration.
      */
-    private Duration lockAtMostFor;
+    private String lockAtMostFor;
 
     /**
      * Duration.
      */
-    private Duration lockAtLeastFor;
+    private String lockAtLeastFor;
 
 }
