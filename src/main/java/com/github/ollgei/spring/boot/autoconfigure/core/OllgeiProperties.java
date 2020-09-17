@@ -22,6 +22,14 @@ public class OllgeiProperties {
     /**app key*/
     private String appKey;
     /**client IDs: id:secret*/
-    private Map<String, String> clients;
+    private Map<String, Client> clients;
+
+    @Data
+    private static final class Client {
+        /**ID*/
+        private String id;
+        /**secret*/
+        private String secret;
+    }
 
 }
