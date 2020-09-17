@@ -24,9 +24,10 @@ public interface OllgeiShedLockComponent {
     /**
      * desc.
      * @param lock lock
+     * @param name name
      * @return
      */
-    void unlock(SimpleLock lock, LockConfiguration lockConfiguration);
+    void unlock(SimpleLock lock, String name);
 
     /**
      * execute.

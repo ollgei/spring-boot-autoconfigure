@@ -49,9 +49,8 @@ public class DefaultOllgeiShedLockComponent implements OllgeiShedLockComponent {
     }
 
     @Override
-    public void unlock(SimpleLock lock, LockConfiguration lockConfiguration) {
-        final String lockName = lockConfiguration.getName();
-        SharedThreadContext.getContext().remove(lockName);
+    public void unlock(SimpleLock lock, String name) {
+        SharedThreadContext.getContext().remove(name);
         lock.unlock();
     }
 
