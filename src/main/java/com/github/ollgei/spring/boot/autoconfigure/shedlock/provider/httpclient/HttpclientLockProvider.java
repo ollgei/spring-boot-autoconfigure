@@ -62,11 +62,11 @@ public class HttpclientLockProvider implements LockProvider, AutoCloseable {
 
     private boolean createSession(LockConfiguration lockConfiguration) {
         long ttlInSeconds = Math.max(lockConfiguration.getLockAtMostFor().getSeconds(), minSessionTtl.getSeconds());
-        final ShedLockSession object = new ShedLockSession();
-        object.setName(lockConfiguration.getName());
-        object.setLockAtMostFor(Duration.ofSeconds(ttlInSeconds).toString());
-        object.setLockAtLeastFor(lockConfiguration.getLockAtLeastFor().toString());
-        return httpclient.tryLock(object);
+        final ShedLockSession session = new ShedLockSession();
+        session.setName(lockConfiguration.getName());
+        session.setLockAtMostFor(Duration.ofSeconds(ttlInSeconds).toString());
+        session.setLockAtLeastFor(lockConfiguration.getLockAtLeastFor().toString());
+        return httpclient.tryLock(session);
     }
 
     private Optional<SimpleLock> tryLock(LockConfiguration lockConfiguration) {

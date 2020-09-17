@@ -1,6 +1,6 @@
 package com.github.ollgei.spring.boot.autoconfigure.core;
 
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -22,7 +22,7 @@ public class OllgeiProperties {
     /**app key*/
     private String appKey;
     /**client IDs: id:secret*/
-    private Map<String, Client> clients;
+    private List<Client> clients;
 
     @Data
     private static final class Client {

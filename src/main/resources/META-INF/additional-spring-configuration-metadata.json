@@ -31,6 +31,12 @@
       "defaultValue": false
     },
     {
+      "name": "ollgei.shedlock.httpclient.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable shedlock httpclient.",
+      "defaultValue": false
+    },
+    {
       "name": "ollgei.shedlock.mybatis.enabled",
       "type": "java.lang.Boolean",
       "description": "enable shedlock mybatis.",

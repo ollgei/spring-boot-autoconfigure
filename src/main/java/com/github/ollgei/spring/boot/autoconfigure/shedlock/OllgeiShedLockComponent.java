@@ -15,14 +15,29 @@ public interface OllgeiShedLockComponent {
     String DEFAULT_NAME = "GLOBAL";
 
     /**
-     * desc.
+     * lock.
+     * @return
+     */
+    default void lock() {
+        lock(DEFAULT_NAME);
+    }
+
+    /**
+     * lock.
+     * @param name name
+     * @return
+     */
+    void lock(String name);
+
+    /**
+     * lock.
      * @param lockConfiguration config
      * @return
      */
     SimpleLock lock(LockConfiguration lockConfiguration);
 
     /**
-     * desc.
+     * unlock.
      * @param lock lock
      * @return
      */

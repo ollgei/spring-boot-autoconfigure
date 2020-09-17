@@ -33,6 +33,13 @@ public class DefaultOllgeiShedLockComponent implements OllgeiShedLockComponent {
     }
 
     @Override
+    public void lock(String name) {
+        lock(new LockConfiguration(ClockProvider.now(), name,
+                properties.getLockMostFor(),
+                properties.getLockLeastFor()));
+    }
+
+    @Override
     public SimpleLock lock(LockConfiguration lockConfiguration) {
         return lockProvider.lock(lockConfiguration).orElseGet(EmptyLock::new);
     }

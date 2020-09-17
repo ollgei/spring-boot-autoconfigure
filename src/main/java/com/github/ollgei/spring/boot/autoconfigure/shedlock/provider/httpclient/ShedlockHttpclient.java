@@ -9,10 +9,10 @@ public interface ShedlockHttpclient {
 
     /**
      * desc.
-     * @param object object
+     * @param session object
      * @return true/false
      */
-    boolean tryLock(ShedLockSession object);
+    boolean tryLock(ShedLockSession session);
 
     /**
      * desc.
