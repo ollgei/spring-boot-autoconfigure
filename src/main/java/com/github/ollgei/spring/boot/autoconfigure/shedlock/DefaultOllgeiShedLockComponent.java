@@ -1,9 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import com.github.ollgei.base.commonj.SharedThreadContext;
 import com.github.ollgei.base.commonj.errors.ErrorCodeEnum;
 import com.github.ollgei.base.commonj.errors.ErrorException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,21 +34,11 @@ public class DefaultOllgeiShedLockComponent implements OllgeiShedLockComponent {
 
     @Override
     public SimpleLock lock(LockConfiguration lockConfiguration) {
-        final String lockName = lockConfiguration.getName();
-        if (SharedThreadContext.getContext().has(lockName)) {
-            return new EmptyLock();
-        }
-        Optional<SimpleLock> lock = lockProvider.lock(lockConfiguration);
-        if (lock.isPresent()) {
-            SharedThreadContext.getContext().set(lockName, lockName);
-            return lock.get();
-        }
-        return new EmptyLock();
+        return lockProvider.lock(lockConfiguration).orElseGet(EmptyLock::new);
     }
 
     @Override
-    public void unlock(SimpleLock lock, String name) {
-        SharedThreadContext.getContext().remove(name);
+    public void unlock(SimpleLock lock) {
         lock.unlock();
     }
 
