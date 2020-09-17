@@ -13,8 +13,6 @@ import com.github.ollgei.spring.boot.autoconfigure.shedlock.OllgeiShedlockProper
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.core.SimpleLock;
-import net.javacrumbs.shedlock.provider.consul.ConsulLockProvider;
-import net.javacrumbs.shedlock.support.annotation.NonNull;
 
 import static net.javacrumbs.shedlock.core.ClockProvider.now;
 
@@ -24,7 +22,7 @@ import static net.javacrumbs.shedlock.core.ClockProvider.now;
  * @since 1.0
  */
 public class HttpclientLockProvider implements LockProvider, AutoCloseable {
-    private static final Logger logger = LoggerFactory.getLogger(ConsulLockProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpclientLockProvider.class);
     private static final Duration DEFAULT_GRACEFUL_SHUTDOWN_INTERVAL = Duration.ofSeconds(2);
     @SuppressWarnings("all")
     private final ScheduledExecutorService unlockScheduler = Executors.newSingleThreadScheduledExecutor();
@@ -42,8 +40,7 @@ public class HttpclientLockProvider implements LockProvider, AutoCloseable {
     }
 
     @Override
-    @NonNull
-    public Optional<SimpleLock> lock(@NonNull LockConfiguration lockConfiguration) {
+    public Optional<SimpleLock> lock(LockConfiguration lockConfiguration) {
         if (!createSession(lockConfiguration)) {
             return Optional.empty();
         }
