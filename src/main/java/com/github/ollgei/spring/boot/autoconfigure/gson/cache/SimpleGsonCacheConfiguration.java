@@ -17,7 +17,7 @@ class SimpleGsonCacheConfiguration {
 
     @Bean
     @SuppressWarnings("all")
-    SimpleGsonCacheManager simpleCacheGson(GsonCacheProperties cacheGsonProperties) {
+    SimpleGsonCacheManager simpleGsonCacheManager(GsonCacheProperties cacheGsonProperties) {
         return new SimpleGsonCacheManager(cacheGsonProperties);
     }
 

@@ -41,12 +41,12 @@ import com.github.ollgei.base.commonj.gson.spring.GsonHttpMessageConverter;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Gson.class)
-@EnableConfigurationProperties(GsonProperties.class)
-public class GsonAutoConfiguration {
+@EnableConfigurationProperties(OllgeiGsonProperties.class)
+public class OllgeiGsonAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public GsonBuilder ollgeiGsonBuilder(List<GsonBuilderCustomizer> customizers) {
+	public GsonBuilder ollgeiGsonBuilder(List<OllgeiGsonBuilderCustomizer> customizers) {
 		GsonBuilder builder = new GsonBuilder();
 		customizers.forEach((c) -> c.customize(builder));
 		return builder;
@@ -58,25 +58,16 @@ public class GsonAutoConfiguration {
 		return gsonBuilder.create();
 	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnClass(HttpMessageConverter.class)
-    public GsonHttpMessageConverter ollgeiGsonHttpMessageConverter(Gson gson) {
-        final GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
-        converter.setGson(gson);
-        return converter;
-    }
-
 	@Bean
-	public StandardGsonBuilderCustomizer ollgeiStandardGsonBuilderCustomizer(GsonProperties gsonProperties) {
+	public StandardGsonBuilderCustomizer ollgeiStandardGsonBuilderCustomizer(OllgeiGsonProperties gsonProperties) {
 		return new StandardGsonBuilderCustomizer(gsonProperties);
 	}
 
-	static final class StandardGsonBuilderCustomizer implements GsonBuilderCustomizer, Ordered {
+	static final class StandardGsonBuilderCustomizer implements OllgeiGsonBuilderCustomizer, Ordered {
 
-		private final GsonProperties properties;
+		private final OllgeiGsonProperties properties;
 
-		StandardGsonBuilderCustomizer(GsonProperties properties) {
+		StandardGsonBuilderCustomizer(OllgeiGsonProperties properties) {
 			this.properties = properties;
 		}
 
@@ -87,7 +78,7 @@ public class GsonAutoConfiguration {
 
 		@Override
 		public void customize(GsonBuilder builder) {
-			GsonProperties properties = this.properties;
+			OllgeiGsonProperties properties = this.properties;
 			PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
 			map.from(properties::getGenerateNonExecutableJson).toCall(builder::generateNonExecutableJson);
 			map.from(properties::getExcludeFieldsWithoutExposeAnnotation)

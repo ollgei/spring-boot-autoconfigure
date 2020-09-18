@@ -27,7 +27,7 @@ import com.github.ollgei.base.commonj.gson.GsonBuilder;
  * @since 2.0.0
  */
 @FunctionalInterface
-public interface GsonBuilderCustomizer {
+public interface OllgeiGsonBuilderCustomizer {
 
 	/**
 	 * Customize the GsonBuilder.

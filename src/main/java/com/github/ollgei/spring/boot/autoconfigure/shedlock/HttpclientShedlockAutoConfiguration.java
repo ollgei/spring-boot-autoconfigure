@@ -18,6 +18,7 @@ package com.github.ollgei.spring.boot.autoconfigure.shedlock;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -35,6 +36,7 @@ import net.javacrumbs.shedlock.core.LockProvider;
  * @author Ivan Golovko
  * @since 1.2.0
  */
+@ConditionalOnClass(LockProvider.class)
 @ConditionalOnProperty(prefix = OllgeiShedlockProperties.PREFIX + ".httpclient", name = "enabled", havingValue = "true")
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(OllgeiShedlockProperties.class)

@@ -29,7 +29,7 @@ import com.github.ollgei.base.commonj.gson.LongSerializationPolicy;
  * @since 2.0.0
  */
 @ConfigurationProperties(prefix = "ollgei.gson")
-public class GsonProperties {
+public class OllgeiGsonProperties {
 
 	/**
 	 * Whether to generate non executable JSON by prefixing the output with some special
