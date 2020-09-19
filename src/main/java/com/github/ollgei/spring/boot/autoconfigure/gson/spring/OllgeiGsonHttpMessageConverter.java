@@ -104,9 +104,7 @@ public class OllgeiGsonHttpMessageConverter extends AbstractJsonHttpMessageConve
 			getGson().toJson(o, type, writer);
 		}
 		else {
-		    if (type.getTypeName().equals("springfox.documentation.spring.web.json.Json")) {
-                getGson().toJson(o, writer);
-            }
+            getGson().toJson(o, writer);
 		}
 	}
 
