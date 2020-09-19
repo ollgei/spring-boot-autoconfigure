@@ -27,12 +27,10 @@ import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.converter.json.AbstractJsonHttpMessageConverter;
 
 import com.github.ollgei.base.commonj.gson.Gson;
 import com.github.ollgei.base.commonj.gson.GsonBuilder;
 import com.github.ollgei.spring.boot.autoconfigure.gson.spring.OllgeiGsonHttpMessageConverter;
-import springfox.documentation.spring.web.json.Json;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for Gson.
@@ -56,7 +54,7 @@ public class OllgeiGsonAutoConfiguration {
 	}
 
 	@Bean
-    @ConditionalOnClass(Json.class)
+    @ConditionalOnClass(name = "springfox.documentation.spring.web.json.Json")
     public OllgeiGsonBuilderCustomizer springfoxGsonBuilderCustomizer() {
 	    return new SpringfoxGsonBuilderCustomizer();
     }
@@ -69,7 +67,7 @@ public class OllgeiGsonAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnClass(AbstractJsonHttpMessageConverter.class)
+    @ConditionalOnClass(name = "org.springframework.http.converter.HttpMessageConverter")
     public OllgeiGsonHttpMessageConverter ollgeiGsonHttpMessageConverter(Gson gson) {
         final OllgeiGsonHttpMessageConverter converter = new OllgeiGsonHttpMessageConverter();
         converter.setGson(gson);
