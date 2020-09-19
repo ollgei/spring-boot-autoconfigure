@@ -1,6 +1,9 @@
 package com.github.ollgei.spring.boot.autoconfigure.core;
 
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -23,6 +26,8 @@ public class OllgeiProperties {
     private String appKey;
     /**client IDs: id:secret*/
     private List<Client> clients;
+    /**caches*/
+    private Map<String, CacheOptions> caches = new HashMap<>();
 
     @Data
     private static final class Client {
@@ -30,6 +35,11 @@ public class OllgeiProperties {
         private String id;
         /**secret*/
         private String secret;
+    }
+
+    @Data
+    private static class CacheOptions {
+        private Duration timeToLive;
     }
 
 }
