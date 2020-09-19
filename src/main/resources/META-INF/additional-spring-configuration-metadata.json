@@ -1,15 +1,21 @@
 {
   "properties": [
     {
+      "name": "ollgei.gson.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable gson.",
+      "defaultValue": true
+    },
+    {
       "name": "ollgei.segment.jdbctemplate.enabled",
       "type": "java.lang.Boolean",
-      "description": "enable segment.",
+      "description": "enable segment jdbctemplate.",
       "defaultValue": false
     },
     {
       "name": "ollgei.segment.mybatis.enabled",
       "type": "java.lang.Boolean",
-      "description": "enable segment.",
+      "description": "enable segment mybatis.",
       "defaultValue": false
     },
     {

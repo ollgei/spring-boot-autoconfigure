@@ -28,8 +28,10 @@ import com.github.ollgei.base.commonj.gson.LongSerializationPolicy;
  * @author Ivan Golovko
  * @since 2.0.0
  */
-@ConfigurationProperties(prefix = "ollgei.gson")
+@ConfigurationProperties(prefix = OllgeiGsonProperties.PREFIX)
 public class OllgeiGsonProperties {
+
+    public static final String PREFIX = "ollgei.gson";
 
 	/**
 	 * Whether to generate non executable JSON by prefixing the output with some special

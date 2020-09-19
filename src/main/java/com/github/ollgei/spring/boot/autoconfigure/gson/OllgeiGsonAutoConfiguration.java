@@ -21,16 +21,17 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.converter.HttpMessageConverter;
 
 import com.github.ollgei.base.commonj.gson.Gson;
 import com.github.ollgei.base.commonj.gson.GsonBuilder;
-import com.github.ollgei.base.commonj.gson.spring.GsonHttpMessageConverter;
+import com.github.ollgei.spring.boot.autoconfigure.gson.spring.OllgeiGsonHttpMessageConverter;
+import springfox.documentation.spring.web.json.Json;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for Gson.
@@ -39,6 +40,7 @@ import com.github.ollgei.base.commonj.gson.spring.GsonHttpMessageConverter;
  * @author Ivan Golovko
  * @since 1.2.0
  */
+@ConditionalOnProperty(prefix = OllgeiGsonProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Gson.class)
 @EnableConfigurationProperties(OllgeiGsonProperties.class)
@@ -53,10 +55,24 @@ public class OllgeiGsonAutoConfiguration {
 	}
 
 	@Bean
+    @ConditionalOnClass(Json.class)
+    public OllgeiGsonBuilderCustomizer springfoxGsonBuilderCustomizer() {
+	    return new SpringfoxGsonBuilderCustomizer();
+    }
+
+	@Bean
 	@ConditionalOnMissingBean
 	public Gson ollgeiGson(GsonBuilder gsonBuilder) {
 		return gsonBuilder.create();
 	}
+
+    @Bean
+    @ConditionalOnMissingBean
+    public OllgeiGsonHttpMessageConverter ollgeiGsonHttpMessageConverter(Gson gson) {
+        final OllgeiGsonHttpMessageConverter converter = new OllgeiGsonHttpMessageConverter();
+        converter.setGson(gson);
+        return converter;
+    }
 
 	@Bean
 	public StandardGsonBuilderCustomizer ollgeiStandardGsonBuilderCustomizer(OllgeiGsonProperties gsonProperties) {
