@@ -16,4 +16,5 @@ com.github.ollgei.spring.boot.autoconfigure.shedlock.ConsulShedlockAutoConfigura
 com.github.ollgei.spring.boot.autoconfigure.shedlock.ConsulShedlockCloudAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration,\
 com.github.ollgei.spring.boot.autoconfigure.modelmapper.ModelMapperAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.consul.OllgeiConsulAutoConfiguration
+com.github.ollgei.spring.boot.autoconfigure.consul.OllgeiConsulAutoConfiguration,\
+com.github.ollgei.spring.boot.autoconfigure.cache.OllgeiCacheAutoConfiguration
