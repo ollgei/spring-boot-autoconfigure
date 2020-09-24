@@ -11,55 +11,52 @@ public interface RetryableRepository {
      * desc.
      * @param context context
      * @param model model
-     * @return
      */
     void save(RetryableContext context, RetryableModel model);
 
     /**
      * desc.
      * @param context context
-     * @return
      */
     void remove(RetryableContext context);
 
     /**
      * desc.
-     * @return
      */
     void removeAllExpired();
 
     /**
      * desc.
      * @param context context
-     * @return
+     * @return success
      */
     int readState(RetryableContext context);
 
     /**
      * desc.
      * @param context context
-     * @return
+     * @return success
      */
     byte[] readUpstreamResponse(RetryableContext context);
 
     /**
      * desc.
      * @param context context
-     * @return
+     * @return success
      */
     byte[] readMidstreamResponse(RetryableContext context);
 
     /**
      * desc.
      * @param context context
-     * @return
+     * @return success
      */
     byte[] readDownstreamResponse(RetryableContext context);
 
     /**
      * desc.
      * @param context context
-     * @return
+     * @return success
      */
     byte[] readResponse(RetryableContext context);
 
@@ -67,7 +64,6 @@ public interface RetryableRepository {
      * desc.
      * @param context context
      * @param model model
-     * @return
      */
     void update(RetryableContext context, RetryableModel model);
 

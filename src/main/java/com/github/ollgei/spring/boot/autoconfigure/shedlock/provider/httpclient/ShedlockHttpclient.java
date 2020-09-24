@@ -17,7 +17,6 @@ public interface ShedlockHttpclient {
     /**
      * desc.
      * @param name name
-     * @return
      */
     void unlock(String name);
 

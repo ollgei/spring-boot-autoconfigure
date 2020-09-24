@@ -22,14 +22,14 @@ public interface SerializationManager {
     Logger log = LoggerFactory.getLogger(SerializationManager.class);
     /**
      * desc.
-     * @return
+     * @return success
      */
     Serialization get();
 
     /**
      * 序列化对象.
      * @param object object
-     * @return
+     * @return success
      */
     default byte[] serializeObject(SerializationObject object) {
         final UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream();
@@ -49,7 +49,7 @@ public interface SerializationManager {
      * 反序列化对象.
      * @param bytes bytes
      * @param cls class
-     * @return
+     * @return success
      */
     default  <T> T deserializeObject(byte[] bytes, Class<T> cls) {
         final UnsafeByteArrayInputStream is = new UnsafeByteArrayInputStream(bytes);
@@ -69,7 +69,7 @@ public interface SerializationManager {
     /**
      * 序列化对象.
      * @param object object
-     * @return
+     * @return success
      */
     default byte[] serializeNativeObject(Object object) {
         final UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream();
@@ -87,7 +87,6 @@ public interface SerializationManager {
     /**
      * 序列化对象.
      * @param object object
-     * @return
      */
     default void serializeNativeObject(ObjectOutput serialize, Object object) throws IOException {
         if (object instanceof String) {
@@ -112,7 +111,7 @@ public interface SerializationManager {
     /**
      * 序列化对象.
      * @param bytes bytes
-     * @return
+     * @return success
      */
     default byte[] serializeBytes(byte[] bytes) {
         final UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream();
@@ -130,7 +129,7 @@ public interface SerializationManager {
     /**
      * 反序列化对象.
      * @param bytes bytes
-     * @return
+     * @return success
      */
     default byte[] deserializeBytes(byte[] bytes) {
         final UnsafeByteArrayInputStream is = new UnsafeByteArrayInputStream(bytes);
@@ -146,7 +145,7 @@ public interface SerializationManager {
     /**
      * 序列化对象.
      * @param bytes bytes
-     * @return
+     * @return success
      */
     default byte[] serializeBytes(byte[] bytes, int off, int len) {
         final UnsafeByteArrayOutputStream os = new UnsafeByteArrayOutputStream();
@@ -165,7 +164,7 @@ public interface SerializationManager {
      * 反序列化对象.
      * @param bytes bytes
      * @param cls class
-     * @return
+     * @return success
      */
     default <T> T deserializeNativeObject(byte[] bytes, Class<T> cls) {
         final UnsafeByteArrayInputStream is = new UnsafeByteArrayInputStream(bytes);
@@ -182,7 +181,7 @@ public interface SerializationManager {
      * 反序列化对象.
      * @param deserialize deserialize
      * @param cls class
-     * @return
+     * @return success
      */
     default <T> T deserializeNativeObject(ObjectInput deserialize , Class<T> cls) throws IOException, ClassNotFoundException {
         if (cls == String.class) {

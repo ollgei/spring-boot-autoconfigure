@@ -16,7 +16,6 @@ public interface OllgeiShedLockComponent {
 
     /**
      * lock.
-     * @return
      */
     default void lock() {
         lock(DEFAULT_NAME);
@@ -25,21 +24,19 @@ public interface OllgeiShedLockComponent {
     /**
      * lock.
      * @param name name
-     * @return
      */
     void lock(String name);
 
     /**
      * lock.
      * @param lockConfiguration config
-     * @return
+     * @return success
      */
     SimpleLock lock(LockConfiguration lockConfiguration);
 
     /**
      * unlock.
      * @param lock lock
-     * @return
      */
     void unlock(SimpleLock lock);
 
@@ -47,7 +44,6 @@ public interface OllgeiShedLockComponent {
      * execute.
      * @param lockConfiguration lockConfiguration
      * @param runnable runnable
-     * @return
      */
     void execute(LockConfiguration lockConfiguration, Runnable runnable);
 
@@ -55,7 +51,7 @@ public interface OllgeiShedLockComponent {
      * execute.
      * @param lockConfiguration lockConfiguration
      * @param callable callable
-     * @return
+     * @return success
      */
     <T> T execute(LockConfiguration lockConfiguration, Callable<T> callable);
 
@@ -63,7 +59,6 @@ public interface OllgeiShedLockComponent {
      * execute.
      * @param name name
      * @param runnable runnable
-     * @return
      */
     void execute(String name, Runnable runnable);
 
@@ -71,14 +66,13 @@ public interface OllgeiShedLockComponent {
      * execute.
      * @param name name
      * @param callable callable
-     * @return
+     * @return success
      */
     <T> T execute(String name, Callable<T> callable);
 
     /**
      * execute.
      * @param runnable runnable
-     * @return
      */
     default void execute(Runnable runnable) {
         execute(DEFAULT_NAME, runnable);
@@ -87,7 +81,7 @@ public interface OllgeiShedLockComponent {
     /**
      * execute.
      * @param callable callable
-     * @return
+     * @return success
      */
     default <T> T execute(Callable<T> callable) {
         return execute(DEFAULT_NAME, callable);

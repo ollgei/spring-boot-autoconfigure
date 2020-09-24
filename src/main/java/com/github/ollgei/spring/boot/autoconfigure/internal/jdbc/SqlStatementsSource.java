@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.ConnectionCallback;
  *  if PostgreSQL insert:
  *  super.getInsertStatement() + " ON CONFLICT (" + name() + ") DO UPDATE " +
  *    "SET " + lockUntil() + " = :lockUntil, " + lockedAt() + " = :now, " + lockedBy() + " = :lockedBy " +
- *    "WHERE " + tableName() + "." + lockUntil() + " <= :now";
+ *    "WHERE " + tableName() + "." + lockUntil() + " @lt;= :now";
  * @author ollgei
  * @since 1.0.0
  */

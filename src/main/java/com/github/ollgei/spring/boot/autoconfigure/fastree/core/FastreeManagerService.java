@@ -14,7 +14,7 @@ public interface FastreeManagerService {
     /**
      * init code可以是中文.
      * @param code code
-     * @return
+     * @return success
      */
     default FastreeEntity init(String code) {
         return init(code, code);
@@ -23,7 +23,7 @@ public interface FastreeManagerService {
     /**
      * init code可以是中文.
      * @param code code
-     * @return
+     * @return success
      */
     default FastreeEntity init(String code, Map<String, Object> custom) {
         return init(code, code, custom);
@@ -33,7 +33,7 @@ public interface FastreeManagerService {
      * init.
      * @param code code
      * @param gpname group name
-     * @return
+     * @return success
      */
     default FastreeEntity init(String gpname, String code) {
         FastreeKeyEntity keyEntity = new FastreeKeyEntity();
@@ -47,7 +47,7 @@ public interface FastreeManagerService {
      * @param code code
      * @param gpname group name
      * @param custom custom
-     * @return
+     * @return success
      */
     default FastreeEntity init(String gpname, String code, Map<String, Object> custom) {
         final FastreeKeyEntity keyEntity = new FastreeKeyEntity();
@@ -60,14 +60,14 @@ public interface FastreeManagerService {
      * init.
      * @param keyEntity keyEntity
      * @param custom custom
-     * @return
+     * @return success
      */
     FastreeEntity init(FastreeKeyEntity keyEntity, Map<String, Object> custom);
 
     /**
      * query none lock.
      * @param id id
-     * @return
+     * @return success
      */
     List<FastreeEntity> queryWithChildren(Integer id);
 
@@ -104,14 +104,14 @@ public interface FastreeManagerService {
     /**
      * query none lock.
      * @param id id
-     * @return
+     * @return success
      */
     Integer queryLevel(Integer id);
 
     /**
      * query none lock.
      * @param keyEntity keyEntity
-     * @return
+     * @return success
      */
     Integer queryLevel(FastreeKeyEntity keyEntity);
 
@@ -119,7 +119,7 @@ public interface FastreeManagerService {
      * 增加.
      * @param pcode pcode
      * @param code code
-     * @return
+     * @return success
      */
     default FastreeEntity addOne(String pcode, String code) {
         FastreeKeyEntity keyEntity = new FastreeKeyEntity();
@@ -132,7 +132,7 @@ public interface FastreeManagerService {
      * 增加.
      * @param pid parent id
      * @param code code
-     * @return
+     * @return success
      */
     default FastreeEntity addOne(Integer pid, String code) {
         return addOne(pid, code, Collections.emptyMap());
@@ -143,7 +143,7 @@ public interface FastreeManagerService {
      * @param keyEntity keyEntity
      * @param code code
      * @param custom custom
-     * @return
+     * @return success
      */
     FastreeEntity addOne(FastreeKeyEntity keyEntity, String code, Map<String, Object> custom);
 
@@ -151,27 +151,25 @@ public interface FastreeManagerService {
      * 增加.
      * @param pid parent id
      * @param code code
-     * @return
+     * @return success
      */
     FastreeEntity addOne(Integer pid, String code, Map<String, Object> custom);
 
     /**
      * remove.
      * @param keyEntity keyEntity
-     * @return
      */
     void removeIncludeChildren(FastreeKeyEntity keyEntity);
 
     /**
      * 增加.
      * @param id id
-     * @return
      */
     void removeIncludeChildren(Integer id);
 
     /**
      * name.
-     * @return
+     * @return success
      */
     String name();
 
