@@ -31,15 +31,18 @@ class InternalWorkerHandler implements WorkHandler<InternalEvent> {
 
     @Override
     public void onEvent(final InternalEvent event) {
-        final AbstractSubscription subscription = event.getSubscription();
-        if (log.isInfoEnabled()) {
-            final int size = event.size();
-            log.info("subscriber->Thread:{}, sequence:{}, size: {}",
-                    Thread.currentThread().getName(),
-                    subscription.getSequence(),
-                    size);
+        try {
+            final AbstractSubscription subscription = event.getSubscription();
+            if (log.isInfoEnabled()) {
+                final int size = event.size();
+                log.info("subscriber->Thread:{}, sequence:{}, size: {}",
+                        Thread.currentThread().getName(),
+                        subscription.getSequence(),
+                        size);
+            }
+            executor.execute(() -> subscriber.onNext(subscription));
+        } finally {
+            event.clear();
         }
-        event.clear();
-        executor.execute(() -> subscriber.onNext(subscription));
     }
 }

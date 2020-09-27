@@ -61,14 +61,13 @@ public class OllgeiDisruptorPublisher implements InitializingBean, DisposableBea
                 new InternalNamedThreadFactory(builder.subscriberName),
                 builder.producerType,
                 builder.waitStrategy);
+        disruptor.setDefaultExceptionHandler(new InternalExceptionHandler(disruptor));
 
         // Configure invoker Threads
         final InternalWorkerHandler[] handlers = new InternalWorkerHandler[builder.subscriberCount];
         for (int i = 0; i < handlers.length; i++) {
             handlers[i] = new InternalWorkerHandler(executor, builder.subscriber);
         }
-
-        disruptor.setDefaultExceptionHandler(new InternalExceptionHandler(disruptor));
         disruptor.handleEventsWithWorkerPool(handlers);
     }
 

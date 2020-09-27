@@ -5,14 +5,14 @@
     <parent>
         <groupId>com.github.ollgei.spring</groupId>
         <artifactId>ollgei-boot-starter-parent</artifactId>
-        <version>1.0.8</version>
+        <version>1.0.8.M2</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.ollgei.spring</groupId>
     <artifactId>ollgei-boot-autoconfigure</artifactId>
-    <version>1.0.18</version>
+    <version>1.0.18.M2</version>
     <inceptionYear>2020</inceptionYear>
 
     <licenses>
