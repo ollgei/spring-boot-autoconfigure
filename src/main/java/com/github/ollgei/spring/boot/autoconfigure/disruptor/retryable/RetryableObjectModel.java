@@ -10,31 +10,31 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class RetryableStringModel extends RetryableModel {
+public class RetryableObjectModel extends RetryableModel {
 
     /**
      * 参数
      */
-    private String params;
+    private Object params;
 
     /**
      * 响应
      */
-    private String response;
+    private Object response;
 
     /**
      * 返回参数
      */
-    private String midstreamResponse;
+    private Object midstreamResponse;
 
     /**
      * 上游返回参数.
      */
-    private String upstreamResponse;
+    private Object upstreamResponse;
 
     /**
      * 下游返回参数.
      */
-    private String downstreamResponse;
+    private Object downstreamResponse;
 
 }
