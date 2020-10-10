@@ -34,7 +34,19 @@ public interface RetryableBytesRepository extends RetryableRepository {
      */
     byte[] readResponse(RetryableContext context);
 
+    /**
+     * desc.
+     * @param context context
+     * @param model model
+     * @return
+     */
     void save(RetryableContext context, RetryableBytesModel model);
 
+    /**
+     * desc.
+     * @param context context
+     * @param model model
+     * @return
+     */
     void update(RetryableContext context, RetryableBytesModel model);
 }
