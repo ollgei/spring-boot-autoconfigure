@@ -1,6 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         Assert.notNull(publisher, "OllgeiDisruptorPublisher not null!");
         final SpringOllgeiDisruptorSubscription subscription = new SpringOllgeiDisruptorSubscription();
         subscription.setContext(context);
-        if (countDownLatch != null) {
-            subscription.setCountDownLatch(countDownLatch);
-        }
+        Optional.ofNullable(countDownLatch).ifPresent(l -> subscription.setCountDownLatch(l));
         subscription.setClazz(this.getClass());
         publisher.write(subscription);
     }
@@ -53,9 +52,11 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         try {
             readInternal(context);
         } finally {
-            if (countDownLatch != null && countDownLatch.getCount() > 0) {
-                countDownLatch.countDown();
-            }
+            Optional.ofNullable(countDownLatch).
+                    filter(l -> l.getCount() > 0).
+                    ifPresent(l -> {
+                        l.countDown();
+                    });
         }
     }
 
@@ -247,4 +248,5 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     public void setOllgeiProperties(OllgeiProperties ollgeiProperties) {
         this.ollgeiProperties = ollgeiProperties;
     }
+
 }

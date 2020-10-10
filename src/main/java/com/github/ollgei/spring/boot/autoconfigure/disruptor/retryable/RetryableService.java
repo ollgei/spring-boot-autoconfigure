@@ -1,5 +1,7 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
+import java.util.StringJoiner;
+
 /**
  * 异步重试.
  * @author ollgei
@@ -129,4 +131,17 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
      */
     S readDownstreamResponse(RetryableContext context);
 
+    /**
+     * build unique key.
+     * @param context context
+     * @return key
+     */
+    default String buildKey(RetryableContext context) {
+        StringJoiner joiner = new StringJoiner(":");
+        joiner.add(context.getAppId());
+        joiner.add(context.getBizKind());
+        joiner.add(context.getBizId());
+        joiner.add(String.valueOf(context.getBizSeqNo()));
+        return joiner.toString();
+    }
 }

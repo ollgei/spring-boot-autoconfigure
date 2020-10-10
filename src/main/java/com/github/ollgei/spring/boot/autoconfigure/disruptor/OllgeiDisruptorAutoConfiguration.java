@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Bean;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorNoopService;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
-import com.github.ollgei.spring.boot.autoconfigure.disruptor.spring.SpringOllgeiDisruptorSubscriber;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
+import com.github.ollgei.spring.boot.autoconfigure.disruptor.spring.SpringOllgeiDisruptorSubscriber;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -62,6 +62,12 @@ public class OllgeiDisruptorAutoConfiguration {
                                 ProducerType.MULTI : ProducerType.SINGLE)
                         .build();
     }
+
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public RetryableObjectCache retryableObjectCache() {
+//        return new DefaultRetryableObjectCache();
+//    }
 
     @Bean
     public OllgeiDisruptorService ollgeiDisruptorNoopService() {

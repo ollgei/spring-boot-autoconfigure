@@ -20,7 +20,8 @@ public class RetryableContext extends OllgeiDisruptorContext {
     /**BIZ ID:subID*/
     private String bizId;
     /**BIZ seq NO*/
-    private Integer bizSeqNo;
+    @Builder.Default
+    private Integer bizSeqNo = 0;
     /**upstream channel*/
     private String channel;
     /**data*/
