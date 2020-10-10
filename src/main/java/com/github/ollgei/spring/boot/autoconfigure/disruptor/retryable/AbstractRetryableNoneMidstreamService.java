@@ -11,7 +11,7 @@ public abstract class AbstractRetryableNoneMidstreamService<T extends RetryableU
 
     @Override
     public RetryableMidstreamResponse midstream(RetryableContext context, T uResponse) {
-        return RetryableMidstreamResponse.from(RetryableResultEnum.NOOP);
+        return RetryableResponse.noop(new RetryableMidstreamResponse());
     }
 
     @Override

@@ -1,12 +1,12 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
 /**
- * 异步重试.
+ * single异步重试.
  *
  * @author ollgei
  * @since 1.0.0
  */
-public abstract class AbstractRetryableOnlyMidstreamService<U extends RetryableMidstreamResponse>
+public abstract class AbstractSingleRetryableService<U extends RetryableMidstreamResponse>
         extends AbstractRetryableService<RetryableUpstreamResponse, U, RetryableDownstreamResponse> {
 
     @Override
@@ -16,7 +16,7 @@ public abstract class AbstractRetryableOnlyMidstreamService<U extends RetryableM
 
     @Override
     public U midstream(RetryableContext context, RetryableUpstreamResponse uResponse) {
-        return midstream(context);
+        return handle(context);
     }
 
     @Override
@@ -45,10 +45,10 @@ public abstract class AbstractRetryableOnlyMidstreamService<U extends RetryableM
     }
 
     /**
-     * midstream.
+     * handle.
      * @param context context
      * @return
      */
-    abstract public U midstream(RetryableContext context);
+    abstract public U handle(RetryableContext context);
 
 }

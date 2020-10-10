@@ -140,7 +140,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         model.setAppId(context.getAppId());
         model.setBizKind(context.getBizKind());
         model.setBizId(context.getBizId());
-        model.setBizSubNo(context.getBizSubNo().shortValue());
+        model.setBizSeqNo(context.getBizSeqNo().shortValue());
         model.setState(RetryableStateEnum.INIT.getCode());
         model.setRetryCount(0);
         model.setNextRetryTimestamp(0L);

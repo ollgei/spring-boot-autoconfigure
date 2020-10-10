@@ -11,7 +11,7 @@ public abstract class AbstractRetryableNoneDownstreamService<T extends Retryable
 
     @Override
     public RetryableDownstreamResponse downstream(RetryableContext context, T uResponse, U mResponse) {
-        return RetryableDownstreamResponse.from(RetryableResultEnum.NOOP);
+        return RetryableResponse.noop(new RetryableDownstreamResponse());
     }
 
     @Override

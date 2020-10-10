@@ -11,7 +11,7 @@ public abstract class AbstractRetryableNoneUpstreamService<U extends RetryableMi
 
     @Override
     public RetryableUpstreamResponse upstream(RetryableContext context) {
-        return RetryableUpstreamResponse.from(RetryableResultEnum.NOOP);
+        return RetryableResponse.noop(new RetryableUpstreamResponse());
     }
 
     @Override

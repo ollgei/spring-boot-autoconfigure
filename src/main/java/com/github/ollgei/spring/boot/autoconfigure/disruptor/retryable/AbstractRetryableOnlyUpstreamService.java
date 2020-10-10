@@ -11,12 +11,12 @@ public abstract class AbstractRetryableOnlyUpstreamService<T extends RetryableUp
 
     @Override
     public RetryableMidstreamResponse midstream(RetryableContext context, T uResponse) {
-        return RetryableMidstreamResponse.from(RetryableResultEnum.NOOP);
+        return RetryableResponse.noop(new RetryableMidstreamResponse());
     }
 
     @Override
     public RetryableDownstreamResponse downstream(RetryableContext context, T uResponse, RetryableMidstreamResponse mResponse) {
-        return RetryableDownstreamResponse.from(RetryableResultEnum.NOOP);
+        return RetryableResponse.noop(new RetryableDownstreamResponse());
     }
 
     @Override

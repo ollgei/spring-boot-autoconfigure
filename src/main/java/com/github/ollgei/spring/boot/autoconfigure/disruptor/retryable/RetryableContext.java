@@ -17,10 +17,10 @@ public class RetryableContext extends OllgeiDisruptorContext {
     private String appId;
     /**kind*/
     private String bizKind;
-    /**BIZ ID*/
+    /**BIZ ID:subID*/
     private String bizId;
-    /**BIZ Sub No*/
-    private Integer bizSubNo;
+    /**BIZ seq NO*/
+    private Integer bizSeqNo;
     /**upstream channel*/
     private String channel;
     /**data*/

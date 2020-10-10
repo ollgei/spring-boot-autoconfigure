@@ -25,7 +25,10 @@ public class RetryableModel {
      */
     private String bizId;
 
-    private Short bizSubNo;
+    /**
+     * 序列号.
+     */
+    private Short bizSeqNo;
 
     /**
      * 状态: 0 未开始 第1位 本地调用 第2位 上游调用 第三位 下游调用
