@@ -5,14 +5,7 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0
  */
-public interface RetryableRepository {
-
-    /**
-     * desc.
-     * @param context context
-     * @param model model
-     */
-    void save(RetryableContext context, RetryableModel model);
+interface RetryableRepository {
 
     /**
      * desc.
@@ -31,40 +24,5 @@ public interface RetryableRepository {
      * @return success
      */
     int readState(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    byte[] readUpstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    byte[] readMidstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    byte[] readDownstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    byte[] readResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @param model model
-     */
-    void update(RetryableContext context, RetryableModel model);
 
 }

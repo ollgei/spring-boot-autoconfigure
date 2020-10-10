@@ -144,4 +144,12 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
         joiner.add(String.valueOf(context.getBizSeqNo()));
         return joiner.toString();
     }
+
+    /**
+     * desc.
+     * @return true:binary false:string
+     */
+    default boolean canBinary() {
+        return false;
+    }
 }

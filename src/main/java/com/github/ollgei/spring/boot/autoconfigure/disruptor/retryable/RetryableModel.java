@@ -39,25 +39,6 @@ public class RetryableModel {
 
     private Long nextRetryTimestamp = System.currentTimeMillis();
 
-    /**
-     * 参数
-     */
-    private byte[] params;
-
-    /**
-     * 响应
-     */
-    private byte[] response;
-
-    /**
-     * 返回参数
-     */
-    private byte[] midstreamResponse;
-
-    private byte[] upstreamResponse;
-
-    private byte[] downstreamResponse;
-
     private Integer retryIncrCount;
 
     private Long nextRetryIncrTimestamp;

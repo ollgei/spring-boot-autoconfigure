@@ -1,10 +1,13 @@
 package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
 
+import lombok.Data;
+
 /**
  * desc.
  * @author ollgei
  * @since 1.0.0
  */
+@Data
 public class RetryableResponse {
     /**result*/
     private RetryableResultEnum result;

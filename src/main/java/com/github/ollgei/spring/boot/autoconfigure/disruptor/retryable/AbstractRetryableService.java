@@ -7,6 +7,8 @@ import java.util.concurrent.CountDownLatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import com.github.ollgei.base.commonj.gson.Gson;
+import com.github.ollgei.base.commonj.gson.GsonBuilder;
 import com.github.ollgei.base.commonj.utils.CommonHelper;
 import com.github.ollgei.spring.boot.autoconfigure.core.OllgeiProperties;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorProperties;
@@ -29,7 +31,9 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
     private OllgeiDisruptorPublisher publisher;
 
-    private RetryableRepository retryableRepository;
+    private RetryableStringRepository retryableStringRepository;
+
+    private RetryableBytesRepository retryableBytesRepository;
 
     private SerializationManager serializationManager;
 
@@ -37,8 +41,19 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
     private OllgeiProperties ollgeiProperties;
 
+    private final Gson gson;
+
+    public AbstractRetryableService() {
+        this(new GsonBuilder().create());
+    }
+
+    public AbstractRetryableService(Gson gson) {
+        this.gson = gson;
+    }
+
     @Override
     public void publish(RetryableContext context, CountDownLatch countDownLatch) {
+        check();
         Assert.notNull(publisher, "OllgeiDisruptorPublisher not null!");
         final SpringOllgeiDisruptorSubscription subscription = new SpringOllgeiDisruptorSubscription();
         subscription.setContext(context);
@@ -50,11 +65,11 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     @Override
     public void read(RetryableContext context, CountDownLatch countDownLatch) {
         try {
+            check();
             readInternal(context);
         } finally {
             Optional.ofNullable(countDownLatch).
-                    filter(l -> l.getCount() > 0).
-                    ifPresent(l -> {
+                    filter(l -> l.getCount() > 0).ifPresent(l -> {
                         l.countDown();
                     });
         }
@@ -62,7 +77,12 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
     @Override
     public void cleanup(RetryableContext context) {
-        retryableRepository.remove(context);
+        check();
+        if (canBinary()) {
+            retryableBytesRepository.remove(context);
+        } else {
+            retryableStringRepository.remove(context);
+        }
     }
 
     private void readInternal(RetryableContext context) {
@@ -134,7 +154,8 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
     @Override
     public void write(RetryableContext context) {
-        final RetryableModel model = new RetryableModel();
+        check();
+        final RetryableModel model = createRetryableModel(context);
         if (!CommonHelper.hasText(context.getAppId())) {
             context.setAppId(ollgeiProperties.getAppId());
         }
@@ -145,47 +166,81 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         model.setState(RetryableStateEnum.INIT.getCode());
         model.setRetryCount(0);
         model.setNextRetryTimestamp(0L);
-        model.setParams(serializationManager.serializeNativeObject(context.getData()));
-        retryableRepository.save(context, model);
+        if (canBinary()) {
+            ((RetryableBytesModel) model).setParams(serializationManager.serializeNativeObject(context.getData()));
+            retryableBytesRepository.save(context, (RetryableBytesModel) model);
+        } else {
+            ((RetryableStringModel) model).setParams(gson.toJson(context.getData()));
+            retryableStringRepository.save(context, (RetryableStringModel) model);
+        }
     }
 
     @Override
     public RetryableStateEnum readState(RetryableContext context) {
-        return RetryableStateEnum.resolve(retryableRepository.readState(context));
+        check();
+        return RetryableStateEnum.resolve(canBinary() ?
+                retryableBytesRepository.readState(context) :
+                retryableStringRepository.readState(context));
     }
 
     @Override
     public void writeState(RetryableContext context, int state, boolean success) {
-        final RetryableModel model = new RetryableModel();
+        check();
+        final RetryableModel model = createRetryableModel(context);
         model.setState(state);
         if (!success) {
             model.setNextRetryIncrTimestamp(getNextDelay());
             model.setRetryIncrCount(1);
         }
-        retryableRepository.update(context, model);
+        if (canBinary()) {
+            retryableBytesRepository.update(context, (RetryableBytesModel) model);
+        } else {
+            retryableStringRepository.update(context, (RetryableStringModel) model);
+        }
     }
 
     @Override
     public void writeResponse(RetryableContext context, T uResponse, U mResponse, S dResponse, int state) {
-        final RetryableModel model = new RetryableModel();
+        check();
+        final RetryableModel model = createRetryableModel(context);
         model.setState(state);
         if (Objects.nonNull(context.getResponseData())) {
-            model.setResponse(serializationManager.serializeObject(
-                    SerializationObject.builder().object(context.getResponseData()).build()));
+            if (canBinary()) {
+                ((RetryableBytesModel) model).setResponse(serializationManager.serializeObject(
+                        SerializationObject.builder().object(context.getResponseData()).build()));
+            } else {
+                ((RetryableStringModel) model).setResponse(gson.toJson(context.getResponseData()));
+            }
         }
         if (Objects.nonNull(uResponse)) {
-            model.setUpstreamResponse(serializationManager.serializeObject(
-                    SerializationObject.builder().object(uResponse).build()));
+            if (canBinary()) {
+                ((RetryableBytesModel) model).setUpstreamResponse(serializationManager.serializeObject(
+                        SerializationObject.builder().object(uResponse).build()));
+            } else {
+                ((RetryableStringModel) model).setUpstreamResponse(gson.toJson(uResponse));
+            }
         }
         if (Objects.nonNull(mResponse)) {
-            model.setMidstreamResponse(serializationManager.serializeObject(
-                    SerializationObject.builder().object(mResponse).build()));
+            if (canBinary()) {
+                ((RetryableBytesModel) model).setMidstreamResponse(serializationManager.serializeObject(
+                        SerializationObject.builder().object(mResponse).build()));
+            } else {
+                ((RetryableStringModel) model).setMidstreamResponse(gson.toJson(mResponse));
+            }
         }
         if (Objects.nonNull(dResponse)) {
-            model.setDownstreamResponse(serializationManager.serializeObject(
-                    SerializationObject.builder().object(dResponse).build()));
+            if (canBinary()) {
+                ((RetryableBytesModel) model).setDownstreamResponse(serializationManager.serializeObject(
+                        SerializationObject.builder().object(dResponse).build()));
+            } else {
+                ((RetryableStringModel) model).setDownstreamResponse(gson.toJson(dResponse));
+            }
         }
-        retryableRepository.update(context, model);
+        if (canBinary()) {
+            retryableBytesRepository.update(context, (RetryableBytesModel) model);
+        } else {
+            retryableStringRepository.update(context, (RetryableStringModel) model);
+        }
     }
 
     private long getNextDelay() {
@@ -193,31 +248,55 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         return new Double(retryableProps.getDelay() * retryableProps.getMultiplier()).longValue();
     }
 
+    private void check() {
+        if (canBinary()) {
+            Objects.requireNonNull(retryableBytesRepository, "RetryableBytesRepository is not null");
+        } else {
+            Objects.requireNonNull(retryableStringRepository, "RetryableStringRepository is not null");
+        }
+    }
+
     @Override
     public T readUpstreamResponse(RetryableContext context, Class<T> cls) {
-        final byte[] response = retryableRepository.readUpstreamResponse(context);
-        if (Objects.isNull(response) || response.length == 0) {
-            return null;
+        check();
+        if (canBinary()) {
+            final byte[] response = retryableBytesRepository.readUpstreamResponse(context);
+            if (Objects.isNull(response) || response.length == 0) {
+                return null;
+            }
+            return serializationManager.deserializeObject(response, cls);
         }
-        return serializationManager.deserializeObject(response, cls);
+        return gson.fromJson(retryableStringRepository.readUpstreamResponse(context), cls);
     }
 
     @Override
     public U readMidstreamResponse(RetryableContext context, Class<U> cls) {
-        final byte[] response = retryableRepository.readMidstreamResponse(context);
-        if (Objects.isNull(response) || response.length == 0) {
-            return null;
+        check();
+        if (canBinary()) {
+            final byte[] response = retryableBytesRepository.readMidstreamResponse(context);
+            if (Objects.isNull(response) || response.length == 0) {
+                return null;
+            }
+            return serializationManager.deserializeObject(response, cls);
         }
-        return serializationManager.deserializeObject(response, cls);
+        return gson.fromJson(retryableStringRepository.readMidstreamResponse(context), cls);
     }
 
     @Override
     public S readDownstreamResponse(RetryableContext context, Class<S> cls) {
-        final byte[] response = retryableRepository.readMidstreamResponse(context);
-        if (Objects.isNull(response) || response.length == 0) {
-            return null;
+        check();
+        if (canBinary()) {
+            final byte[] response = retryableBytesRepository.readDownstreamResponse(context);
+            if (Objects.isNull(response) || response.length == 0) {
+                return null;
+            }
+            return serializationManager.deserializeObject(response, cls);
         }
-        return serializationManager.deserializeObject(response, cls);
+        return gson.fromJson(retryableStringRepository.readDownstreamResponse(context), cls);
+    }
+
+    private RetryableModel createRetryableModel(RetryableContext context) {
+        return canBinary() ? new RetryableBytesModel() : new RetryableStringModel();
     }
 
     public OllgeiDisruptorPublisher getPublisher() {
@@ -227,11 +306,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     @Autowired
     public void setPublisher(OllgeiDisruptorPublisher publisher) {
         this.publisher = publisher;
-    }
-
-    @Autowired
-    public void setRetryableRepository(RetryableRepository retryableRepository) {
-        this.retryableRepository = retryableRepository;
     }
 
     @Autowired
@@ -249,4 +323,13 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         this.ollgeiProperties = ollgeiProperties;
     }
 
+    @Autowired(required = false)
+    public void setRetryableStringRepository(RetryableStringRepository retryableStringRepository) {
+        this.retryableStringRepository = retryableStringRepository;
+    }
+
+    @Autowired(required = false)
+    public void setRetryableBytesRepository(RetryableBytesRepository retryableBytesRepository) {
+        this.retryableBytesRepository = retryableBytesRepository;
+    }
 }
