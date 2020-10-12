@@ -18,11 +18,4 @@ interface RetryableRepository {
      */
     void removeAllExpired();
 
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    int readState(RetryableContext context);
-
 }

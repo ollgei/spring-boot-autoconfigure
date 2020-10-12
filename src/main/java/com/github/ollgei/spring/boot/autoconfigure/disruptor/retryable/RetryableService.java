@@ -30,12 +30,6 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
     S downstream(RetryableContext context, T uResponse, U mResponse);
 
     /**
-     * 读取状态 {@link RetryableStateEnum}.
-     * @param context context
-     * @return success
-     */
-    RetryableStateEnum readState(RetryableContext context);
-    /**
      * 更新状态.
      * @param context object
      * @param state 新状态
@@ -91,45 +85,22 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
     }
 
     /**
-     * 读取上游返回的对象.
-     * @param context object
-     * @param cls class
+     * 返回上游返回的类.
      * @return success
      */
-    T readUpstreamResponse(RetryableContext context, Class<T> cls);
-    /**
-     * 读取本地处理返回的对象.
-     * @param context object
-     * @param cls class
-     * @return success
-     */
-    U readMidstreamResponse(RetryableContext context, Class<U> cls);
-    /**
-     * 读取下游处理返回的对象.
-     * @param context object
-     * @param cls class
-     * @return success
-     */
-    S readDownstreamResponse(RetryableContext context, Class<S> cls);
+    Class<?> getUpstreamResponseClass();
 
     /**
-     * 读取上游返回的对象.
-     * @param context object
+     * 返回上游返回的类.
      * @return success
      */
-    T readUpstreamResponse(RetryableContext context);
+    Class<?> getMidstreamResponseClass();
+
     /**
-     * 读取本地处理返回的对象.
-     * @param context object
+     * 返回上游返回的类.
      * @return success
      */
-    U readMidstreamResponse(RetryableContext context);
-    /**
-     * 读取下游处理返回的对象.
-     * @param context object
-     * @return success
-     */
-    S readDownstreamResponse(RetryableContext context);
+    Class<?> getDownstreamResponseClass();
 
     /**
      * build unique key.

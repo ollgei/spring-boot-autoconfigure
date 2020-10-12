@@ -20,7 +20,7 @@ public abstract class AbstractRetryableNoneDownstreamService<T extends Retryable
     }
 
     @Override
-    public RetryableDownstreamResponse readDownstreamResponse(RetryableContext context) {
+    public Class<?> getDownstreamResponseClass() {
         return null;
     }
 }

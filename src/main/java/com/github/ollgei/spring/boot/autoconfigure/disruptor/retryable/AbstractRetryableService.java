@@ -7,8 +7,6 @@ import java.util.concurrent.CountDownLatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import com.github.ollgei.base.commonj.gson.Gson;
-import com.github.ollgei.base.commonj.gson.GsonBuilder;
 import com.github.ollgei.base.commonj.utils.CommonHelper;
 import com.github.ollgei.spring.boot.autoconfigure.core.OllgeiProperties;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorProperties;
@@ -40,16 +38,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     private OllgeiDisruptorProperties ollgeiDisruptorProperties;
 
     private OllgeiProperties ollgeiProperties;
-
-    private final Gson gson;
-
-    public AbstractRetryableService() {
-        this(new GsonBuilder().create());
-    }
-
-    public AbstractRetryableService(Gson gson) {
-        this.gson = gson;
-    }
 
     @Override
     public void publish(RetryableContext context, CountDownLatch countDownLatch) {
@@ -86,7 +74,11 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     }
 
     private void readInternal(RetryableContext context) {
-        final RetryableStateEnum rState = readState(context);
+        final RetryableObjectModel model = readModel(context);
+        if (model == null) {
+            return;
+        }
+        final RetryableStateEnum rState = RetryableStateEnum.resolve(model.getState());
         if (rState == RetryableStateEnum.SUCCESS) {
             if (log.isInfoEnabled()) {
                 log.info("【异步重试】已经全部执行完成");
@@ -109,7 +101,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
                 return;
             }
         } else {
-            uResponse = readUpstreamResponse(context);
+            uResponse = (T) model.getUpstreamResponse();
         }
 
         //2 执行中游业务处理 保持幂等性(本地处理)
@@ -127,7 +119,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
                 return;
             }
         } else {
-            mResponse = readMidstreamResponse(context);
+            mResponse = (U) model.getMidstreamResponse();
         }
 
         //判断第3位是0
@@ -147,7 +139,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             }
         }
         //最后写入state
-        writeState(context, state, true);
+        writeSuccessState(context, state);
         //清理数据
         cleanup(context);
     }
@@ -173,14 +165,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             ((RetryableObjectModel) model).setParams(context.getData());
             retryableObjectRepository.save(context, (RetryableObjectModel) model);
         }
-    }
-
-    @Override
-    public RetryableStateEnum readState(RetryableContext context) {
-        check();
-        return RetryableStateEnum.resolve(canBinary() ?
-                retryableBytesRepository.readState(context) :
-                retryableObjectRepository.readState(context));
     }
 
     @Override
@@ -243,6 +227,63 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         }
     }
 
+    private void writeSuccessState(RetryableContext context, int state) {
+        check();
+        final RetryableModel model = createRetryableModel(context);
+        model.setState(state);
+        if (canBinary()) {
+            retryableBytesRepository.updateSuccess(context, (RetryableBytesModel) model);
+        } else {
+            retryableObjectRepository.updateSuccess(context, (RetryableObjectModel) model);
+        }
+    }
+
+    private RetryableObjectModel readModel(RetryableContext context) {
+        check();
+        if (canBinary()) {
+            final RetryableBytesModel bytesModel = retryableBytesRepository.readModel(context);
+            RetryableObjectModel model = new RetryableObjectModel();
+            if (bytesModel.getParams() != null) {
+                model.setParams(
+                        serializationManager.deserializeObject(bytesModel.getParams(),
+                        context.getData().getClass()));
+            }
+            if (bytesModel.getResponse() != null) {
+                model.setResponse(
+                        serializationManager.deserializeObject(bytesModel.getResponse(),
+                        context.getResponseData().getClass()));
+            }
+            if (bytesModel.getMidstreamResponse() != null) {
+                model.setMidstreamResponse(
+                        serializationManager.deserializeObject(bytesModel.getMidstreamResponse(),
+                                getMidstreamResponseClass()));
+            }
+            if (bytesModel.getUpstreamResponse() != null) {
+                model.setUpstreamResponse(
+                        serializationManager.deserializeObject(bytesModel.getUpstreamResponse(),
+                                getUpstreamResponseClass()));
+            }
+            if (bytesModel.getDownstreamResponse() != null) {
+                model.setDownstreamResponse(
+                        serializationManager.deserializeObject(bytesModel.getDownstreamResponse(),
+                        getDownstreamResponseClass()));
+            }
+
+            model.setBizKind(bytesModel.getBizKind());
+            model.setAppId(bytesModel.getAppId());
+            model.setBizId(bytesModel.getBizId());
+            model.setBizSeqNo(bytesModel.getBizSeqNo());
+            model.setState(bytesModel.getState());
+            model.setRetryCount(bytesModel.getRetryCount());
+            model.setNextRetryTimestamp(bytesModel.getNextRetryTimestamp());
+            model.setRetryIncrCount(bytesModel.getRetryIncrCount());
+            model.setNextRetryIncrTimestamp(bytesModel.getNextRetryTimestamp());
+
+            return model;
+        }
+        return retryableObjectRepository.readModel(context);
+    }
+
     private long getNextDelay() {
         final OllgeiDisruptorProperties.Retryable retryableProps = ollgeiDisruptorProperties.getRetryable();
         return new Double(retryableProps.getDelay() * retryableProps.getMultiplier()).longValue();
@@ -254,45 +295,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         } else {
             Objects.requireNonNull(retryableObjectRepository, "RetryableObjectRepository is not null");
         }
-    }
-
-    @Override
-    public T readUpstreamResponse(RetryableContext context, Class<T> cls) {
-        check();
-        if (canBinary()) {
-            final byte[] response = retryableBytesRepository.readUpstreamResponse(context);
-            if (Objects.isNull(response) || response.length == 0) {
-                return null;
-            }
-            return serializationManager.deserializeObject(response, cls);
-        }
-        return (T) retryableObjectRepository.readUpstreamResponse(context);
-    }
-
-    @Override
-    public U readMidstreamResponse(RetryableContext context, Class<U> cls) {
-        check();
-        if (canBinary()) {
-            final byte[] response = retryableBytesRepository.readMidstreamResponse(context);
-            if (Objects.isNull(response) || response.length == 0) {
-                return null;
-            }
-            return serializationManager.deserializeObject(response, cls);
-        }
-        return (U) retryableObjectRepository.readMidstreamResponse(context);
-    }
-
-    @Override
-    public S readDownstreamResponse(RetryableContext context, Class<S> cls) {
-        check();
-        if (canBinary()) {
-            final byte[] response = retryableBytesRepository.readDownstreamResponse(context);
-            if (Objects.isNull(response) || response.length == 0) {
-                return null;
-            }
-            return serializationManager.deserializeObject(response, cls);
-        }
-        return (S) retryableObjectRepository.readDownstreamResponse(context);
     }
 
     private RetryableModel createRetryableModel(RetryableContext context) {

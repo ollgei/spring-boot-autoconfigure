@@ -9,34 +9,6 @@ public interface RetryableObjectRepository extends RetryableRepository {
     /**
      * desc.
      * @param context context
-     * @return success
-     */
-    Object readUpstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    Object readMidstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    Object readDownstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    Object readResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
      * @param model model
      * @return
      */
@@ -49,4 +21,19 @@ public interface RetryableObjectRepository extends RetryableRepository {
      * @return
      */
     void update(RetryableContext context, RetryableObjectModel model);
+
+    /**
+     * desc.
+     * @param context context
+     * @param model model
+     * @return
+     */
+    void updateSuccess(RetryableContext context, RetryableObjectModel model);
+
+    /**
+     * read.
+     * @param context context
+     * @return model
+     */
+    RetryableObjectModel readModel(RetryableContext context);
 }

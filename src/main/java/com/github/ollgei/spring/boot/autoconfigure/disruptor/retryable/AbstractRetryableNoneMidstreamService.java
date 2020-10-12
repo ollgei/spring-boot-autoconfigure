@@ -26,7 +26,7 @@ public abstract class AbstractRetryableNoneMidstreamService<T extends RetryableU
     }
 
     @Override
-    public RetryableMidstreamResponse readMidstreamResponse(RetryableContext context) {
+    public Class<?> getMidstreamResponseClass() {
         return null;
     }
 

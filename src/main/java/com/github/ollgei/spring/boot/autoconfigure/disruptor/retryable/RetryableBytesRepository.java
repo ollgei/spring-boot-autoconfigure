@@ -9,34 +9,6 @@ public interface RetryableBytesRepository extends RetryableRepository {
     /**
      * desc.
      * @param context context
-     * @return success
-     */
-    byte[] readUpstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    byte[] readMidstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    byte[] readDownstreamResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
-     * @return success
-     */
-    byte[] readResponse(RetryableContext context);
-
-    /**
-     * desc.
-     * @param context context
      * @param model model
      * @return
      */
@@ -49,4 +21,20 @@ public interface RetryableBytesRepository extends RetryableRepository {
      * @return
      */
     void update(RetryableContext context, RetryableBytesModel model);
+
+    /**
+     * desc.
+     * @param context context
+     * @param model model
+     * @return
+     */
+    void updateSuccess(RetryableContext context, RetryableBytesModel model);
+
+    /**
+     * read.
+     * @param context context
+     * @return model
+     */
+    RetryableBytesModel readModel(RetryableContext context);
+
 }

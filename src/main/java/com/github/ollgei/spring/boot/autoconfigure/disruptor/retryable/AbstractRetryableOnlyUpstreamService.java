@@ -28,12 +28,12 @@ public abstract class AbstractRetryableOnlyUpstreamService<T extends RetryableUp
     }
 
     @Override
-    public RetryableMidstreamResponse readMidstreamResponse(RetryableContext context) {
+    public Class<?> getMidstreamResponseClass() {
         return null;
     }
 
     @Override
-    public RetryableDownstreamResponse readDownstreamResponse(RetryableContext context) {
+    public Class<?> getDownstreamResponseClass() {
         return null;
     }
 }

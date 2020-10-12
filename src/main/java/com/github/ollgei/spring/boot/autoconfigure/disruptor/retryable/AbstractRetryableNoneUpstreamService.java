@@ -30,7 +30,7 @@ public abstract class AbstractRetryableNoneUpstreamService<U extends RetryableMi
     }
 
     @Override
-    public RetryableUpstreamResponse readUpstreamResponse(RetryableContext context) {
+    public Class<?> getUpstreamResponseClass() {
         return null;
     }
 
