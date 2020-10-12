@@ -141,7 +141,10 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             }
         }
         //最后写入state
-        writeSuccessState(context, state);
+        if (log.isInfoEnabled()) {
+            log.info("state:{}, start cleanup", state);
+        }
+        //writeSuccessState(context, state);
         //清理数据
         cleanup(context);
     }
@@ -226,15 +229,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             retryableBytesRepository.update(context, (RetryableBytesModel) model);
         } else {
             retryableObjectRepository.update(context, (RetryableObjectModel) model);
-        }
-    }
-
-    private void writeSuccessState(RetryableContext context, int state) {
-        check();
-        if (canBinary()) {
-            retryableBytesRepository.updateSuccess(context, state);
-        } else {
-            retryableObjectRepository.updateSuccess(context, state);
         }
     }
 
