@@ -25,10 +25,10 @@ public interface RetryableBytesRepository extends RetryableRepository {
     /**
      * desc.
      * @param context context
-     * @param model model
+     * @param state state
      * @return
      */
-    void updateSuccess(RetryableContext context, RetryableBytesModel model);
+    void updateSuccess(RetryableContext context, int state);
 
     /**
      * read.

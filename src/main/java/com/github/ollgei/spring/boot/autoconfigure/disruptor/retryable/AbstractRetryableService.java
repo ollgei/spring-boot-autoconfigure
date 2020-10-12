@@ -130,6 +130,8 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             if (dResponse.getResult() == RetryableResultEnum.SUCCESS) {
                 state = state | RetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
                 writeDownstreamResponse(context, dResponse, state);
+                //清理数据
+                cleanup(context);
                 return;
             } else if (dResponse.getResult() == RetryableResultEnum.NOOP) {
                 state = state | RetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
@@ -229,12 +231,10 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
     private void writeSuccessState(RetryableContext context, int state) {
         check();
-        final RetryableModel model = createRetryableModel(context);
-        model.setState(state);
         if (canBinary()) {
-            retryableBytesRepository.updateSuccess(context, (RetryableBytesModel) model);
+            retryableBytesRepository.updateSuccess(context, state);
         } else {
-            retryableObjectRepository.updateSuccess(context, (RetryableObjectModel) model);
+            retryableObjectRepository.updateSuccess(context, state);
         }
     }
 

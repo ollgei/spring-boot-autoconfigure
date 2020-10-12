@@ -25,10 +25,10 @@ public interface RetryableObjectRepository extends RetryableRepository {
     /**
      * desc.
      * @param context context
-     * @param model model
+     * @param state state
      * @return
      */
-    void updateSuccess(RetryableContext context, RetryableObjectModel model);
+    void updateSuccess(RetryableContext context, int state);
 
     /**
      * read.
