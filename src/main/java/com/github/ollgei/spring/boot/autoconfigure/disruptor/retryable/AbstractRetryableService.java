@@ -142,7 +142,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         }
         //最后写入state
         if (log.isInfoEnabled()) {
-            log.info("state:{}, start cleanup", state);
+            log.info("All finished!! state:{}, starting cleanup", state);
         }
         //writeSuccessState(context, state);
         //清理数据
