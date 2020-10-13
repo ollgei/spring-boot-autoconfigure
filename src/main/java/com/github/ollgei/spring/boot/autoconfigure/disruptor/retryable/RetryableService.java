@@ -124,11 +124,4 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
         return false;
     }
 
-    /**
-     * desc.
-     * @return true:binary false:string
-     */
-    default boolean canJson() {
-        return false;
-    }
 }

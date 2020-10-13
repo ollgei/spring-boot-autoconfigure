@@ -16,12 +16,12 @@ public class RetryableJsonModel extends RetryableModel {
     /**
      * 参数
      */
-    private JsonElement params;
+    private Object params;
 
     /**
      * 响应
      */
-    private JsonElement response;
+    private Object response;
 
     /**
      * 返回参数
