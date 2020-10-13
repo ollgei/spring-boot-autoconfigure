@@ -7,7 +7,6 @@ import java.util.concurrent.CountDownLatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import com.github.ollgei.base.commonj.gson.JsonElement;
 import com.github.ollgei.base.commonj.utils.CommonHelper;
 import com.github.ollgei.spring.boot.autoconfigure.core.OllgeiProperties;
 import com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorProperties;
@@ -33,8 +32,6 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     private RetryableObjectRepository retryableObjectRepository;
 
     private RetryableBytesRepository retryableBytesRepository;
-
-    private RetryableJsonRepository retryableJsonRepository;
 
     private SerializationManager serializationManager;
 
@@ -338,8 +335,4 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         this.retryableBytesRepository = retryableBytesRepository;
     }
 
-    @Autowired(required = false)
-    public void setRetryableJsonRepository(RetryableJsonRepository retryableJsonRepository) {
-        this.retryableJsonRepository = retryableJsonRepository;
-    }
 }
