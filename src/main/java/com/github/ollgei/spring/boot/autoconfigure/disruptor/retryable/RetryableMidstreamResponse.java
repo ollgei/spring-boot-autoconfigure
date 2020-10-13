@@ -5,6 +5,6 @@ package com.github.ollgei.spring.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0.0
  */
-public class RetryableMidstreamResponse extends RetryableResponse {
+public class RetryableMidstreamResponse extends RetryableUpstreamResponse {
 
 }

@@ -24,6 +24,8 @@ public class RetryableContext extends OllgeiDisruptorContext {
     private Integer bizSeqNo = 0;
     /**upstream channel*/
     private String channel;
+    /**request IP*/
+    private String requestIp;
     /**data*/
     private Object data;
     /**data*/
