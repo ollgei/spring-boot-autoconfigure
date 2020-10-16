@@ -1,20 +1,20 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.github.ollgei.spring.boot.autoconfigure.core.OllgeiAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.disruptor.OllgeiDisruptorAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.segment.JdbcTemplateBoundSegmentAutoConfiguration,\
- com.github.ollgei.spring.boot.autoconfigure.segment.MybatisBoundSegmentAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.fastree.JdbcTemplateFastreeAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.gson.OllgeiGsonAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.gson.cache.GsonCacheAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.serialization.SerializationAutoconfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.shedlock.JdbcTemplateShedlockAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.shedlock.MybatisShedlockAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.shedlock.ShedlockAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.shedlock.HttpclientShedlockAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.shedlock.ConsulShedlockAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.shedlock.ConsulShedlockCloudAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.modelmapper.ModelMapperAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.consul.OllgeiConsulAutoConfiguration,\
-com.github.ollgei.spring.boot.autoconfigure.cache.OllgeiCacheAutoConfiguration
+com.github.ollgei.boot.autoconfigure.core.OllgeiAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.disruptor.OllgeiDisruptorAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.segment.JdbcTemplateBoundSegmentAutoConfiguration,\
+ com.github.ollgei.boot.autoconfigure.segment.MybatisBoundSegmentAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.fastree.JdbcTemplateFastreeAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.gson.OllgeiGsonAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.gson.cache.GsonCacheAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.serialization.SerializationAutoconfiguration,\
+com.github.ollgei.boot.autoconfigure.shedlock.JdbcTemplateShedlockAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.shedlock.MybatisShedlockAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.shedlock.ShedlockAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.shedlock.HttpclientShedlockAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.shedlock.ConsulShedlockAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.shedlock.ConsulShedlockCloudAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.modelmapper.ModelMapperAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.consul.OllgeiConsulAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.cache.OllgeiCacheAutoConfiguration
