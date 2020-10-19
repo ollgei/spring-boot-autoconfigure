@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.httpclient;
+package com.github.ollgei.boot.autoconfigure.resttemplate;
 
 import org.apache.http.impl.client.HttpClientBuilder;
 

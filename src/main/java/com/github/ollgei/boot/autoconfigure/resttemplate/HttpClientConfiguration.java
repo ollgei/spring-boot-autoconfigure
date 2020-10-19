@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.httpclient;
+package com.github.ollgei.boot.autoconfigure.resttemplate;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -30,14 +30,14 @@ class HttpClientConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = RestTemplateProperties.PREFIX + ".httpclient",
-            name = "customizer.system.enabled", havingValue = "true", matchIfMissing = true)
+            name = "system.enabled", havingValue = "true", matchIfMissing = true)
     public HttpClientBuilderCustomizer systemHttpClientBuilderCustomizer() {
         return new SystemHttpClientBuilderCustomizer();
     }
 
     @Bean
     @ConditionalOnProperty(prefix = RestTemplateProperties.PREFIX + ".httpclient",
-            name = "customizer.retry.enabled", havingValue = "true", matchIfMissing = true)
+            name = "retry.enabled", havingValue = "true", matchIfMissing = true)
     public HttpClientBuilderCustomizer retryHttpClientBuilderCustomizer() {
         return new RetryHttpClientBuilderCustomizer();
     }

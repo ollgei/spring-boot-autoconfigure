@@ -71,6 +71,30 @@
       "type": "java.lang.Boolean",
       "description": "enable ollgei consul retry.",
       "defaultValue": false
+    },
+    {
+      "name": "ollgei.resttemplate.httpclient.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei resttemplate httpclient.",
+      "defaultValue": true
+    },
+    {
+      "name": "ollgei.resttemplate.httpclient.system.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei resttemplate httpclient.",
+      "defaultValue": true
+    },
+    {
+      "name": "ollgei.resttemplate.httpclient.retry.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei resttemplate httpclient.",
+      "defaultValue": true
+    },
+    {
+      "name": "ollgei.resttemplate.okhttp3.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei resttemplate okhttp3.",
+      "defaultValue": true
     }
   ],
   "hints": []
