@@ -78,20 +78,20 @@ public class FeignClientManager {
         return getForJson(uri, Collections.emptyMap(), type);
     }
 
-    public Response postForResponse(URI uri, Map<String, String> headerMap, Object body) {
+    public Response post(URI uri, Map<String, String> headerMap, Object body) {
         return feignClientDefination.post(uri, headerMap, gson.toJsonTree(body));
     }
 
-    public Response getForResponse(URI uri, Map<String, String> headerMap) {
+    public Response get(URI uri, Map<String, String> headerMap) {
         return feignClientDefination.get(uri, headerMap);
     }
 
-    public Response getForResponse(URI uri) {
-        return getForResponse(uri, Collections.emptyMap());
+    public Response get(URI uri) {
+        return get(uri, Collections.emptyMap());
     }
 
-    public Response postForResponse(URI uri, Object body) {
-        return postForResponse(uri, Collections.emptyMap(), body);
+    public Response post(URI uri, Object body) {
+        return post(uri, Collections.emptyMap(), body);
     }
 
     @Autowired
