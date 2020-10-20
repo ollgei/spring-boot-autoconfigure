@@ -17,4 +17,6 @@ com.github.ollgei.boot.autoconfigure.shedlock.ConsulShedlockCloudAutoConfigurati
 com.github.ollgei.boot.autoconfigure.redis.OllgeiRedisAutoConfiguration,\
 com.github.ollgei.boot.autoconfigure.modelmapper.ModelMapperAutoConfiguration,\
 com.github.ollgei.boot.autoconfigure.consul.OllgeiConsulAutoConfiguration,\
-com.github.ollgei.boot.autoconfigure.cache.OllgeiCacheAutoConfiguration
+com.github.ollgei.boot.autoconfigure.cache.OllgeiCacheAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.httpclient.RestTemplateAutoConfiguration,\
+com.github.ollgei.boot.autoconfigure.httpclient.FeignAutoConfiguration

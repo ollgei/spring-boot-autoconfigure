@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.ollgei.boot.autoconfigure.resttemplate;
+package com.github.ollgei.boot.autoconfigure.httpclient;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -27,9 +27,24 @@ import lombok.Data;
  * @author Ivan Golovko
  * @since 2.0.0
  */
-@ConfigurationProperties(prefix = RestTemplateProperties.PREFIX)
+@ConfigurationProperties(prefix = HttpClientProperties.PREFIX)
 @Data
-public class RestTemplateProperties {
-    public static final String PREFIX = "ollgei.resttemplate";
+public class HttpClientProperties {
+    public static final String PREFIX = "ollgei.httpclient";
+
+    private int retryNum = 3;
+
+    private FeignLoggerLevel feignLoggerLevel;
+
+    private LoggerType loggerType;
+
+    private Hystrix hystrix;
+
+    @Data
+    public static class Hystrix {
+        private String groupKey;
+
+        private String commandKey;
+    }
 
 }

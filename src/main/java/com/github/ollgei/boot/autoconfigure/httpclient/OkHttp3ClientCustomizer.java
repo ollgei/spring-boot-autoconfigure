@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.resttemplate;
+package com.github.ollgei.boot.autoconfigure.httpclient;
 
 import okhttp3.OkHttpClient;
 
@@ -12,8 +12,8 @@ public interface OkHttp3ClientCustomizer {
 
     /**
      * Customize the {@link OkHttpClient}.
-     * @param httpClient the builder to customize
+     * @param builder the builder to customize
      */
-    void customize(OkHttpClient httpClient);
+    void customize(OkHttpClient.Builder builder);
 
 }

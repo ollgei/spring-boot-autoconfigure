@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.resttemplate;
+package com.github.ollgei.boot.autoconfigure.httpclient;
 
 import org.apache.http.impl.client.HttpClientBuilder;
 
@@ -8,7 +8,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
  * @since 1.0
  */
 @FunctionalInterface
-public interface HttpClientBuilderCustomizer {
+public interface ApacheHttpClientBuilderCustomizer {
 
 	/**
 	 * Customize the {@link HttpClientBuilder}.

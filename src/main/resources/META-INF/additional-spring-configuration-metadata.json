@@ -73,27 +73,39 @@
       "defaultValue": false
     },
     {
-      "name": "ollgei.resttemplate.httpclient.enabled",
+      "name": "ollgei.httpclient.resttemplate.enabled",
       "type": "java.lang.Boolean",
-      "description": "enable ollgei resttemplate httpclient.",
+      "description": "enable ollgei resttemplate.",
       "defaultValue": true
     },
     {
-      "name": "ollgei.resttemplate.httpclient.system.enabled",
+      "name": "ollgei.httpclient.feign.enabled",
       "type": "java.lang.Boolean",
-      "description": "enable ollgei resttemplate httpclient.",
+      "description": "enable ollgei resttemplate.",
       "defaultValue": true
     },
     {
-      "name": "ollgei.resttemplate.httpclient.retry.enabled",
+      "name": "ollgei.httpclient.retry.enabled",
       "type": "java.lang.Boolean",
-      "description": "enable ollgei resttemplate httpclient.",
+      "description": "enable ollgei httpclient retry.",
       "defaultValue": true
     },
     {
-      "name": "ollgei.resttemplate.okhttp3.enabled",
+      "name": "ollgei.httpclient.apache.enabled",
       "type": "java.lang.Boolean",
-      "description": "enable ollgei resttemplate okhttp3.",
+      "description": "enable ollgei apache httpclient.",
+      "defaultValue": true
+    },
+    {
+      "name": "ollgei.httpclient.apache.system.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei httpclient apache system.",
+      "defaultValue": true
+    },
+    {
+      "name": "ollgei.httpclient.okhttp3.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable ollgei httpclient okhttp3.",
       "defaultValue": true
     }
   ],
