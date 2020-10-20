@@ -1,10 +1,8 @@
 package com.github.ollgei.boot.autoconfigure.httpclient;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -17,14 +15,9 @@ import org.springframework.context.annotation.Import;
 import com.github.ollgei.base.commonj.feign.gson.GsonDecoder;
 import com.github.ollgei.base.commonj.feign.gson.GsonEncoder;
 import com.github.ollgei.base.commonj.gson.GsonBuilder;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
 import feign.Feign;
-import feign.Logger;
 import feign.Retryer;
 import feign.httpclient.ApacheHttpClient;
-import feign.hystrix.HystrixFeign;
 import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
 
@@ -40,33 +33,23 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @ConditionalOnClass(Feign.class)
 @ConditionalOnProperty(prefix = HttpClientProperties.PREFIX, name = "feign.enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(HttpClientProperties.class)
-@Import({ApacheHttpClientConfiguration.class, Okhttp3Configuration.class})
+@Import({ApacheHttpClientConfiguration.class, Okhttp3Configuration.class, HystrixFeignConfiguration.class})
 public class FeignAutoConfiguration {
-
-    @Autowired
-    private HttpClientProperties httpClientProperties;
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass("feign.hystrix.HystrixFeign")
-    public FeignClientDefination feignClientDefination(ObjectProvider<FeignCustomizer> builderCustomizers) {
-        return builder(Feign.builder(), builderCustomizers.orderedStream().collect(Collectors.toList())).
+    public FeignClientDefination feignClientDefination(
+            HttpClientProperties properties,
+            ObjectProvider<FeignCustomizer> builderCustomizers) {
+        return FeinBuilderHelper.builder(
+                properties.getLoggerType(), properties.getFeignLoggerLevel(),
+                Feign.builder(), builderCustomizers.orderedStream().collect(Collectors.toList())).
                 encoder(new GsonEncoder()).
                 decoder(new GsonDecoder(new GsonBuilder().serializeNulls().create())).
                 target(FeignClientDefination.class, "http://127.0.0.1:8080");
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnClass(name = "feign.hystrix.HystrixFeign")
-    public FeignClientDefination feignClientDefinationHystrix(ObjectProvider<FeignCustomizer> builderCustomizers, ObjectProvider<FeignClientDefination> fallback) {
-        final HystrixFeign.Builder hystrixBuilder = hystrixBuilder();
-        builder(hystrixBuilder, builderCustomizers.orderedStream().collect(Collectors.toList())).
-                encoder(new GsonEncoder()).
-                decoder(new GsonDecoder(new GsonBuilder().serializeNulls().create()));
-        return hystrixBuilder.target(FeignClientDefination.class, "http://127.0.0.1:8080",
-                new FeignClientDefination.FactoryFallback(fallback.getIfAvailable()));
-    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -82,64 +65,48 @@ public class FeignAutoConfiguration {
         return new RetryFeignCustomizer(properties.getRetryNum());
     }
 
-    @Bean
-    @ConditionalOnClass(name = "feign.httpclient.ApacheHttpClient")
+    /**
+     * ApacheHttpClient configuration.
+     */
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(ApacheHttpClient.class)
     @ConditionalOnMissingClass("feign.okhttp.OkHttpClient")
-    public FeignCustomizer apacheHttpClientFeignCustomizer(ApacheHttpClientWrapper apacheHttpClientWrapper) {
-        return new ApacheHttpClientFeignCustomizer(apacheHttpClientWrapper);
-    }
+    static class ApacheHttpClientConfigure {
 
-    @Bean
-    @ConditionalOnClass(name = "feign.okhttp.OkHttpClient")
-    public FeignCustomizer okHttp3ClientFeignCustomizer(OkHttp3ClientWrapper okHttp3ClientWrapper) {
-        return new OkHttp3ClientFeignCustomizer(okHttp3ClientWrapper);
-    }
-
-    private HystrixFeign.Builder hystrixBuilder () {
-        return HystrixFeign.builder().setterFactory((target, method) -> {
-            final String groupKey = httpClientProperties.getHystrix().getGroupKey();
-            final String commandKey = httpClientProperties.getHystrix().getCommandKey();
-            return HystrixCommand.Setter
-                    .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
-                    .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
-        });
-    }
-
-    private Feign.Builder builder(Feign.Builder builder, List<FeignCustomizer> customizers) {
-        final Logger logger;
-        final Logger.Level loggerLevel;
-        switch (httpClientProperties.getLoggerType()) {
-            case CONSOLE:
-                logger = new Logger.ErrorLogger();
-                break;
-            case SLF4J:
-                logger = new Slf4jLogger();
-                break;
-            default:
-                logger = new Logger.NoOpLogger();
+        @Bean
+        public FeignCustomizer apacheHttpClientFeignCustomizer(ObjectProvider<ApacheHttpClientWrapper> apacheHttpClientWrapperIf) {
+            return new ApacheHttpClientFeignCustomizer(apacheHttpClientWrapperIf.getIfUnique());
         }
 
-        switch (httpClientProperties.getFeignLoggerLevel()) {
-            case BASIC:
-                loggerLevel = Logger.Level.BASIC;
-                break;
-            case HEADERS:
-                loggerLevel = Logger.Level.HEADERS;
-                break;
-            case FULL:
-                loggerLevel = Logger.Level.FULL;
-                break;
-            default:
-                loggerLevel = Logger.Level.NONE;
+    }
+
+    /**
+     * OkHttpClient configuration.
+     */
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(OkHttpClient.class)
+    static class OkHttpClientConfigure {
+
+        @Bean
+        @ConditionalOnClass(name = "feign.okhttp.OkHttpClient")
+        public FeignCustomizer okHttp3ClientFeignCustomizer(ObjectProvider<OkHttp3ClientWrapper> okHttp3ClientWrapperIf) {
+            return new OkHttp3ClientFeignCustomizer(okHttp3ClientWrapperIf.getIfUnique());
         }
 
-        final Feign.Builder custom = builder
-                .logLevel(loggerLevel)
-                .logger(logger);
+    }
 
-        customizers.forEach(customizer -> customizer.customize(builder));
+    /**
+     * OkHttpClient configuration.
+     */
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(Slf4jLogger.class)
+    static class Slf4jLoggerConfigure {
 
-        return custom;
+        @Bean
+        public FeignCustomizer okHttp3ClientFeignCustomizer(HttpClientProperties properties) {
+            return new Slf4jLoggerCustomizer(properties.getLoggerType());
+        }
+
     }
 
     static class RetryFeignCustomizer implements FeignCustomizer {
@@ -154,6 +121,23 @@ public class FeignAutoConfiguration {
         public void customize(Feign.Builder builder) {
             builder.retryer(new Retryer.Default(100, SECONDS.toMillis(1), retryNum));
         }
+    }
+
+    static class Slf4jLoggerCustomizer implements FeignCustomizer {
+
+        private LoggerType loggerType;
+
+        public Slf4jLoggerCustomizer(LoggerType loggerType) {
+            this.loggerType = loggerType;
+        }
+
+        @Override
+        public void customize(Feign.Builder builder) {
+            if (loggerType == LoggerType.SLF4J) {
+                builder.logger(new Slf4jLogger());
+            }
+        }
+
     }
 
     static class ApacheHttpClientFeignCustomizer implements FeignCustomizer {

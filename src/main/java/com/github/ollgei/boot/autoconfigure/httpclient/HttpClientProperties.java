@@ -34,17 +34,17 @@ public class HttpClientProperties {
 
     private int retryNum = 3;
 
-    private FeignLoggerLevel feignLoggerLevel;
+    private FeignLoggerLevel feignLoggerLevel = FeignLoggerLevel.NONE;
 
-    private LoggerType loggerType;
+    private LoggerType loggerType = LoggerType.NOOP;
 
-    private Hystrix hystrix;
+    private Hystrix hystrix = new Hystrix();
 
     @Data
     public static class Hystrix {
-        private String groupKey;
+        private String groupKey = "default";
 
-        private String commandKey;
+        private String commandKey = "default";
     }
 
 }
