@@ -52,11 +52,11 @@ class HystrixFeignConfiguration {
                 encoder(new GsonEncoder()).
                 decoder(new GsonDecoder(new GsonBuilder().serializeNulls().create()));
         return hystrixBuilder.target(FeignClientDefination.class, "http://127.0.0.1:8080",
-                new FactoryFallback(fallback.getIfAvailable()));
+                new FeignClientFactoryFallback(fallback.getIfAvailable()));
     }
 
     @Slf4j
-    static class Fallback implements FeignClientDefination {
+    static class FeignClientFallback implements FeignClientDefination {
 
         @Override
         public Response post(URI uri, Map<String, String> headerMap, JsonElement body) {
@@ -136,16 +136,16 @@ class HystrixFeignConfiguration {
     }
 
     @Slf4j
-    static class FactoryFallback implements FallbackFactory<FeignClientDefination> {
+    static class FeignClientFactoryFallback implements FallbackFactory<FeignClientDefination> {
 
         private FeignClientDefination fallback;
 
-        public FactoryFallback() {
-            this(new Fallback());
+        public FeignClientFactoryFallback() {
+            this(new FeignClientFallback());
         }
 
-        public FactoryFallback(FeignClientDefination defination) {
-            this.fallback = defination == null ? new Fallback() : defination;
+        public FeignClientFactoryFallback(FeignClientDefination defination) {
+            this.fallback = defination == null ? new FeignClientFallback() : defination;
         }
 
         @Override
