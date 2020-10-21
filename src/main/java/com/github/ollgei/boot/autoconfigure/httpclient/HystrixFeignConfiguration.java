@@ -56,7 +56,7 @@ class HystrixFeignConfiguration {
     }
 
     @Slf4j
-    final class Fallback implements FeignClientDefination {
+    static class Fallback implements FeignClientDefination {
 
         @Override
         public Response post(URI uri, Map<String, String> headerMap, JsonElement body) {
@@ -136,7 +136,7 @@ class HystrixFeignConfiguration {
     }
 
     @Slf4j
-    final class FactoryFallback implements FallbackFactory<FeignClientDefination> {
+    static class FactoryFallback implements FallbackFactory<FeignClientDefination> {
 
         private FeignClientDefination fallback;
 
