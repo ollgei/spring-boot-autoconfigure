@@ -6,9 +6,11 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.github.ollgei.base.commonj.enums.HttpMethod;
 import com.github.ollgei.base.commonj.gson.Gson;
 import com.github.ollgei.base.commonj.gson.GsonBuilder;
 import com.github.ollgei.base.commonj.gson.JsonElement;
+import com.github.ollgei.base.commonj.model.UriWithMethod;
 import com.github.ollgei.base.commonj.utils.CommonHelper;
 import feign.Response;
 
@@ -147,8 +149,55 @@ public class FeignClientManager {
         return get(uri, Collections.emptyMap());
     }
 
+    public Response get(URI uri) {
+        return get(uri, Collections.emptyMap());
+    }
+
     public Response post(String uri, Object body) {
         return post(uri, Collections.emptyMap(), body);
+    }
+
+    public Response post(URI uri, Object body) {
+        return post(uri, Collections.emptyMap(), body);
+    }
+
+    public Response request(UriWithMethod uriWithMethod, Map<String, String> headerMap, Object body) {
+        if (uriWithMethod.getMethod() == HttpMethod.GET) {
+            return get(uriWithMethod.getUri(), headerMap);
+        } else if (uriWithMethod.getMethod() == HttpMethod.POST) {
+            return post(uriWithMethod.getUri(), headerMap, body);
+        }
+        return null;
+    }
+
+    public Response request(UriWithMethod uriWithMethod, Object body) {
+        return request(uriWithMethod, Collections.EMPTY_MAP, body);
+    }
+
+    public JsonElement requestForJson(UriWithMethod uriWithMethod, Map<String, String> headerMap, Object body) {
+        if (uriWithMethod.getMethod() == HttpMethod.GET) {
+            return getForJson(uriWithMethod.getUri(), headerMap);
+        } else if (uriWithMethod.getMethod() == HttpMethod.POST) {
+            return postForJson(uriWithMethod.getUri(), headerMap, body);
+        }
+        return null;
+    }
+
+    public JsonElement requestForJson(UriWithMethod uriWithMethod, Object body) {
+        return requestForJson(uriWithMethod, Collections.EMPTY_MAP, body);
+    }
+
+    public String requestForText(UriWithMethod uriWithMethod, Map<String, String> headerMap, Object body) {
+        if (uriWithMethod.getMethod() == HttpMethod.GET) {
+            return getForText(uriWithMethod.getUri(), headerMap);
+        } else if (uriWithMethod.getMethod() == HttpMethod.POST) {
+            return postForText(uriWithMethod.getUri(), headerMap, body);
+        }
+        return null;
+    }
+
+    public String requestForText(UriWithMethod uriWithMethod, Object body) {
+        return requestForText(uriWithMethod, Collections.EMPTY_MAP, body);
     }
 
     @Autowired
