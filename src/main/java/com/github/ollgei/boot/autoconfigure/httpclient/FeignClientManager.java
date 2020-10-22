@@ -176,6 +176,10 @@ public class FeignClientManager {
         return request(uriWithMethod, Collections.EMPTY_MAP, body);
     }
 
+    public Response request(UriWithMethod uriWithMethod) {
+        return get(uriWithMethod.getUri());
+    }
+
     public JsonElement requestForJson(UriWithMethod uriWithMethod, Map<String, String> headerMap, Object body) {
         if (uriWithMethod.getMethod() == HttpMethod.GET) {
             return getForJson(uriWithMethod.getUri(), headerMap);
@@ -189,6 +193,10 @@ public class FeignClientManager {
         return requestForJson(uriWithMethod, Collections.EMPTY_MAP, body);
     }
 
+    public JsonElement requestForJson(UriWithMethod uriWithMethod) {
+        return getForJson(uriWithMethod.getUri());
+    }
+
     public String requestForText(UriWithMethod uriWithMethod, Map<String, String> headerMap, Object body) {
         if (uriWithMethod.getMethod() == HttpMethod.GET) {
             return getForText(uriWithMethod.getUri(), headerMap);
@@ -200,6 +208,10 @@ public class FeignClientManager {
 
     public String requestForText(UriWithMethod uriWithMethod, Object body) {
         return requestForText(uriWithMethod, Collections.EMPTY_MAP, body);
+    }
+
+    public String requestForText(UriWithMethod uriWithMethod) {
+        return getForText(uriWithMethod.getUri());
     }
 
     @Autowired
