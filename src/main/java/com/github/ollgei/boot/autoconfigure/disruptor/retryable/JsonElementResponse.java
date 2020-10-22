@@ -6,12 +6,16 @@ import com.github.ollgei.base.commonj.gson.JsonArray;
 import com.github.ollgei.base.commonj.gson.JsonElement;
 import com.github.ollgei.base.commonj.gson.JsonNull;
 import com.github.ollgei.base.commonj.gson.JsonObject;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * desc.
  * @author ollgei
  * @since 1.0
  */
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class JsonElementResponse extends RetryableDownstreamResponse {
 
     private JsonElement element;
@@ -182,20 +186,5 @@ public class JsonElementResponse extends RetryableDownstreamResponse {
             }
         }
         return false;
-    }
-
-    @Override
-    public String toString() {
-        return element.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return element.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return element.hashCode();
     }
 }
