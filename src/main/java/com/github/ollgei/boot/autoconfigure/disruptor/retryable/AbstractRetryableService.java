@@ -163,10 +163,10 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         model.setRetryCount(0);
         model.setNextRetryTimestamp(0L);
         if (canBinary()) {
-            ((RetryableBytesModel) model).setParams(serializationManager.serializeNativeObject(context.getData()));
+            ((RetryableBytesModel) model).setParams(serializationManager.serializeNativeObject(context.getParams()));
             retryableBytesRepository.save(context, (RetryableBytesModel) model);
         } else {
-            ((RetryableObjectModel) model).setParams(context.getData());
+            ((RetryableObjectModel) model).setParams(context.getParams());
             retryableObjectRepository.save(context, (RetryableObjectModel) model);
         }
     }
@@ -192,12 +192,12 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         check();
         final RetryableModel model = createRetryableModel();
         model.setState(state);
-        if (Objects.nonNull(context.getResponseData())) {
+        if (Objects.nonNull(context.getResponse())) {
             if (canBinary()) {
                 ((RetryableBytesModel) model).setResponse(serializationManager.serializeObject(
-                        SerializationObject.builder().object(context.getResponseData()).build()));
+                        SerializationObject.builder().object(context.getResponse()).build()));
             } else {
-                ((RetryableObjectModel) model).setResponse(context.getResponseData());
+                ((RetryableObjectModel) model).setResponse(context.getResponse());
             }
         }
         if (Objects.nonNull(uResponse)) {
@@ -241,12 +241,12 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             if (bytesModel.getParams() != null) {
                 model.setParams(
                         serializationManager.deserializeObject(bytesModel.getParams(),
-                                context.getData().getClass()));
+                                context.getParams().getClass()));
             }
             if (bytesModel.getResponse() != null) {
                 model.setResponse(
                         serializationManager.deserializeObject(bytesModel.getResponse(),
-                                context.getResponseData().getClass()));
+                                context.getResponse().getClass()));
             }
             if (bytesModel.getMidstreamResponse() != null) {
                 model.setMidstreamResponse(

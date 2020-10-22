@@ -27,16 +27,16 @@ public class RetryableContext extends OllgeiDisruptorContext {
     /**request IP*/
     private String requestIp;
     /**data*/
-    private Object data;
+    private Object params;
     /**data*/
-    private Object responseData;
+    private Object response;
 
-    public <T> T resolveData() {
-       return (T) data;
+    public <T> T resolveParams() {
+       return (T) params;
     }
 
-    public <T> T resolveResponseData() {
-        return (T) responseData;
+    public <T> T resolveResponse() {
+        return (T) response;
     }
 
 }
