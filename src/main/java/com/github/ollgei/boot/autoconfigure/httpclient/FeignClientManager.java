@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.ollgei.base.commonj.enums.HttpMethod;
+import com.github.ollgei.base.commonj.errors.ErrorCodeEnum;
+import com.github.ollgei.base.commonj.errors.ErrorException;
 import com.github.ollgei.base.commonj.gson.Gson;
 import com.github.ollgei.base.commonj.gson.GsonBuilder;
 import com.github.ollgei.base.commonj.gson.JsonElement;
@@ -167,7 +169,7 @@ public class FeignClientManager {
         } else if (uriWithMethod.getMethod() == HttpMethod.POST) {
             return post(uriWithMethod.getUri(), headerMap, body);
         }
-        return null;
+        throw new ErrorException(ErrorCodeEnum.ILLEGAL_HTTP_METHOD);
     }
 
     public Response request(UriWithMethod uriWithMethod, Object body) {
@@ -180,7 +182,7 @@ public class FeignClientManager {
         } else if (uriWithMethod.getMethod() == HttpMethod.POST) {
             return postForJson(uriWithMethod.getUri(), headerMap, body);
         }
-        return null;
+        throw new ErrorException(ErrorCodeEnum.ILLEGAL_HTTP_METHOD);
     }
 
     public JsonElement requestForJson(UriWithMethod uriWithMethod, Object body) {
@@ -193,7 +195,7 @@ public class FeignClientManager {
         } else if (uriWithMethod.getMethod() == HttpMethod.POST) {
             return postForText(uriWithMethod.getUri(), headerMap, body);
         }
-        return null;
+        throw new ErrorException(ErrorCodeEnum.ILLEGAL_HTTP_METHOD);
     }
 
     public String requestForText(UriWithMethod uriWithMethod, Object body) {
