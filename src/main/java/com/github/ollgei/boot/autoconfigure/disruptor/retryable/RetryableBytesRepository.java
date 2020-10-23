@@ -20,7 +20,7 @@ public interface RetryableBytesRepository extends RetryableRepository {
      * @param model model
      * @return
      */
-    void persit(RetryableContext context, RetryableBytesModel model, int state);
+    void manual(RetryableContext context, RetryableBytesModel model, int state);
 
     /**
      * desc.

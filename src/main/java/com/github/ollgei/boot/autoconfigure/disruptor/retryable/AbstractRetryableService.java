@@ -177,9 +177,9 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         final int retryCount = oriModel.getRetryCount();
         if (retryCount > ollgeiDisruptorProperties.getRetryable().getMaxAttempts()) {
             if (canBinary()) {
-                retryableBytesRepository.persit(context, (RetryableBytesModel) oriModel, state);
+                retryableBytesRepository.manual(context, (RetryableBytesModel) oriModel, state);
             } else {
-                retryableObjectRepository.persit(context, (RetryableObjectModel) oriModel, state);
+                retryableObjectRepository.manual(context, (RetryableObjectModel) oriModel, state);
             }
             return;
         }
