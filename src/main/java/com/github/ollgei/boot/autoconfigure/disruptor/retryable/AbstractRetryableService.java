@@ -181,6 +181,8 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             } else {
                 retryableObjectRepository.manual(context, (RetryableObjectModel) oriModel, state);
             }
+            //清理数据
+            cleanup(context);
             return;
         }
         final RetryableModel model = createRetryableModel();
