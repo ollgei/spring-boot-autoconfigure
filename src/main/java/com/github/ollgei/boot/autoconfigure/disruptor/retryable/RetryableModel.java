@@ -13,7 +13,7 @@ public class RetryableModel {
     /**
      * 业务类型
      */
-    private String bizKind;
+    private String kind;
 
     /**
      * 应用ID
@@ -21,14 +21,14 @@ public class RetryableModel {
     private String appId;
 
     /**
-     * 业务ID
+     * TAG
      */
-    private String bizId;
+    private String tag;
 
     /**
      * 序列号.
      */
-    private Short bizSeqNo;
+    private Short seqNo;
 
     /**
      * 状态: 0 未开始 第1位 本地调用 第2位 上游调用 第三位 下游调用

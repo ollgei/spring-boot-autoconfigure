@@ -95,9 +95,9 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
     default String buildKey(RetryableContext context) {
         StringJoiner joiner = new StringJoiner(":");
         joiner.add(context.getAppId());
-        joiner.add(context.getBizKind());
-        joiner.add(context.getBizId());
-        joiner.add(String.valueOf(context.getBizSeqNo()));
+        joiner.add(context.getKind());
+        joiner.add(context.getTag());
+        joiner.add(String.valueOf(context.getSeqNo()));
         return joiner.toString();
     }
 

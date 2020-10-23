@@ -1,7 +1,5 @@
 package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
-import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,33 +8,43 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-@Builder
-public class RetryableContext extends OllgeiDisruptorContext {
+public abstract class RetryableContext {
 
     /**APP ID*/
     private String appId;
     /**kind*/
-    private String bizKind;
-    /**BIZ ID:subID*/
-    private String bizId;
-    /**BIZ seq NO*/
-    @Builder.Default
-    private Integer bizSeqNo = 0;
+    private String kind;
+    /**tag*/
+    private String tag;
+    /**seqNo*/
+    private Integer seqNo;
     /**upstream channel*/
     private String channel;
     /**request IP*/
     private String requestIp;
-    /**data*/
-    private Object params;
-    /**data*/
-    private Object response;
 
-    public <T> T resolveParams() {
-       return (T) params;
+    public RetryableContext() {
+        this.seqNo = 0;
     }
-
-    public <T> T resolveResponse() {
-        return (T) response;
-    }
+    /**
+     * desc.
+     * @return params
+     */
+    public abstract Object resolveParams();
+    /**
+     * desc.
+     * @return params type
+     */
+    public abstract Class<?> resolveParamsType();
+    /**
+     * desc.
+     * @return response
+     */
+    public abstract Object resolveResponse();
+    /**
+     * desc.
+     * @return response type
+     */
+    public abstract Class<?> resolveResponseType();
 
 }

@@ -3,7 +3,6 @@ package com.github.ollgei.boot.autoconfigure.disruptor.spring;
 import java.util.concurrent.CountDownLatch;
 
 import com.github.ollgei.boot.autoconfigure.disruptor.core.AbstractSubscription;
-import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorContext;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
 import lombok.ToString;
 
@@ -18,7 +17,7 @@ public class SpringOllgeiDisruptorSubscription extends AbstractSubscription {
     /**类型*/
     private Class<? extends OllgeiDisruptorService> clazz;
     /**上下文数据*/
-    private OllgeiDisruptorContext context;
+    private Object context;
     /**CountDownLatch*/
     private CountDownLatch countDownLatch;
 
@@ -30,11 +29,11 @@ public class SpringOllgeiDisruptorSubscription extends AbstractSubscription {
         this.clazz = clazz;
     }
 
-    public OllgeiDisruptorContext getContext() {
+    public Object getContext() {
         return context;
     }
 
-    public void setContext(OllgeiDisruptorContext context) {
+    public void setContext(Object context) {
         this.context = context;
     }
 

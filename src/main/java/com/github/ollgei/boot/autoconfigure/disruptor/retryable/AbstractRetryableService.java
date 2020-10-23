@@ -156,17 +156,17 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             context.setAppId(ollgeiProperties.getAppId());
         }
         model.setAppId(context.getAppId());
-        model.setBizKind(context.getBizKind());
-        model.setBizId(context.getBizId());
-        model.setBizSeqNo(context.getBizSeqNo().shortValue());
+        model.setKind(context.getKind());
+        model.setTag(context.getTag());
+        model.setSeqNo(context.getSeqNo().shortValue());
         model.setState(RetryableStateEnum.INIT.getCode());
         model.setRetryCount(0);
         model.setNextRetryTimestamp(0L);
         if (canBinary()) {
-            ((RetryableBytesModel) model).setParams(serializationManager.serializeNativeObject(context.getParams()));
+            ((RetryableBytesModel) model).setParams(serializationManager.serializeNativeObject(context.resolveParams()));
             retryableBytesRepository.save(context, (RetryableBytesModel) model);
         } else {
-            ((RetryableObjectModel) model).setParams(context.getParams());
+            ((RetryableObjectModel) model).setParams(context.resolveParams());
             retryableObjectRepository.save(context, (RetryableObjectModel) model);
         }
     }
@@ -202,12 +202,12 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         check();
         final RetryableModel model = createRetryableModel();
         model.setState(state);
-        if (Objects.nonNull(context.getResponse())) {
+        if (Objects.nonNull(context.resolveResponse())) {
             if (canBinary()) {
                 ((RetryableBytesModel) model).setResponse(serializationManager.serializeObject(
-                        SerializationObject.builder().object(context.getResponse()).build()));
+                        SerializationObject.builder().object(context.resolveResponse()).build()));
             } else {
-                ((RetryableObjectModel) model).setResponse(context.getResponse());
+                ((RetryableObjectModel) model).setResponse(context.resolveResponse());
             }
         }
         if (Objects.nonNull(uResponse)) {
@@ -251,12 +251,12 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             if (bytesModel.getParams() != null) {
                 model.setParams(
                         serializationManager.deserializeObject(bytesModel.getParams(),
-                                context.getParams().getClass()));
+                                context.resolveParamsType()));
             }
             if (bytesModel.getResponse() != null) {
                 model.setResponse(
                         serializationManager.deserializeObject(bytesModel.getResponse(),
-                                context.getResponse().getClass()));
+                                context.resolveResponseType()));
             }
             if (bytesModel.getMidstreamResponse() != null) {
                 model.setMidstreamResponse(
@@ -275,10 +275,10 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             }
 
 
-            model.setBizKind(oldModel.getBizKind());
+            model.setKind(oldModel.getKind());
             model.setAppId(oldModel.getAppId());
-            model.setBizId(oldModel.getBizId());
-            model.setBizSeqNo(oldModel.getBizSeqNo());
+            model.setTag(oldModel.getTag());
+            model.setSeqNo(oldModel.getSeqNo());
             model.setState(oldModel.getState());
             model.setRetryCount(oldModel.getRetryCount());
             model.setNextRetryTimestamp(oldModel.getNextRetryTimestamp());

@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
  * @author ollgei
  * @since 1.0.0
  */
-public class OllgeiDisruptorNoopService implements OllgeiDisruptorService {
+public class OllgeiDisruptorNoopService implements OllgeiDisruptorService<OllgeiDisruptorContext> {
 
     @Override
     public void publish(OllgeiDisruptorContext context, CountDownLatch countDownLatch) {

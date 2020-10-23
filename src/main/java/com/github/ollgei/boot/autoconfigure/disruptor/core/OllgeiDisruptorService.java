@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
  * @author ollgei
  * @since 1.0.0
  */
-public interface OllgeiDisruptorService<C extends OllgeiDisruptorContext> {
+public interface OllgeiDisruptorService<C> {
     /**
      * 初始化.
      * @param context context
