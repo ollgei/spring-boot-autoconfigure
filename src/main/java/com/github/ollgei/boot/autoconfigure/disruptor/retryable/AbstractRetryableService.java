@@ -97,7 +97,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             } else if (uResponse.getResult() == RetryableResultEnum.NOOP) {
                 state = state | RetryableStateEnum.UPSTREAM_SUCCESS.getCode();
             } else {
-                writeFailState(context, state & RetryableStateEnum.UPSTREAM_FAIL.getCode(), model.getRetryCount());
+                writeFailState(context, model, state & RetryableStateEnum.UPSTREAM_FAIL.getCode());
                 return;
             }
         } else {
@@ -115,7 +115,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             } else if (mResponse.getResult() == RetryableResultEnum.NOOP) {
                 state = state | RetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
             } else {
-                writeFailState(context, state & RetryableStateEnum.MIDSTREAM_FAIL.getCode(), model.getRetryCount());
+                writeFailState(context, model, state & RetryableStateEnum.MIDSTREAM_FAIL.getCode());
                 return;
             }
         } else {
@@ -136,7 +136,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             } else if (dResponse.getResult() == RetryableResultEnum.NOOP) {
                 state = state | RetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
             } else {
-                writeFailState(context, state & RetryableStateEnum.DOWNSTREAM_FAIL.getCode(), model.getRetryCount());
+                writeFailState(context, model, state & RetryableStateEnum.DOWNSTREAM_FAIL.getCode());
                 return;
             }
         }
@@ -171,8 +171,18 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         }
     }
 
-    private void writeFailState(RetryableContext context, int state, int retryCount) {
+    private void writeFailState(RetryableContext context, RetryableModel oriModel, int state) {
         check();
+        //最后一次还是失败
+        final int retryCount = oriModel.getRetryCount();
+        if (retryCount > ollgeiDisruptorProperties.getRetryable().getMaxAttempts()) {
+            if (canBinary()) {
+                retryableBytesRepository.persit(context, (RetryableBytesModel) oriModel, state);
+            } else {
+                retryableObjectRepository.persit(context, (RetryableObjectModel) oriModel, state);
+            }
+            return;
+        }
         final RetryableModel model = createRetryableModel();
         model.setState(state);
         model.setNextRetryIncrTimestamp(getNextDelay());

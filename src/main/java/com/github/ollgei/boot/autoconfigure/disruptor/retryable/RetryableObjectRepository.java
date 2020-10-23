@@ -20,6 +20,14 @@ public interface RetryableObjectRepository extends RetryableRepository {
      * @param model model
      * @return
      */
+    void persit(RetryableContext context, RetryableObjectModel model, int state);
+
+    /**
+     * desc.
+     * @param context context
+     * @param model model
+     * @return
+     */
     void update(RetryableContext context, RetryableObjectModel model);
 
     /**
