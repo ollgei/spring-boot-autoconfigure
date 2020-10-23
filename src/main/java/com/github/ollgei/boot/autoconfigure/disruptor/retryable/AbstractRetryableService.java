@@ -97,7 +97,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             } else if (uResponse.getResult() == RetryableResultEnum.NOOP) {
                 state = state | RetryableStateEnum.UPSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state & RetryableStateEnum.UPSTREAM_FAIL.getCode());
+                writeFailState(context, state & RetryableStateEnum.UPSTREAM_FAIL.getCode(), model.getRetryCount());
                 return;
             }
         } else {
@@ -115,7 +115,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             } else if (mResponse.getResult() == RetryableResultEnum.NOOP) {
                 state = state | RetryableStateEnum.MIDSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state & RetryableStateEnum.MIDSTREAM_FAIL.getCode());
+                writeFailState(context, state & RetryableStateEnum.MIDSTREAM_FAIL.getCode(), model.getRetryCount());
                 return;
             }
         } else {
@@ -136,7 +136,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
             } else if (dResponse.getResult() == RetryableResultEnum.NOOP) {
                 state = state | RetryableStateEnum.DOWNSTREAM_SUCCESS.getCode();
             } else {
-                writeState(context, state & RetryableStateEnum.DOWNSTREAM_FAIL.getCode());
+                writeFailState(context, state & RetryableStateEnum.DOWNSTREAM_FAIL.getCode(), model.getRetryCount());
                 return;
             }
         }
@@ -171,15 +171,13 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         }
     }
 
-    @Override
-    public void writeState(RetryableContext context, int state, boolean success) {
+    private void writeFailState(RetryableContext context, int state, int retryCount) {
         check();
         final RetryableModel model = createRetryableModel();
         model.setState(state);
-        if (!success) {
-            model.setNextRetryIncrTimestamp(getNextDelay());
-            model.setRetryIncrCount(1);
-        }
+        model.setNextRetryIncrTimestamp(getNextDelay());
+        model.setRetryIncrCount(1);
+        model.setRetryCount(retryCount + 1);
         if (canBinary()) {
             retryableBytesRepository.update(context, (RetryableBytesModel) model);
         } else {

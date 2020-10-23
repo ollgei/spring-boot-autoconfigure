@@ -29,22 +29,7 @@ public interface RetryableService<T extends RetryableUpstreamResponse, U extends
      */
     S downstream(RetryableContext context, T uResponse, U mResponse);
 
-    /**
-     * 更新状态.
-     * @param context object
-     * @param state 新状态
-     */
-    default void writeState(RetryableContext context, int state) {
-        writeState(context, state, false);
-    }
 
-    /**
-     * 更新状态.
-     * @param context object
-     * @param state 新状态
-     * @param success 是否成功
-     */
-    void writeState(RetryableContext context, int state, boolean success);
     /**
      * 更新upstream状态.
      * @param context object
