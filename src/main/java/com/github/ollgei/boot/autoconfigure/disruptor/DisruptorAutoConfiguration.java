@@ -17,13 +17,13 @@
 package com.github.ollgei.boot.autoconfigure.disruptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import com.github.ollgei.boot.autoconfigure.disruptor.core.AbstractSubscription;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
 import com.lmax.disruptor.dsl.Disruptor;
@@ -49,6 +49,7 @@ public class DisruptorAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(OllgeiDisruptorSubscriber.class)
     public OllgeiDisruptorPublisher ollgeiDisruptorPublisher(OllgeiDisruptorSubscriber subscriber) {
         return OllgeiDisruptorPublisher.builder()
                         .setBufferSize(properties.getBufferSize())
@@ -59,23 +60,5 @@ public class DisruptorAutoConfiguration {
                         .setProducerType(properties.isMulti() ?
                                 ProducerType.MULTI : ProducerType.SINGLE)
                         .build();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public OllgeiDisruptorSubscriber retryableSubscriber() {
-        return new DefaultSubscriber();
-    }
-
-    static class DefaultSubscription extends AbstractSubscription {
-
-    }
-
-    static class DefaultSubscriber implements OllgeiDisruptorSubscriber<DefaultSubscription> {
-
-        @Override
-        public void onNext(DefaultSubscription subscription) {
-
-        }
     }
 }

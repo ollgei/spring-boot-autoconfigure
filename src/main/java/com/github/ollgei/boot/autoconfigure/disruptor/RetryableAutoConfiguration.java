@@ -16,12 +16,14 @@
 
 package com.github.ollgei.boot.autoconfigure.disruptor;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryablePublisher;
+import com.lmax.disruptor.dsl.Disruptor;
 
 /**
  * boot-parent.
@@ -31,6 +33,7 @@ import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryablePublish
  */
 @ConditionalOnProperty(prefix = "ollgei.retryable", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties(RetryableProperties.class)
+@ConditionalOnClass(Disruptor.class)
 public class RetryableAutoConfiguration {
 
     @Bean

@@ -25,6 +25,12 @@
       "defaultValue": false
     },
     {
+      "name": "ollgei.retryable.enabled",
+      "type": "java.lang.Boolean",
+      "description": "enable disruptor retryable.",
+      "defaultValue": false
+    },
+    {
       "name": "ollgei.fastree.jdbctemplate.enabled",
       "type": "java.lang.Boolean",
       "description": "enable segment.",
