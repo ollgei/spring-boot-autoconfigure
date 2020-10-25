@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.disruptor.spring;
+package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -13,7 +13,7 @@ import lombok.ToString;
  * @since 1.0.0
  */
 @ToString(callSuper = true)
-public class SpringOllgeiDisruptorSubscription extends AbstractSubscription {
+public class RetryableSubscription extends AbstractSubscription {
     /**类型*/
     private Class<? extends OllgeiDisruptorService> clazz;
     /**上下文数据*/

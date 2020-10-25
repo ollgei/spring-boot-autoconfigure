@@ -5,7 +5,7 @@ package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
  * @author ollgei
  * @since 1.0
  */
-interface RetryableRepository {
+public interface RetryableRepository {
 
     /**
      * desc.

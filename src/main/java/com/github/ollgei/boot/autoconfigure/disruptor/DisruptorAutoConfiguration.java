@@ -23,11 +23,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import com.github.ollgei.boot.autoconfigure.disruptor.core.AbstractSubscription;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
-import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorNoopService;
-import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
-import com.github.ollgei.boot.autoconfigure.disruptor.spring.SpringOllgeiDisruptorSubscriber;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -38,14 +36,14 @@ import com.lmax.disruptor.dsl.ProducerType;
  * @since 1.0.0
  */
 @ConditionalOnProperty(prefix = "ollgei.disruptor", name = "enabled", havingValue = "true")
-@EnableConfigurationProperties(OllgeiDisruptorProperties.class)
+@EnableConfigurationProperties(DisruptorProperties.class)
 @ConditionalOnClass(Disruptor.class)
-public class OllgeiDisruptorAutoConfiguration {
+public class DisruptorAutoConfiguration {
 
-    private final OllgeiDisruptorProperties properties;
+    private final DisruptorProperties properties;
 
     @Autowired
-    public OllgeiDisruptorAutoConfiguration(OllgeiDisruptorProperties properties) {
+    public DisruptorAutoConfiguration(DisruptorProperties properties) {
         this.properties = properties;
     }
 
@@ -63,20 +61,21 @@ public class OllgeiDisruptorAutoConfiguration {
                         .build();
     }
 
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public RetryableObjectCache retryableObjectCache() {
-//        return new DefaultRetryableObjectCache();
-//    }
-
-    @Bean
-    public OllgeiDisruptorService ollgeiDisruptorNoopService() {
-        return new OllgeiDisruptorNoopService();
-    }
-
     @Bean
     @ConditionalOnMissingBean
-    public OllgeiDisruptorSubscriber ollgeiDisruptorSubscriber() {
-        return new SpringOllgeiDisruptorSubscriber(properties.isSafeMode());
+    public OllgeiDisruptorSubscriber retryableSubscriber() {
+        return new DefaultSubscriber();
+    }
+
+    static class DefaultSubscription extends AbstractSubscription {
+
+    }
+
+    static class DefaultSubscriber implements OllgeiDisruptorSubscriber<DefaultSubscription> {
+
+        @Override
+        public void onNext(DefaultSubscription subscription) {
+
+        }
     }
 }

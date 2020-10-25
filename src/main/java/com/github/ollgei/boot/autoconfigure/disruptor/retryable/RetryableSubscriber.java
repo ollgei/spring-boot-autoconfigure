@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.disruptor.spring;
+package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -12,18 +12,18 @@ import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorServic
  * @author ollgei
  * @since 1.0.0
  */
-public class SpringOllgeiDisruptorSubscriber implements OllgeiDisruptorSubscriber<SpringOllgeiDisruptorSubscription>, ApplicationContextAware {
+public class RetryableSubscriber implements OllgeiDisruptorSubscriber<RetryableSubscription>, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
     private boolean safeMode;
 
-    public SpringOllgeiDisruptorSubscriber(boolean safeMode) {
+    public RetryableSubscriber(boolean safeMode) {
         this.safeMode = safeMode;
     }
 
     @Override
-    public void onNext(SpringOllgeiDisruptorSubscription subscription) {
+    public void onNext(RetryableSubscription subscription) {
         final OllgeiDisruptorService service = applicationContext.getBean(subscription.getClazz());
         if (safeMode) {
             service.safeRead(subscription.getContext(), subscription.getCountDownLatch());

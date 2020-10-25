@@ -18,55 +18,14 @@ package com.github.ollgei.boot.autoconfigure.disruptor;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Data;
-
 /**
  * OllgeiDisruptorProperties.
  *
  * @author jiawei
  * @since 1.0.0
  */
-@ConfigurationProperties(prefix = OllgeiDisruptorProperties.DISRUPTOR_PREFIX)
-@Data
-public class OllgeiDisruptorProperties {
+@ConfigurationProperties(prefix = DisruptorProperties.DISRUPTOR_PREFIX)
+public class DisruptorProperties extends DisruptorConfigurationProperties {
 
     public static final String DISRUPTOR_PREFIX = "ollgei.disruptor";
-
-    private int bufferSize = 4096;
-
-    private int subscriberSize = 16;
-
-    private boolean multi = true;
-
-    private boolean globalQueue = true;
-
-    private boolean safeMode = true;
-
-    private String subscriberName = "ollgei";
-
-    private Retryable retryable = new Retryable();
-
-    @Data
-    public static final class Retryable {
-        /**
-         * delay(seconds).
-         */
-        private Integer delay = 10;
-
-        /**
-         * multiplier.
-         */
-        private Double multiplier = 1.0d;
-
-        /**
-         * maxAttempts.
-         */
-        private Integer maxAttempts = 5;
-
-        /**
-         * batchSize.
-         */
-        private Integer batchSize = 80;
-    }
-
 }

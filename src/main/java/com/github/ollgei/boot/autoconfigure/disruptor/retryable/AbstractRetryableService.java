@@ -9,12 +9,11 @@ import org.springframework.util.Assert;
 
 import com.github.ollgei.base.commonj.utils.CommonHelper;
 import com.github.ollgei.boot.autoconfigure.core.OllgeiProperties;
-import com.github.ollgei.boot.autoconfigure.disruptor.OllgeiDisruptorProperties;
+import com.github.ollgei.boot.autoconfigure.disruptor.RetryableProperties;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
-import com.github.ollgei.boot.autoconfigure.disruptor.spring.SpringOllgeiDisruptorSubscription;
+import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
 import com.github.ollgei.boot.autoconfigure.serialization.SerializationManager;
 import com.github.ollgei.boot.autoconfigure.serialization.SerializationObject;
-import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -35,7 +34,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
     private SerializationManager serializationManager;
 
-    private OllgeiDisruptorProperties ollgeiDisruptorProperties;
+    private RetryableProperties retryableProperties;
 
     private OllgeiProperties ollgeiProperties;
 
@@ -43,7 +42,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
     public void publish(RetryableContext context, CountDownLatch countDownLatch) {
         check();
         Assert.notNull(publisher, "OllgeiDisruptorPublisher not null!");
-        final SpringOllgeiDisruptorSubscription subscription = new SpringOllgeiDisruptorSubscription();
+        final RetryableSubscription subscription = new RetryableSubscription();
         subscription.setContext(context);
         Optional.ofNullable(countDownLatch).ifPresent(l -> subscription.setCountDownLatch(l));
         subscription.setClazz(this.getClass());
@@ -175,7 +174,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         check();
         //最后一次还是失败
         final int retryCount = oriModel.getRetryCount();
-        if (retryCount > ollgeiDisruptorProperties.getRetryable().getMaxAttempts()) {
+        if (retryCount > retryableProperties.getMaxAttempts()) {
             if (canBinary()) {
                 retryableBytesRepository.manual(context, (RetryableBytesModel) oriModel, state);
             } else {
@@ -292,8 +291,7 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
 
 
     private long getNextDelay() {
-        final OllgeiDisruptorProperties.Retryable retryableProps = ollgeiDisruptorProperties.getRetryable();
-        return new Double(retryableProps.getDelay() * retryableProps.getMultiplier()).longValue();
+        return new Double(retryableProperties.getDelay() * retryableProperties.getMultiplier()).longValue();
     }
 
     private void check() {
@@ -311,23 +309,14 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         return new RetryableObjectModel();
     }
 
-    public OllgeiDisruptorPublisher getPublisher() {
-        return publisher;
-    }
-
-    @Autowired
-    public void setPublisher(OllgeiDisruptorPublisher publisher) {
-        this.publisher = publisher;
-    }
-
     @Autowired
     public void setSerializationManager(SerializationManager serializationManager) {
         this.serializationManager = serializationManager;
     }
 
     @Autowired
-    public void setOllgeiDisruptorProperties(OllgeiDisruptorProperties ollgeiDisruptorProperties) {
-        this.ollgeiDisruptorProperties = ollgeiDisruptorProperties;
+    public void setRetryableProperties(RetryableProperties retryableProperties) {
+        this.retryableProperties = retryableProperties;
     }
 
     @Autowired
@@ -345,4 +334,8 @@ public abstract class AbstractRetryableService<T extends RetryableUpstreamRespon
         this.retryableBytesRepository = retryableBytesRepository;
     }
 
+    @Autowired
+    public void setPublisher(RetryablePublisher retryablePublisher) {
+        this.publisher = retryablePublisher.getPublisher();
+    }
 }
