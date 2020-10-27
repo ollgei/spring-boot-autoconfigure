@@ -13,16 +13,18 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 public class RetryableSubscription extends AbstractSubscription {
+    private final String serviceName;
     private final RetryableKey key;
     private final CountDownLatch countDownLatch;
 
-    public RetryableSubscription(RetryableKey key, CountDownLatch countDownLatch) {
+    public RetryableSubscription(String serviceName, RetryableKey key, CountDownLatch countDownLatch) {
+        this.serviceName = serviceName;
         this.key = key;
         this.countDownLatch = countDownLatch;
     }
 
-    public RetryableSubscription(RetryableKey key) {
-        this(key, null);
+    public RetryableSubscription(String serviceName, RetryableKey key) {
+        this(serviceName, key, null);
     }
 
     public RetryableKey getKey() {
@@ -31,5 +33,9 @@ public class RetryableSubscription extends AbstractSubscription {
 
     public CountDownLatch getCountDownLatch() {
         return countDownLatch;
+    }
+
+    public String getServiceName() {
+        return serviceName;
     }
 }

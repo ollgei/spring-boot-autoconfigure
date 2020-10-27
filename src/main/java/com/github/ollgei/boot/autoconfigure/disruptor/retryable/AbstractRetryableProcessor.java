@@ -18,19 +18,15 @@ public class AbstractRetryableProcessor<T> implements RetryableProcessor<T> {
         this.services = services;
     }
 
-    public AbstractRetryableProcessor(List<RetryableService<T>> services) {
-        this(new RetryableMapRepository<>(), services);
-    }
-
     @Override
     public void init(RetryableModel<T> model) {
         repository.insert(model);
     }
 
     @Override
-    public void handle(RetryableKey key) {
+    public void handle(String serviceName, RetryableKey key) {
         final RetryableModel<T> model = repository.query(key);
-        services.stream().filter(s -> s.key().equals(key.stringizing()))
+        services.stream().filter(s -> s.name().equals(serviceName))
                 .forEach(s -> s.handle(model));
     }
 }

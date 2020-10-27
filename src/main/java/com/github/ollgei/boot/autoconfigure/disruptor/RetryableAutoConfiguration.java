@@ -28,10 +28,10 @@ import org.springframework.context.annotation.Bean;
 
 import com.github.ollgei.base.commonj.gson.JsonElement;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableRepository;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableService;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.json.JsonRetryableBaseService;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.json.JsonRetryableEngine;
+import com.github.ollgei.boot.autoconfigure.disruptor.retryable.json.JsonRetryableMapRepository;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.json.JsonRetryableProcessor;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.json.JsonRetryableRepository;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.json.JsonRetryableSubscriber;
@@ -51,16 +51,16 @@ public class RetryableAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public JsonRetryableProcessor jsonRetryableProcessor(ObjectProvider<JsonRetryableRepository> retryableRepositories, ObjectProvider<JsonRetryableBaseService> retryableServices) {
-        final RetryableRepository<JsonElement> repository =
-                retryableRepositories.getIfAvailable();
+    public JsonRetryableRepository jsonRetryableRepository() {
+        return new JsonRetryableMapRepository();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JsonRetryableProcessor jsonRetryableProcessor(JsonRetryableRepository retryableRepository, ObjectProvider<JsonRetryableBaseService> retryableServices) {
         final List<RetryableService<JsonElement>> services =
                 retryableServices.orderedStream().collect(Collectors.toList());
-
-        if (repository == null) {
-            return new JsonRetryableProcessor(services);
-        }
-        return new JsonRetryableProcessor(repository, services);
+        return new JsonRetryableProcessor(retryableRepository, services);
     }
 
     @Bean

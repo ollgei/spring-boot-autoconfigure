@@ -18,9 +18,9 @@ public class RetryableSubscriber<T> implements OllgeiDisruptorSubscriber<Retryab
     @Override
     public void onNext(RetryableSubscription subscription) {
         if (subscription.getCountDownLatch() != null) {
-            engine.readAndProcess(subscription.getKey(), subscription.getCountDownLatch());
+            engine.readAndProcess(subscription.getServiceName(), subscription.getKey(), subscription.getCountDownLatch());
             return;
         }
-        engine.readAndProcess(subscription.getKey());
+        engine.readAndProcess(subscription.getServiceName(), subscription.getKey());
     }
 }

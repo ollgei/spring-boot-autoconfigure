@@ -16,8 +16,4 @@ public class JsonRetryableProcessor extends AbstractRetryableProcessor<JsonEleme
     public JsonRetryableProcessor(RetryableRepository<JsonElement> repository, List<RetryableService<JsonElement>> retryableServices) {
         super(repository, retryableServices);
     }
-
-    public JsonRetryableProcessor(List<RetryableService<JsonElement>> retryableServices) {
-        super(retryableServices);
-    }
 }

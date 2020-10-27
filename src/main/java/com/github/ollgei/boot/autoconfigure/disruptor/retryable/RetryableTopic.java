@@ -12,6 +12,8 @@ import lombok.Data;
 @Data
 public class RetryableTopic<T> {
 
+    private String serviceName;
+
     private T request;
 
     private T response;

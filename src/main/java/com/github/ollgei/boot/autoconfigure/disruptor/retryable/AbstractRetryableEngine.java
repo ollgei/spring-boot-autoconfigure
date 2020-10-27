@@ -32,13 +32,13 @@ public class AbstractRetryableEngine<T> implements RetryableEngine<T> {
         } else {
             model.setSync(false);
         }
-        publisher.write(new RetryableSubscription(key, latch));
+        publisher.write(new RetryableSubscription(topic.getServiceName(), key, latch));
         processor.init(model);
     }
 
     @Override
-    public void readAndProcess(RetryableKey key) {
-        processor.handle(key);
+    public void readAndProcess(String serviceName, RetryableKey key) {
+        processor.handle(serviceName, key);
     }
 
     public void setPublisher(OllgeiDisruptorPublisher publisher) {

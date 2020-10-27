@@ -9,9 +9,9 @@ public interface RetryableService<T> {
 
     /**
      * desc.
-     * @return key
+     * @return name
      */
-    String key();
+    String name();
 
     /**
      * desc.
@@ -25,26 +25,20 @@ public interface RetryableService<T> {
      * @param model model
      * @return RetryableResponseModel
      */
-    default RetryableResponseModel<T> upstream(RetryableModel<T> model) {
-        return new RetryableResponseModel<>(RetryableResultEnum.NOOP);
-    }
+    RetryableResponseModel<T> upstream(RetryableModel<T> model);
 
     /**
      * desc.
      * @param model model
      * @return RetryableResponseModel
      */
-    default RetryableResponseModel<T> midstream(RetryableModel<T> model) {
-        return new RetryableResponseModel<>(RetryableResultEnum.NOOP);
-    }
+    RetryableResponseModel<T> midstream(RetryableModel<T> model);
 
     /**
      * desc.
      * @param model model
      * @return RetryableResponseModel
      */
-    default RetryableResponseModel<T> downstream(RetryableModel<T> model) {
-        return new RetryableResponseModel<>(RetryableResultEnum.NOOP);
-    }
+    RetryableResponseModel<T> downstream(RetryableModel<T> model);
 
 }

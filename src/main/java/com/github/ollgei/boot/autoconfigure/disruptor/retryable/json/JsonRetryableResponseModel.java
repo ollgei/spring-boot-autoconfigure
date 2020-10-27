@@ -15,15 +15,15 @@ public class JsonRetryableResponseModel extends RetryableResponseModel<JsonEleme
         super(result);
     }
 
-    public static RetryableResponseModel<JsonElement> noop() {
+    public static JsonRetryableResponseModel noop() {
         return new JsonRetryableResponseModel(RetryableResultEnum.NOOP);
     }
 
-    public static RetryableResponseModel<JsonElement> success() {
+    public static JsonRetryableResponseModel success() {
         return new JsonRetryableResponseModel(RetryableResultEnum.SUCCESS);
     }
 
-    public static RetryableResponseModel<JsonElement> fail() {
+    public static JsonRetryableResponseModel fail() {
         return new JsonRetryableResponseModel(RetryableResultEnum.FAIL);
     }
 

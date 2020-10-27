@@ -17,6 +17,6 @@ public interface RetryableProcessor<T> {
      * desc.
      * @param key
      */
-    void handle(RetryableKey key);
+    void handle(String serviceName, RetryableKey key);
 
 }

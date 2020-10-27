@@ -19,16 +19,16 @@ public interface RetryableEngine<T> {
      * desc.
      * @param key key
      */
-    void readAndProcess(RetryableKey key);
+    void readAndProcess(String serviceName, RetryableKey key);
 
     /**
      * desc.
      * @param key key
      * @param countDownLatch latch
      */
-    default void readAndProcess(RetryableKey key, CountDownLatch countDownLatch) {
+    default void readAndProcess(String serviceName, RetryableKey key, CountDownLatch countDownLatch) {
         try {
-            readAndProcess(key);
+            readAndProcess(serviceName, key);
         } finally {
             if (countDownLatch.getCount() > 0) {
                 countDownLatch.countDown();
