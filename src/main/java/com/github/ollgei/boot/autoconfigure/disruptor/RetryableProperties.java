@@ -26,29 +26,9 @@ import lombok.Data;
  * @author jiawei
  * @since 1.0.0
  */
-@ConfigurationProperties(prefix = RetryableProperties.DISRUPTOR_PREFIX)
+@ConfigurationProperties(prefix = RetryableProperties.PREFIX)
 @Data
 public class RetryableProperties extends DisruptorConfigurationProperties {
 
-    public static final String DISRUPTOR_PREFIX = "ollgei.retryable";
-
-    /**
-     * delay(seconds).
-     */
-    private Integer delay = 10;
-
-    /**
-     * multiplier.
-     */
-    private Double multiplier = 1.0d;
-
-    /**
-     * maxAttempts.
-     */
-    private Integer maxAttempts = 5;
-
-    /**
-     * batchSize.
-     */
-    private Integer batchSize = 80;
+    public static final String PREFIX = "ollgei.retryable";
 }

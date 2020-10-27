@@ -3,44 +3,35 @@ package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 import lombok.Data;
 
 /**
- * repository.
+ * desc.
  * @author ollgei
  * @since 1.0
  */
 @Data
-public class RetryableModel {
+public class RetryableModel<T> {
+    private boolean sync;
+    private int state;
+    private String key;
+    private int retryCount;
+    private long nextRetryMills;
+    private T request;
+    private T response;
+    private T upstreamResponse;
+    private T midstreamResponse;
+    private T downstreamResponse;
 
-    /**
-     * 业务类型
-     */
-    private String kind;
-
-    /**
-     * 应用ID
-     */
-    private String appId;
-
-    /**
-     * TAG
-     */
-    private String tag;
-
-    /**
-     * 序列号.
-     */
-    private Short seqNo;
-
-    /**
-     * 状态: 0 未开始 第1位 本地调用 第2位 上游调用 第三位 下游调用
-     */
-    private Integer state;
-
-    private Integer retryCount;
-
-    private Long nextRetryTimestamp = System.currentTimeMillis();
-
-    private Integer retryIncrCount;
-
-    private Long nextRetryIncrTimestamp;
-
+    public RetryableModel<T> deepCopy() {
+        final RetryableModel<T> copy = new RetryableModel<T>();
+        copy.setSync(isSync());
+        copy.setState(getState());
+        copy.setKey(getKey());
+        copy.setRetryCount(getRetryCount());
+        copy.setNextRetryMills(getNextRetryMills());
+        copy.setRequest(getRequest());
+        copy.setResponse(getResponse());
+        copy.setUpstreamResponse(getUpstreamResponse());
+        copy.setMidstreamResponse(getMidstreamResponse());
+        copy.setDownstreamResponse(getDownstreamResponse());
+        return copy;
+    }
 }

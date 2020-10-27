@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.disruptor.retryablex;
+package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
 /**
  * 处理器.

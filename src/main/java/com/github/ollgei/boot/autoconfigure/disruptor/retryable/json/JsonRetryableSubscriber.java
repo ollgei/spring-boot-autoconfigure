@@ -1,8 +1,8 @@
-package com.github.ollgei.boot.autoconfigure.disruptor.retryablex.json;
+package com.github.ollgei.boot.autoconfigure.disruptor.retryable.json;
 
 import com.github.ollgei.base.commonj.gson.JsonElement;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.RetryableEngine;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.RetryableSubscriber;
+import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableEngine;
+import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableSubscriber;
 
 /**
  * desc.

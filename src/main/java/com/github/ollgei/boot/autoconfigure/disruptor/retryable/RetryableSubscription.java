@@ -3,7 +3,6 @@ package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 import java.util.concurrent.CountDownLatch;
 
 import com.github.ollgei.boot.autoconfigure.disruptor.core.AbstractSubscription;
-import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorService;
 import lombok.ToString;
 
 /**
@@ -14,34 +13,23 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 public class RetryableSubscription extends AbstractSubscription {
-    /**类型*/
-    private Class<? extends OllgeiDisruptorService> clazz;
-    /**上下文数据*/
-    private Object context;
-    /**CountDownLatch*/
-    private CountDownLatch countDownLatch;
+    private final RetryableKey key;
+    private final CountDownLatch countDownLatch;
 
-    public Class<? extends OllgeiDisruptorService> getClazz() {
-        return clazz;
+    public RetryableSubscription(RetryableKey key, CountDownLatch countDownLatch) {
+        this.key = key;
+        this.countDownLatch = countDownLatch;
     }
 
-    public void setClazz(Class<? extends OllgeiDisruptorService> clazz) {
-        this.clazz = clazz;
+    public RetryableSubscription(RetryableKey key) {
+        this(key, null);
     }
 
-    public Object getContext() {
-        return context;
-    }
-
-    public void setContext(Object context) {
-        this.context = context;
+    public RetryableKey getKey() {
+        return key;
     }
 
     public CountDownLatch getCountDownLatch() {
         return countDownLatch;
-    }
-
-    public void setCountDownLatch(CountDownLatch countDownLatch) {
-        this.countDownLatch = countDownLatch;
     }
 }

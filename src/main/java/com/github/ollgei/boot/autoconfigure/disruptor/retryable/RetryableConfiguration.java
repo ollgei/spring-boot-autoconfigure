@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.disruptor.retryablex;
+package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
 import lombok.Builder;
 import lombok.Getter;
