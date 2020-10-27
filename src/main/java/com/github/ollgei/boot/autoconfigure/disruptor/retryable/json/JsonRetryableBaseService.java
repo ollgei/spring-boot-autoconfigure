@@ -21,6 +21,6 @@ public abstract class JsonRetryableBaseService extends AbstractRetryableService<
     }
 
     public JsonRetryableBaseService() {
-        this(new RetryableMapRepository<>(), RetryableConfiguration.builder().build());
+        this(RetryableConfiguration.builder().build());
     }
 }
