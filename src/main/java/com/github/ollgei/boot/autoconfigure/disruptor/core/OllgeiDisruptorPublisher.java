@@ -92,13 +92,13 @@ public class OllgeiDisruptorPublisher implements InitializingBean, DisposableBea
     }
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         stop();
         log.info("destroyed disruptor.....");
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         disruptor.start();
         log.info("started disruptor.....");
     }

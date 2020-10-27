@@ -59,6 +59,7 @@ public interface OllgeiDisruptorService<C> {
     /**
      * 安全执行.
      * @param context context
+     * @param countDownLatch latch
      */
     default void safeRead(C context, CountDownLatch countDownLatch) {
         if (!lock(context)) {
