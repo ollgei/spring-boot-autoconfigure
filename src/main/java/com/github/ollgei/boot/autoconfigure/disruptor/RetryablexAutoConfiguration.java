@@ -27,14 +27,16 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 import com.github.ollgei.base.commonj.gson.JsonElement;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryablePublisher;
+import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.RetryableRepository;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.RetryableService;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.json.JsonRetryableBaseService;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.json.JsonRetryableEngine;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.json.JsonRetryableProcessor;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.json.JsonRetryableRepository;
+import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.json.JsonRetryableSubscriber;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 
 /**
  * boot-parent.
@@ -46,13 +48,6 @@ import com.lmax.disruptor.dsl.Disruptor;
 @EnableConfigurationProperties(RetryableProperties.class)
 @ConditionalOnClass(Disruptor.class)
 public class RetryablexAutoConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public RetryablePublisher retryablePublisher(RetryableProperties retryableProperties) {
-        return new RetryablePublisher(retryableProperties);
-    }
-
 
     @Bean
     @ConditionalOnMissingBean
@@ -70,9 +65,19 @@ public class RetryablexAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public JsonRetryableEngine jsonRetryableEngine(RetryablePublisher retryablePublisher, JsonRetryableProcessor jsonRetryableProcessor) {
-        return new JsonRetryableEngine(retryablePublisher.getPublisher(),
-                jsonRetryableProcessor);
+    public JsonRetryableEngine jsonRetryableEngine(RetryableProperties retryableProperties, JsonRetryableProcessor jsonRetryableProcessor) {
+        final JsonRetryableEngine engine = new JsonRetryableEngine(jsonRetryableProcessor);
+        final OllgeiDisruptorPublisher publisher = OllgeiDisruptorPublisher.builder()
+                .setBufferSize(retryableProperties.getBufferSize())
+                .setSubscriberCount(retryableProperties.getSubscriberSize())
+                .setSubscriberName(retryableProperties.getSubscriberName())
+                .setSubscriber(new JsonRetryableSubscriber(engine))
+                .setGlobalQueue(retryableProperties.isGlobalQueue())
+                .setProducerType(retryableProperties.isMulti() ?
+                        ProducerType.MULTI : ProducerType.SINGLE)
+                .build();
+        engine.setPublisher(publisher);
+        return engine;
     }
 
 }

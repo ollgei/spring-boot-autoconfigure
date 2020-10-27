@@ -1,5 +1,7 @@
 package com.github.ollgei.boot.autoconfigure.disruptor.retryablex;
 
+import java.util.concurrent.CountDownLatch;
+
 import lombok.Data;
 
 /**
@@ -13,5 +15,7 @@ public class RetryableTopic<T> {
     private T request;
 
     private T response;
+
+    private CountDownLatch latch;
 
 }

@@ -12,7 +12,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class RetryableSyncTopic extends RetryableTopic {
+public class RetryableSyncTopic<T> extends RetryableTopic<T> {
     /**
      * countDownLatch.
      */

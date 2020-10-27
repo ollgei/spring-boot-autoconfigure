@@ -19,14 +19,6 @@ public abstract class AbstractRetryableService<T> implements RetryableService<T>
         this.retryableConfiguration = retryableConfiguration;
     }
 
-    public AbstractRetryableService(RetryableConfiguration retryableConfiguration) {
-        this(new RetryableMapRepository<>(), retryableConfiguration);
-    }
-
-    public AbstractRetryableService() {
-        this(new RetryableMapRepository<>(), RetryableConfiguration.builder().build());
-    }
-
     @Override
     public void handle(RetryableModel<T> modelRequest) {
         final RetryableModel<T> model = modelRequest.deepCopy();

@@ -9,18 +9,18 @@ import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscr
  */
 public class RetryableSubscriber<T> implements OllgeiDisruptorSubscriber<RetryableSubscription> {
 
-    private RetryableEngine<T> retryableEngine;
+    private RetryableEngine<T> engine;
 
-    public RetryableSubscriber(RetryableEngine<T> retryableEngine) {
-        this.retryableEngine = retryableEngine;
+    public RetryableSubscriber(RetryableEngine<T> engine) {
+        this.engine = engine;
     }
 
     @Override
     public void onNext(RetryableSubscription subscription) {
         if (subscription.getCountDownLatch() != null) {
-            retryableEngine.readAndProcess(subscription.getKey(), subscription.getCountDownLatch());
+            engine.readAndProcess(subscription.getKey(), subscription.getCountDownLatch());
             return;
         }
-        retryableEngine.readAndProcess(subscription.getKey());
+        engine.readAndProcess(subscription.getKey());
     }
 }

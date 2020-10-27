@@ -10,27 +10,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RetryableMapRepository<T> implements RetryableRepository<T> {
 
-    private Map<String, RetryableModel<T>> lruCache =
+    private Map<String, RetryableModel<T>> cache =
             new ConcurrentHashMap<>(8);
 
     @Override
     public RetryableModel<T> query(RetryableKey key) {
-        return lruCache.get(key.stringizing());
+        return cache.get(key.stringizing());
     }
 
     @Override
     public void insert(RetryableModel<T> model) {
-        lruCache.put(model.getKey(),model);
+        cache.put(model.getKey(),model);
     }
 
     @Override
     public void update(RetryableModel<T> model) {
-        lruCache.replace(model.getKey(), model);
+        cache.replace(model.getKey(), model);
     }
 
     @Override
     public void remove(RetryableModel<T> model) {
-        lruCache.remove(model.getKey());
+        cache.remove(model.getKey());
     }
 
     @Override

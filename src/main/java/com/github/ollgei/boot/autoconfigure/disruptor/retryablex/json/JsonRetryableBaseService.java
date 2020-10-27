@@ -3,6 +3,7 @@ package com.github.ollgei.boot.autoconfigure.disruptor.retryablex.json;
 import com.github.ollgei.base.commonj.gson.JsonElement;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.AbstractRetryableService;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.RetryableConfiguration;
+import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.RetryableMapRepository;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryablex.RetryableRepository;
 
 /**
@@ -16,10 +17,10 @@ public abstract class JsonRetryableBaseService extends AbstractRetryableService<
     }
 
     public JsonRetryableBaseService(RetryableConfiguration retryableConfiguration) {
-        super(retryableConfiguration);
+        this(new RetryableMapRepository<>(), retryableConfiguration);
     }
 
     public JsonRetryableBaseService() {
-        super();
+        this(new RetryableMapRepository<>(), RetryableConfiguration.builder().build());
     }
 }
