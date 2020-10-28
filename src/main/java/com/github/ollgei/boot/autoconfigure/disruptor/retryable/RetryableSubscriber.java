@@ -11,10 +11,6 @@ public class RetryableSubscriber<T> implements OllgeiDisruptorSubscriber<Retryab
 
     private RetryableEngine<T> engine;
 
-    public RetryableSubscriber(RetryableEngine<T> engine) {
-        this.engine = engine;
-    }
-
     @Override
     public void onNext(RetryableSubscription subscription) {
         if (subscription.getCountDownLatch() != null) {
@@ -22,5 +18,9 @@ public class RetryableSubscriber<T> implements OllgeiDisruptorSubscriber<Retryab
             return;
         }
         engine.readAndProcess(subscription.getServiceName(), subscription.getKey());
+    }
+
+    public void setEngine(RetryableEngine<T> engine) {
+        this.engine = engine;
     }
 }

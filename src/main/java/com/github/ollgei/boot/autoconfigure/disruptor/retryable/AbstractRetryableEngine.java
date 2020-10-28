@@ -2,6 +2,9 @@ package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
 
 /**
@@ -9,7 +12,7 @@ import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublis
  * @author ollgei
  * @since 1.0
  */
-public class AbstractRetryableEngine<T> implements RetryableEngine<T> {
+public abstract class AbstractRetryableEngine<T> implements RetryableEngine<T>, InitializingBean, DisposableBean {
     private OllgeiDisruptorPublisher publisher;
     private RetryableProcessor<T> processor;
 
@@ -41,7 +44,23 @@ public class AbstractRetryableEngine<T> implements RetryableEngine<T> {
         processor.handle(serviceName, key);
     }
 
+    public abstract EngineType type();
+
     public void setPublisher(OllgeiDisruptorPublisher publisher) {
         this.publisher = publisher;
+    }
+
+    @Override
+    public void destroy() {
+        if (publisher != null) {
+            publisher.destroy();
+        }
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        if (publisher != null) {
+            publisher.afterPropertiesSet();
+        }
     }
 }
