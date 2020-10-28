@@ -36,22 +36,19 @@ public class JsonRetryableConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public OllgeiDisruptorPublisher.Builder ollgeiDisruptorPublisherBuilder(RetryableProperties retryableProperties) {
-        return OllgeiDisruptorPublisher.builder()
+    public JsonRetryableEngine jsonRetryableEngine(RetryableProperties retryableProperties, JsonRetryableProcessor jsonRetryableProcessor) {
+        final JsonRetryableEngine engine = new JsonRetryableEngine(jsonRetryableProcessor);
+        final JsonRetryableSubscriber subscriber = new JsonRetryableSubscriber();
+        final OllgeiDisruptorPublisher publisher = OllgeiDisruptorPublisher.builder()
                 .setBufferSize(retryableProperties.getBufferSize())
                 .setSubscriberCount(retryableProperties.getSubscriberSize())
                 .setSubscriberName(retryableProperties.getSubscriberName())
                 .setGlobalQueue(retryableProperties.isGlobalQueue())
-                .setProducerType(retryableProperties.isMulti() ? ProducerType.MULTI : ProducerType.SINGLE);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public JsonRetryableEngine jsonRetryableEngine(OllgeiDisruptorPublisher.Builder builder, JsonRetryableProcessor jsonRetryableProcessor) {
-        final JsonRetryableEngine engine = new JsonRetryableEngine(jsonRetryableProcessor);
-        final JsonRetryableSubscriber subscriber = new JsonRetryableSubscriber();
+                .setSubscriber(subscriber)
+                .setProducerType(retryableProperties.isMulti() ? ProducerType.MULTI : ProducerType.SINGLE)
+                .build();
         subscriber.setEngine(engine);
-        engine.setPublisher(builder.setSubscriber(subscriber).build());
+        engine.setPublisher(publisher);
         return engine;
     }
 
