@@ -1,4 +1,4 @@
-package com.github.ollgei.boot.autoconfigure.disruptor.retryable.json;
+package com.github.ollgei.boot.autoconfigure.disruptor.retryable.object;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,37 +9,34 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.ollgei.base.commonj.gson.JsonElement;
 import com.github.ollgei.boot.autoconfigure.disruptor.RetryableProperties;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableEngine;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableService;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableSubscriber;
 import com.lmax.disruptor.dsl.ProducerType;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(RetryableProperties.class)
-public class JsonRetryableConfiguration {
+public class ObjectRetryableConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public JsonRetryableRepository jsonRetryableRepository() {
-        return new JsonRetryableMapRepository();
+    public ObjectRetryableRepository objectRetryableRepository() {
+        return new ObjectRetryableMapRepository();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public JsonRetryableProcessor jsonRetryableProcessor(JsonRetryableRepository retryableRepository, ObjectProvider<JsonRetryableBaseService> retryableServices) {
-        final List<RetryableService<JsonElement>> services =
+    public ObjectRetryableProcessor objectRetryableProcessor(ObjectRetryableRepository retryableRepository, ObjectProvider<ObjectRetryableBaseService> retryableServices) {
+        final List<RetryableService<Object>> services =
                 retryableServices.orderedStream().collect(Collectors.toList());
-        return new JsonRetryableProcessor(retryableRepository, services);
+        return new ObjectRetryableProcessor(retryableRepository, services);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public JsonRetryableEngine jsonRetryableEngine(RetryableProperties retryableProperties, JsonRetryableProcessor jsonRetryableProcessor) {
-        final JsonRetryableEngine engine = new JsonRetryableEngine(jsonRetryableProcessor);
-        final JsonRetryableSubscriber subscriber = new JsonRetryableSubscriber();
+    public ObjectRetryableEngine objectRetryableEngine(RetryableProperties retryableProperties, ObjectRetryableProcessor objectRetryableProcessor) {
+        final ObjectRetryableEngine engine = new ObjectRetryableEngine(objectRetryableProcessor);
+        final ObjectRetryableSubscriber subscriber = new ObjectRetryableSubscriber();
         final OllgeiDisruptorPublisher publisher = OllgeiDisruptorPublisher.builder()
                 .setBufferSize(retryableProperties.getBufferSize())
                 .setSubscriberCount(retryableProperties.getSubscriberSize())
@@ -52,5 +49,4 @@ public class JsonRetryableConfiguration {
         engine.setPublisher(publisher);
         return engine;
     }
-
 }

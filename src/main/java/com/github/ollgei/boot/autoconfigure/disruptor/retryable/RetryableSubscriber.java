@@ -1,5 +1,7 @@
 package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
+import java.util.List;
+
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorSubscriber;
 
 /**

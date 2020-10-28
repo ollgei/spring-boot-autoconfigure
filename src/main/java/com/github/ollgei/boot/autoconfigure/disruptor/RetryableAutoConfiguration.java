@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.json.JsonRetryableConfiguration;
+import com.github.ollgei.boot.autoconfigure.disruptor.retryable.object.ObjectRetryableConfiguration;
 import com.lmax.disruptor.dsl.Disruptor;
 
 /**
@@ -42,7 +43,14 @@ public class RetryableAutoConfiguration {
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnProperty(prefix = RetryableProperties.PREFIX, name = "type", havingValue = "json", matchIfMissing = true)
     @Import(JsonRetryableConfiguration.class)
-    protected static class Json {
+    protected static class JsonConfiguration {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnProperty(prefix = RetryableProperties.PREFIX, name = "type", havingValue = "object")
+    @Import(ObjectRetryableConfiguration.class)
+    protected static class ObjectConfiguration {
 
     }
 
