@@ -18,6 +18,7 @@ package com.github.ollgei.boot.autoconfigure.disruptor;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import com.github.ollgei.boot.autoconfigure.disruptor.retryable.EngineType;
 import lombok.Data;
 
 /**
@@ -31,4 +32,6 @@ import lombok.Data;
 public class RetryableProperties extends DisruptorConfigurationProperties {
 
     public static final String PREFIX = "ollgei.retryable";
+
+    private EngineType type;
 }
