@@ -40,7 +40,7 @@ public class RetryableAutoConfiguration {
 
 
     @Configuration(proxyBeanMethods = false)
-    @ConditionalOnProperty(prefix = RetryableProperties.PREFIX, name = "type", havingValue = "json")
+    @ConditionalOnProperty(prefix = RetryableProperties.PREFIX, name = "type", havingValue = "json", matchIfMissing = true)
     @Import(JsonRetryableConfiguration.class)
     protected static class Json {
 

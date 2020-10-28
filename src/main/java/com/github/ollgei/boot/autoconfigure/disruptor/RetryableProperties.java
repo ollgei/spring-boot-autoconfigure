@@ -33,5 +33,5 @@ public class RetryableProperties extends DisruptorConfigurationProperties {
 
     public static final String PREFIX = "ollgei.retryable";
 
-    private EngineType type = EngineType.json;
+    private EngineType type;
 }
