@@ -30,7 +30,9 @@ public class AbstractRetryableProcessor<T> implements RetryableProcessor<T> {
     @Override
     public void handle(String serviceName, RetryableKey key) {
         final RetryableModel<T> model = repository.query(key);
-        final List<RetryableService<T>> targets = services.stream().filter(s -> s.name().equals(serviceName)).collect(Collectors.toList());
+        final List<RetryableService<T>> targets = services.stream().
+                filter(s -> s.name().equals(serviceName)).
+                collect(Collectors.toList());
         if (targets.size() == 0) {
             log.warn("Not found retryable serviceName[{}]", serviceName);
             return;
