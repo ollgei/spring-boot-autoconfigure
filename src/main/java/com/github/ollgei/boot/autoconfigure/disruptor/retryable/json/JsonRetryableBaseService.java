@@ -5,7 +5,6 @@ import com.github.ollgei.boot.autoconfigure.disruptor.retryable.AbstractRetryabl
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableConfiguration;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableModel;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableRepository;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.object.ObjectRetryableMapRepository;
 
 /**
  * desc.
