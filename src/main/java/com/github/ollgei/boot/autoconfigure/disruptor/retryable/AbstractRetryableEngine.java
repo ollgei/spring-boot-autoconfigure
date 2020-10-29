@@ -36,7 +36,7 @@ public abstract class AbstractRetryableEngine<T> implements RetryableEngine<T>, 
             model.setSync(false);
         }
         publisher.write(new RetryableSubscription(topic.getServiceName(), key, latch));
-        processor.init(model);
+        processor.init(topic.getServiceName(), model);
     }
 
     @Override

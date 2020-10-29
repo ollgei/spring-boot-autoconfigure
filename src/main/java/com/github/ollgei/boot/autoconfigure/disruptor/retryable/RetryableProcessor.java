@@ -11,7 +11,7 @@ public interface RetryableProcessor<T> {
      * desc.
      * @param model model
      */
-    void init(RetryableModel<T> model);
+    void init(String serviceName, RetryableModel<T> model);
 
     /**
      * desc.

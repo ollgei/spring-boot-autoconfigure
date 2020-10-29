@@ -15,6 +15,19 @@ public interface RetryableService<T> {
 
     /**
      * desc.
+     * @param key key
+     * @return RetryableModel
+     */
+    RetryableModel<T> query(RetryableKey key);
+
+    /**
+     * desc.
+     * @param model model
+     */
+    void insert(RetryableModel<T> model);
+
+    /**
+     * desc.
      * @param model model
      * @return
      */

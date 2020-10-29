@@ -17,12 +17,8 @@ public abstract class JsonRetryableBaseService extends AbstractRetryableService<
         super(retryableRepository, retryableConfiguration);
     }
 
-    public JsonRetryableBaseService(RetryableConfiguration retryableConfiguration) {
-        this(new RetryableMapRepository<>(), retryableConfiguration);
-    }
-
-    public JsonRetryableBaseService() {
-        this(RetryableConfiguration.builder().build());
+    public JsonRetryableBaseService(RetryableRepository<JsonElement> retryableRepository) {
+        super(retryableRepository, RetryableConfiguration.builder().build());
     }
 
     /**

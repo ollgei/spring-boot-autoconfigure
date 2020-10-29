@@ -13,7 +13,7 @@ import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableService
  * @since 1.0
  */
 public class JsonRetryableProcessor extends AbstractRetryableProcessor<JsonElement> {
-    public JsonRetryableProcessor(RetryableRepository<JsonElement> repository, List<RetryableService<JsonElement>> retryableServices) {
-        super(repository, retryableServices);
+    public JsonRetryableProcessor(List<RetryableService<JsonElement>> retryableServices) {
+        super(retryableServices);
     }
 }

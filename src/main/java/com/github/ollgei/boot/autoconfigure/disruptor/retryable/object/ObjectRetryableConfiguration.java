@@ -20,16 +20,10 @@ public class ObjectRetryableConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ObjectRetryableRepository objectRetryableRepository() {
-        return new ObjectRetryableMapRepository();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ObjectRetryableProcessor objectRetryableProcessor(ObjectRetryableRepository retryableRepository, ObjectProvider<ObjectRetryableBaseService> retryableServices) {
+    public ObjectRetryableProcessor objectRetryableProcessor(ObjectProvider<ObjectRetryableBaseService> retryableServices) {
         final List<RetryableService<Object>> services =
                 retryableServices.orderedStream().collect(Collectors.toList());
-        return new ObjectRetryableProcessor(retryableRepository, services);
+        return new ObjectRetryableProcessor(services);
     }
 
     @Bean

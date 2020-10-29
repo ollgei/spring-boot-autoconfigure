@@ -12,9 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import com.github.ollgei.base.commonj.gson.JsonElement;
 import com.github.ollgei.boot.autoconfigure.disruptor.RetryableProperties;
 import com.github.ollgei.boot.autoconfigure.disruptor.core.OllgeiDisruptorPublisher;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableEngine;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableService;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableSubscriber;
 import com.lmax.disruptor.dsl.ProducerType;
 
 @Configuration(proxyBeanMethods = false)
@@ -23,16 +21,10 @@ public class JsonRetryableConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public JsonRetryableRepository jsonRetryableRepository() {
-        return new JsonRetryableMapRepository();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public JsonRetryableProcessor jsonRetryableProcessor(JsonRetryableRepository retryableRepository, ObjectProvider<JsonRetryableBaseService> retryableServices) {
+    public JsonRetryableProcessor jsonRetryableProcessor(ObjectProvider<JsonRetryableBaseService> retryableServices) {
         final List<RetryableService<JsonElement>> services =
                 retryableServices.orderedStream().collect(Collectors.toList());
-        return new JsonRetryableProcessor(retryableRepository, services);
+        return new JsonRetryableProcessor(services);
     }
 
     @Bean

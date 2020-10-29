@@ -16,13 +16,10 @@ public abstract class ObjectRetryableBaseService extends AbstractRetryableServic
         super(retryableRepository, retryableConfiguration);
     }
 
-    public ObjectRetryableBaseService(RetryableConfiguration retryableConfiguration) {
-        this(new RetryableMapRepository<>(), retryableConfiguration);
+    public ObjectRetryableBaseService(RetryableRepository<Object> retryableRepository) {
+        this(retryableRepository, RetryableConfiguration.builder().build());
     }
 
-    public ObjectRetryableBaseService() {
-        this(RetryableConfiguration.builder().build());
-    }
 
     /**
      * desc.
