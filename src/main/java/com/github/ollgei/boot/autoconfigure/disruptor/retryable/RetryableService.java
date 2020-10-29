@@ -13,12 +13,6 @@ public interface RetryableService<T> {
      */
     String name();
 
-    /**
-     * desc.
-     * @param key key
-     * @return RetryableModel
-     */
-    RetryableModel<T> query(RetryableKey key);
 
     /**
      * desc.
@@ -28,10 +22,10 @@ public interface RetryableService<T> {
 
     /**
      * desc.
-     * @param model model
+     * @param key key
      * @return
      */
-    void handle(RetryableModel<T> model);
+    void handle(RetryableKey key);
 
     /**
      * desc.

@@ -40,9 +40,6 @@ public class AbstractRetryableProcessor<T> implements RetryableProcessor<T> {
             log.warn("Not found retryable serviceName[{}]", serviceName);
             return;
         }
-        targets.forEach(s -> {
-            final RetryableModel<T> model = s.query(key);
-            s.handle(model);
-        });
+        targets.forEach(s -> s.handle(key));
     }
 }

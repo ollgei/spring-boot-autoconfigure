@@ -20,18 +20,13 @@ public abstract class AbstractRetryableService<T> implements RetryableService<T>
     }
 
     @Override
-    public RetryableModel<T> query(RetryableKey key) {
-        return retryableRepository.query(key);
-    }
-
-    @Override
     public void insert(RetryableModel<T> model) {
         retryableRepository.insert(model);
     }
 
     @Override
-    public void handle(RetryableModel<T> modelRequest) {
-        final RetryableModel<T> model = modelRequest.deepCopy();
+    public void handle(RetryableKey key) {
+        final RetryableModel<T> model = retryableRepository.query(key);
         final RetryableStateEnum rState = RetryableStateEnum.resolve(model.getState());
         if (rState == RetryableStateEnum.SUCCESS) {
             if (log.isInfoEnabled()) {
