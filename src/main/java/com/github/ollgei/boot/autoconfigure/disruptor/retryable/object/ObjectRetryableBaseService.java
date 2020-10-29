@@ -2,7 +2,6 @@ package com.github.ollgei.boot.autoconfigure.disruptor.retryable.object;
 
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.AbstractRetryableService;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableConfiguration;
-import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableMapRepository;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableModel;
 import com.github.ollgei.boot.autoconfigure.disruptor.retryable.RetryableRepository;
 
@@ -18,6 +17,10 @@ public abstract class ObjectRetryableBaseService extends AbstractRetryableServic
 
     public ObjectRetryableBaseService(RetryableRepository<Object> retryableRepository) {
         this(retryableRepository, RetryableConfiguration.builder().build());
+    }
+
+    public ObjectRetryableBaseService() {
+        this(new ObjectRetryableMapRepository(), RetryableConfiguration.builder().build());
     }
 
 
