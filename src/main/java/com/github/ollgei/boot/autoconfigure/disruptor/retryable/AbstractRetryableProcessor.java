@@ -1,5 +1,6 @@
 package com.github.ollgei.boot.autoconfigure.disruptor.retryable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,25 +22,22 @@ public class AbstractRetryableProcessor<T> implements RetryableProcessor<T> {
 
     @Override
     public void init(String serviceName, RetryableModel<T> model) {
-        final List<RetryableService<T>> targets = services.stream().
-                filter(s -> s.name().equals(serviceName)).
-                collect(Collectors.toList());
-        if (targets.size() == 0) {
-            log.warn("Not found retryable serviceName[{}]", serviceName);
-            return;
-        }
-        targets.forEach(s -> s.insert(model));
+        resolveServices(serviceName).forEach(s -> s.insert(model));
     }
 
     @Override
     public void handle(String serviceName, RetryableKey key) {
+        resolveServices(serviceName).forEach(s -> s.handle(key));
+    }
+
+    private List<RetryableService<T>> resolveServices(String serviceName) {
         final List<RetryableService<T>> targets = services.stream().
                 filter(s -> s.name().equals(serviceName)).
                 collect(Collectors.toList());
         if (targets.size() == 0) {
             log.warn("Not found retryable serviceName[{}]", serviceName);
-            return;
+            return Collections.emptyList();
         }
-        targets.forEach(s -> s.handle(key));
+        return targets;
     }
 }
