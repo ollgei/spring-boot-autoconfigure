@@ -18,7 +18,7 @@ public interface RetryableService<T> {
      * desc.
      * @param model model
      */
-    void insert(RetryableModel<T> model);
+    void save(RetryableModel<T> model);
 
     /**
      * desc.

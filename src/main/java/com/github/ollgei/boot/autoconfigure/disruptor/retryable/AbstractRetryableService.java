@@ -20,7 +20,7 @@ public abstract class AbstractRetryableService<T> implements RetryableService<T>
     }
 
     @Override
-    public void insert(RetryableModel<T> model) {
+    public void save(RetryableModel<T> model) {
         retryableRepository.insert(model);
     }
 

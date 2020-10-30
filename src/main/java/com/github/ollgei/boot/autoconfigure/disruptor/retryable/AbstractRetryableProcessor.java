@@ -22,7 +22,7 @@ public class AbstractRetryableProcessor<T> implements RetryableProcessor<T> {
 
     @Override
     public void init(String serviceName, RetryableModel<T> model) {
-        resolveServices(serviceName).forEach(s -> s.insert(model));
+        resolveServices(serviceName).forEach(s -> s.save(model));
     }
 
     @Override
