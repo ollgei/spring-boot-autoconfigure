@@ -53,8 +53,8 @@ public class FeignAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public FeignClientManager feignClientManager() {
-        return new FeignClientManager();
+    public FeignClientManager feignClientManager(FeignClientDefination feignClientDefination) {
+        return new FeignClientManager(feignClientDefination);
     }
 
     @Bean

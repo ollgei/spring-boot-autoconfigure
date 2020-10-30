@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 @ConditionalOnClass(RestTemplate.class)
 @ConditionalOnProperty(prefix = HttpClientProperties.PREFIX, name = "resttemplate.enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(HttpClientProperties.class)
-@Import({ApacheHttpClientConfiguration.class, Okhttp3Configuration.class, LoadbalancerRestTemplateConfiguration.class})
+@Import({ApacheHttpClientConfiguration.class, Okhttp3Configuration.class, RestTemplateLoadbalancerConfiguration.class})
 public class RestTemplateAutoConfiguration extends AbstractRestTemplateConfiguration {
 
     @Bean

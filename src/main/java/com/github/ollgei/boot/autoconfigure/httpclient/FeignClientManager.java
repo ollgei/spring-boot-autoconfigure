@@ -27,12 +27,13 @@ public class FeignClientManager {
 
     private Gson gson;
 
-    public FeignClientManager() {
-        this(new GsonBuilder().create());
+    public FeignClientManager(FeignClientDefination feignClientDefination) {
+        this(feignClientDefination, new GsonBuilder().create());
     }
 
-    public FeignClientManager(Gson gson) {
+    public FeignClientManager(FeignClientDefination feignClientDefination, Gson gson) {
         this.gson = gson;
+        this.feignClientDefination = feignClientDefination;
     }
 
     public String postForText(String uri, Map<String, String> headerMap, Object body) {
@@ -214,8 +215,4 @@ public class FeignClientManager {
         return getForText(uriWithMethod.getUri());
     }
 
-    @Autowired
-    public void setFeignClientDefination(FeignClientDefination feignClientDefination) {
-        this.feignClientDefination = feignClientDefination;
-    }
 }

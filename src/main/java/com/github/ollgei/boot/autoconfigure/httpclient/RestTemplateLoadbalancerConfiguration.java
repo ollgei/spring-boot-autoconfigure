@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.springframework.cloud.client.loadbalancer.LoadBalancerClient")
-public class LoadbalancerRestTemplateConfiguration extends AbstractRestTemplateConfiguration {
+public class RestTemplateLoadbalancerConfiguration extends AbstractRestTemplateConfiguration {
 
     @Bean(name = "loadbalancer")
     @ConditionalOnMissingBean(name = "loadbalancer")
