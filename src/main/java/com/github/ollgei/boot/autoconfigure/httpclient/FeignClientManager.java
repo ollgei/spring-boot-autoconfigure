@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.github.ollgei.base.commonj.enums.HttpMethod;
 import com.github.ollgei.base.commonj.errors.ErrorCodeEnum;
 import com.github.ollgei.base.commonj.errors.ErrorException;
@@ -81,7 +79,7 @@ public class FeignClientManager {
     }
 
     public JsonElement getForJson(URI uri, Map<String, String> headerMap) {
-        return getForJson(uri, headerMap);
+        return feignClientDefination.getJ(uri, headerMap);
     }
 
     public JsonElement postForJson(String uri, Object body) {
