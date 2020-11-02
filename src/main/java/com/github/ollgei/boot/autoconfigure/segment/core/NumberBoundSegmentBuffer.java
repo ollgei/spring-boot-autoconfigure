@@ -117,10 +117,10 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
 
     @Override
     public void reload(boolean init) {
-        final List<SectionDefination> definations = repository.list();
+        final List<SectionDefinition> definations = repository.list();
         final List<String> tags = new ArrayList<>();
         //查看所有的LIST
-        for (final SectionDefination defination : definations) {
+        for (final SectionDefinition defination : definations) {
             final String name = defination.getName();
             tags.add(name);
 
@@ -129,16 +129,15 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
                 if (!name.equals(k)) {
                     return null;
                 }
-                final SectionDefination definationForUpdate = new SectionDefination();
+                final SectionDefinition definationForUpdate = new SectionDefinition();
                 definationForUpdate.setName(k);
                 definationForUpdate.setStep(defination.getStep());
-                final SectionDefination definationNew = repository.updateMaxAndStep(definationForUpdate);
+                final SectionDefinition definationNew = repository.updateMaxAndStep(definationForUpdate);
                 if (definationNew == null) {
                     return null;
                 }
 
-                final BoundSegment<NumberElementSection> segment = BoundSegment.builder().
-                        key(k).capacity(2).step(definationNew.getStep()).build();
+                final BoundSegment<NumberElementSection> segment = BoundSegment.builder().key(k).capacity(2).step(definationNew.getStep()).build();
                 final NumberElementSection element = new NumberElementSection();
                 element.setSegment(segment);
                 element.getValue().set(definationNew.getMax() - definationNew.getStep());
@@ -167,21 +166,21 @@ public class NumberBoundSegmentBuffer extends BoundSegmentBuffer<NumberElementSe
         final int step = calcStep(name);
 
         //更新数据库（step）,最大值增加,步长可能增加
-        final SectionDefination definationForUpdate = new SectionDefination();
+        final SectionDefinition definationForUpdate = new SectionDefinition();
         definationForUpdate.setName(name);
         definationForUpdate.setStep(step);
-        final SectionDefination defination = repository.updateMaxAndStep(definationForUpdate);
+        final SectionDefinition definition = repository.updateMaxAndStep(definationForUpdate);
         final NumberElementSection element = new NumberElementSection();
         element.setSegment(segment);
-        element.getValue().set(defination.getMax() - step);
-        element.setMax(defination.getMax());
+        element.getValue().set(definition.getMax() - step);
+        element.setMax(definition.getMax());
         element.setStep(step);
         putNextObject(name, element);
 
-        log.info("step:{}, minStep:{}", step, defination.getStep());
+        log.info("step:{}, minStep:{}", step, definition.getStep());
         runtime.setUpdateTimestamp(System.currentTimeMillis());
         runtime.setStep(step);
-        runtime.setMinStep(defination.getStep());
+        runtime.setMinStep(definition.getStep());
     }
 
     private int calcStep(String name) {

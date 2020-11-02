@@ -8,7 +8,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class SectionDefination {
+public class SectionDefinition {
     private String name;
     private Long max;
     private Integer step;

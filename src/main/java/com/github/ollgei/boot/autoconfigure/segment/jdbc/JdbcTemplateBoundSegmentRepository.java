@@ -11,7 +11,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.github.ollgei.boot.autoconfigure.internal.jdbc.AbstractJdbcTemplateRepository;
 import com.github.ollgei.boot.autoconfigure.segment.BoundSegmentProperties;
 import com.github.ollgei.boot.autoconfigure.segment.core.BoundSegmentRepository;
-import com.github.ollgei.boot.autoconfigure.segment.core.SectionDefination;
+import com.github.ollgei.boot.autoconfigure.segment.core.SectionDefinition;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,10 +34,10 @@ public class JdbcTemplateBoundSegmentRepository extends AbstractJdbcTemplateRepo
     }
 
     @Override
-    public List<SectionDefination> list() {
+    public List<SectionDefinition> list() {
         final String sql = listAllocatorsSql();
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            final SectionDefination alloc = new SectionDefination();
+            final SectionDefinition alloc = new SectionDefinition();
             alloc.setName(rs.getString(1));
             alloc.setMax(rs.getLong(2));
             alloc.setStep(rs.getInt(3));
@@ -46,7 +46,7 @@ public class JdbcTemplateBoundSegmentRepository extends AbstractJdbcTemplateRepo
     }
 
     @Override
-    public SectionDefination updateMaxAndStep(SectionDefination entity) {
+    public SectionDefinition updateMaxAndStep(SectionDefinition entity) {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", entity.getName());
         params.put("step", new Integer(entity.getStep()));
@@ -54,9 +54,9 @@ public class JdbcTemplateBoundSegmentRepository extends AbstractJdbcTemplateRepo
         return updateAndGetAllocator(getUpdateMaxIdByCustomStepSql(), params);
     }
 
-    private SectionDefination updateAndGetAllocator(String sql, Map<String, Object> params) {
+    private SectionDefinition updateAndGetAllocator(String sql, Map<String, Object> params) {
 
-        final SectionDefination newAllocator = transactionTemplate.execute(status -> {
+        final SectionDefinition newAllocator = transactionTemplate.execute(status -> {
 
             final boolean result = jdbcTemplate.update(sql, params) > 0;
             if (!result) {
@@ -65,7 +65,7 @@ public class JdbcTemplateBoundSegmentRepository extends AbstractJdbcTemplateRepo
 
             return jdbcTemplate.queryForObject(getAllocatorSql(),
                     params, (rs, rowNum) -> {
-                        final SectionDefination alloc = new SectionDefination();
+                        final SectionDefinition alloc = new SectionDefinition();
                         alloc.setName(rs.getString(1));
                         alloc.setMax(rs.getLong(2));
                         alloc.setStep(rs.getInt(3));

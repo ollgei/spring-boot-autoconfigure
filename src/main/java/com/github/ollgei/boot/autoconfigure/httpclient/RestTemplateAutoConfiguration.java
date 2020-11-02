@@ -29,5 +29,4 @@ public class RestTemplateAutoConfiguration extends AbstractRestTemplateConfigura
     public RestTemplate restTemplate(ObjectProvider<ClientHttpRequestFactory> requestFactories) {
         return create(requestFactories.getIfAvailable());
     }
-
 }

@@ -44,6 +44,7 @@ public abstract class AbstractJdbcTemplateRepository {
                 new DataSourceTransactionManager(configuration.getJdbcTemplate().getDataSource());
         final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+//        transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
         return transactionTemplate;
     }
 }
