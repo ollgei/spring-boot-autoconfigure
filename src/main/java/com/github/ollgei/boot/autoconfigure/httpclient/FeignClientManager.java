@@ -83,19 +83,19 @@ public class FeignClientManager {
     }
 
     public JsonElement postForJson(String uri, Object body) {
-        return postForJson(uri, Collections.emptyMap(), body);
+        return postForJson(uri, body);
     }
 
     public JsonElement postForJson(URI uri, Object body) {
-        return postForJson(uri, Collections.emptyMap(), body);
+        return feignClientDefination.postJ(uri, gson.toJsonTree(body));
     }
 
     public JsonElement getForJson(String uri) {
-        return getForJson(uri, Collections.emptyMap());
+        return getForJson(CommonHelper.newURI(uri));
     }
 
     public JsonElement getForJson(URI uri) {
-        return getForJson(uri, Collections.emptyMap());
+        return feignClientDefination.getJ(uri);
     }
 
     public <T> T postForJson(String uri, Map<String, String> headerMap, Object body, Class<T> type) {
@@ -151,15 +151,15 @@ public class FeignClientManager {
     }
 
     public Response get(URI uri) {
-        return get(uri, Collections.emptyMap());
+        return feignClientDefination.get(uri);
     }
 
     public Response post(String uri, Object body) {
-        return post(uri, Collections.emptyMap(), body);
+        return post(CommonHelper.newURI(uri), body);
     }
 
     public Response post(URI uri, Object body) {
-        return post(uri, Collections.emptyMap(), body);
+        return feignClientDefination.post(uri, gson.toJsonTree(body));
     }
 
     public Response request(UriWithMethod uriWithMethod, Map<String, String> headerMap, Object body) {
