@@ -83,7 +83,7 @@ public class FeignClientManager {
     }
 
     public JsonElement postForJson(String uri, Object body) {
-        return postForJson(uri, body);
+        return postForJson(CommonHelper.newURI(uri), body);
     }
 
     public JsonElement postForJson(URI uri, Object body) {
@@ -98,36 +98,36 @@ public class FeignClientManager {
         return feignClientDefination.getJ(uri);
     }
 
-    public <T> T postForJson(String uri, Map<String, String> headerMap, Object body, Class<T> type) {
+    public <T> T postForType(String uri, Map<String, String> headerMap, Object body, Class<T> type) {
         return gson.fromJson(postForJson(uri, headerMap, gson.toJsonTree(body)), type);
     }
 
-    public <T> T postForJson(URI uri, Map<String, String> headerMap, Object body, Class<T> type) {
+    public <T> T postForType(URI uri, Map<String, String> headerMap, Object body, Class<T> type) {
         return gson.fromJson(postForJson(uri, headerMap, gson.toJsonTree(body)), type);
     }
 
-    public <T> T postForJson(String uri, Object body, Class<T> type) {
-        return postForJson(uri, Collections.emptyMap(), body, type);
+    public <T> T postForType(String uri, Object body, Class<T> type) {
+        return postForType(uri, Collections.emptyMap(), body, type);
     }
 
-    public <T> T postForJson(URI uri, Object body, Class<T> type) {
-        return postForJson(uri, Collections.emptyMap(), body, type);
+    public <T> T postForType(URI uri, Object body, Class<T> type) {
+        return postForType(uri, Collections.emptyMap(), body, type);
     }
 
-    public <T> T getForJson(String uri, Map<String, String> headerMap, Class<T> type) {
+    public <T> T getForType(String uri, Map<String, String> headerMap, Class<T> type) {
         return gson.fromJson(getForJson(uri, headerMap), type);
     }
 
-    public <T> T getForJson(URI uri, Map<String, String> headerMap, Class<T> type) {
+    public <T> T getForType(URI uri, Map<String, String> headerMap, Class<T> type) {
         return gson.fromJson(getForJson(uri, headerMap), type);
     }
 
-    public <T> T getForJson(String uri, Class<T> type) {
-        return getForJson(uri, Collections.emptyMap(), type);
+    public <T> T getForType(String uri, Class<T> type) {
+        return getForType(uri, Collections.emptyMap(), type);
     }
 
-    public <T> T getForJson(URI uri, Class<T> type) {
-        return getForJson(uri, Collections.emptyMap(), type);
+    public <T> T getForType(URI uri, Class<T> type) {
+        return getForType(uri, Collections.emptyMap(), type);
     }
 
     public Response post(String uri, Map<String, String> headerMap, Object body) {
