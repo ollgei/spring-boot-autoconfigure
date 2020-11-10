@@ -1,5 +1,6 @@
 package com.github.ollgei.boot.autoconfigure.httpclient;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -17,6 +18,8 @@ import com.github.ollgei.base.commonj.feign.gson.GsonEncoder;
 import com.github.ollgei.base.commonj.gson.GsonBuilder;
 import feign.Feign;
 import feign.Retryer;
+import feign.codec.Encoder;
+import feign.form.FormEncoder;
 import feign.httpclient.ApacheHttpClient;
 import feign.okhttp.OkHttpClient;
 import feign.slf4j.Slf4jLogger;
@@ -44,9 +47,9 @@ public class FeignAutoConfiguration {
             ObjectProvider<FeignCustomizer> builderCustomizers) {
         return FeinBuilderHelper.builder(
                 properties.getLoggerType(), properties.getFeignLoggerLevel(),
-                Feign.builder(), builderCustomizers.orderedStream().collect(Collectors.toList())).
-                encoder(new GsonEncoder()).
-                decoder(new GsonDecoder(new GsonBuilder().serializeNulls().create())).
+                Feign.builder(), builderCustomizers.stream().
+                        sorted(Comparator.comparingInt(FeignCustomizer::orderd)).
+                        collect(Collectors.toList())).
                 target(FeignClientDefination.class, "http://127.0.0.1:8080");
     }
 
@@ -63,6 +66,23 @@ public class FeignAutoConfiguration {
     @ConditionalOnMissingClass({"feign.okhttp.OkHttpClient", "feign.httpclient.ApacheHttpClient"})
     public FeignCustomizer retryFeignCustomizer(HttpClientProperties properties) {
         return new RetryFeignCustomizer(properties.getRetryNum());
+    }
+
+    @Bean
+    @ConditionalOnMissingClass("feign.form.FormEncoder")
+    public FeignCustomizer defaultEncodeFeignCustomizer() {
+        return new DefaultEncodeFeignCustomizer();
+    }
+
+    @Bean
+    @ConditionalOnClass(name = "feign.form.FormEncoder")
+    public FeignCustomizer formEncodeFeignCustomizer() {
+        return new FormEncodeFeignCustomizer(new GsonEncoder());
+    }
+
+    @Bean
+    public FeignCustomizer defaultDecodeFeignCustomizer() {
+        return new DefaultDecodeFeignCustomizer();
     }
 
     /**
@@ -165,6 +185,36 @@ public class FeignAutoConfiguration {
         @Override
         public void customize(Feign.Builder builder) {
             builder.client(new OkHttpClient(okHttp3ClientWrapper.getClient()));
+        }
+    }
+
+    static class DefaultEncodeFeignCustomizer implements FeignCustomizer {
+
+        @Override
+        public void customize(Feign.Builder builder) {
+            builder.encoder(new GsonEncoder());
+        }
+    }
+
+    static class FormEncodeFeignCustomizer implements FeignCustomizer {
+
+        private Encoder delegate;
+
+        public FormEncodeFeignCustomizer(Encoder delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void customize(Feign.Builder builder) {
+            builder.encoder(new FormEncoder(this.delegate));
+        }
+    }
+
+    static class DefaultDecodeFeignCustomizer implements FeignCustomizer {
+
+        @Override
+        public void customize(Feign.Builder builder) {
+            builder.decoder(new GsonDecoder(new GsonBuilder().serializeNulls().create()));
         }
     }
 }

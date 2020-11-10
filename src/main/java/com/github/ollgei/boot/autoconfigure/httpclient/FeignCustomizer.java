@@ -14,4 +14,8 @@ public interface FeignCustomizer {
      * @param builder the builder to customize
      */
     void customize(Feign.Builder builder);
+
+    default int orderd() {
+        return Integer.MAX_VALUE;
+    }
 }
